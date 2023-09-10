@@ -11,6 +11,8 @@ Bumps the index to the first column if it isn't a timestamp
 Parameters:
 df: DataFrame, required
 timeCol: string, Default: empty
+
+Returns: DataFrame
     """
     df = df.copy()
     gc.collect()
@@ -37,18 +39,22 @@ timeCol: string, Default: empty
 def getLastNWeeks(df, n, weekday=0, hour=0, minute=0):
     """
 Get the last n weeks of data starting this past 'weekday' where (0=Monday, 6=Sunday)
-It's import that the timestamp is already in the index
+It's important that the timestamp is already in the index
 
 Parameters:
 df: DataFrame, required
 n: int, required
 weekday: int, Default 0 (0=Monday, 6=Sunday)
+
+Returns: DataFrame
     """
     # Get the last monday as the root of the week. subtract n weeks from there and add weekdays in that week
     dayOne = date.today() + relativedelta(weekday=(MO(-(n+1)))) + timedelta(days=weekday)
 
     # Get the first row in the the df
     startDatetime = datetime.combine(dayOne, time(hour, minute))
-    
+    if isinstance(df, pd.Series):
+        df = df.to_frame()
+
     df = df.loc[df.index >= startDatetime, :]
     return df

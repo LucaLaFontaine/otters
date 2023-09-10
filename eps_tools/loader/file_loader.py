@@ -8,11 +8,12 @@ import inspect
 def import_config(configFolder=''):
     """
 Import all config files from the supplied folder. Defaults to the root folder
-
-Any files ending in 'config.yaml' will be treated. So you could have a formatting config called 'format.config.yaml'
+Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'
 
 Parameters:
 configFolder: string, default: empty
+
+Returns: dict
     """
 
     # Load any config files
@@ -70,9 +71,7 @@ path: string, default: '*'
 recursive: bool, default: False
 verbose: bool, default: False
 
-verbose: Print the file list found by the path   
-
-Returns: list of DataFames
+Returns: list of DataFrames
     """
     fileTypes = ['.xlsx', '.xlsm' , '.xls',]
     files = getFiles(path=path, recursive=recursive, fileTypes=fileTypes)
@@ -87,97 +86,3 @@ Returns: list of DataFames
         chunk = pd.read_excel(file,)
         dfList.append(chunk)
     return dfList
-
-
-
-
-
-
-
-class DataLoader:
-    def __init__(self, configFile='config.yaml'):
-
-        self.config = self.import_config() 
-
-        return
-    
-    def import_config(self, configFolder=''):
-        """
-Import all config files from the supplied folder. Defaults to the root folder
-
-Any files ending in 'config.yaml' will be treated. So you could have a formatting config called 'format.config.yaml'
-
-Parameters:
-    configFolder: string, default: empty
-        """
-
-        # Load any config files
-        files = glob(os.getcwd()+configFolder+'/**/*config.yaml', recursive=True)
-        files = [file.replace(os.getcwd(), '').lstrip('/\\') for file in files]
-        # print(configFolder+'/**/*config.yaml')
-
-        if files:
-            print(f'Loading config files: {files}')
-        else:
-            configFile = 'config.yaml'
-            self.func_dir_path = '/'.join(os.path.abspath(inspect.getfile(self.import_config)).split('\\')[0:-1])
-            print(f"""There doesn't appear to be a config file in the root of your folder. \nLoading the default config from here:\n{self.func_dir_path}/{configFile}""")
-            files.append(f'{self.func_dir_path}/{configFile}')
-
-        config = {}
-        for file in files:
-            with open(file) as f:
-                config.update(yaml.load(f, Loader=yaml.FullLoader))
-                f.close()
-
-        return config
-    
-    def getFiles(self, path='*', recursive=False, fileTypes=['']):
-        """
-Get list of all files in a supplied path. Can pass file types
-
-Parameters:
-    path: string, default: empty
-    recursive: bool, default: False
-
-Returns: list
-        """
-        files = []
-        for fileType in fileTypes:
-            files.extend(glob(path+fileType))
-
-        return list(set(files))
-    
-    def getExcelDFs(self, path='*', recursive=False, verbose=False,):
-        """
-Import all Excel files from a path into a list of DataFrames
-
-Parameters:
-    path: string, default: '*'
-    recursive: bool, default: False
-    verbose: bool, default: False
-
- verbose: Print the file list found by the path   
-
-Returns: list of DataFames
-        """
-        fileTypes = ['.xlsx', '.xlsm' , '.xls',]
-        files = self.getFiles(path=path, recursive=recursive, fileTypes=fileTypes)
-
-        if verbose:
-            print(f'File list:\n{files}\n')
-
-        dfList = []
-        for file in files:
-            if verbose:
-                print(f'Importing file: {file}')
-            chunk = pd.read_excel(file,)
-            dfList.append(chunk)
-        return dfList
-
-
-if __name__ == "__main__":
-    loader = DataLoader()
-    config = loader.import_config()
-    print(config)
-    # return

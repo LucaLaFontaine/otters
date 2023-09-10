@@ -17,30 +17,6 @@ from plotly.subplots import make_subplots
 import sys
 sys.path.append(r"Z:\Data Governance\pipLocal\Tools\ExPS Reports")
           
-def importConfig(cwd, fileName='config'):
-    # Import a config file from the folder of the script. 
-    try:
-        config_file = f'{cwd}{fileName}.yaml'
-        print(config_file)
-        with open(config_file) as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-    except:
-        print("There doesn't appear to be a config file for this script. If the code doesn't fail that's probably fine")
-    return config
-
-def createSQLConnection(db_file):
-    """ create a database connection to a SQLite database """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        print('Sqlite3 Version: '+sqlite3.version)
-    except Error as e:
-        print(e)
-    # finally:
-    #     if conn:
-    #         conn.close()
-    return conn
-
 def scaleDTick(df):
     dateDifference = (df.index[-1]-df.index[0]).days
     print(dateDifference)
@@ -62,103 +38,6 @@ def scaleDTick(df):
         dTick='M1'
     return dTick
 
-def getLastNWeeks(df, n, config):
-    """ Get the last n weeks of data starting this past Monday (days would be better but..)
-    It's import that the timestamp is the index
-    """
-    lastMonday = date.today() - timedelta(days=date.today().weekday())
-    startDate = datetime.combine((lastMonday - timedelta(days=7*n)), time(config['tick0'][3], config['tick0'][4]))
-    
-    try:
-        df = df.loc[df.index >= startDate, :].drop_duplicates(keep='first')
-    except:
-        df = df.loc[df.index >= startDate, :].to_frame().drop_duplicates(keep='first')
-    return df
-
-def get100LowestValues(df, minVal=0):
-    """ExPS Exclusive
-    Gets the 100 lowest values from all the data provided in df
-    It will filter anything lower than minVal, so it'll ignore negative or blank values if minVal=0
-    The timestamp must be the index
-    returns a df containing rows with a lowest val from one of the columns
-    """
-    # Delete dupes. Important that timestamp is the index. This will eventually kill me, I can feel it in my bones
-    df = df[~df.index.duplicated(keep='first')]
-    
-    keepIndex = []
-    # We get the lowest 100 for every column and add them to a list
-    for col in df.columns:
-        keepIndex.extend(df.sort_values(col).loc[df[col] > minVal, :].index[0:100])
-        
-    # Set just means we drop dupes
-    keepIndex = list(set(keepIndex))
-    
-    # Then we keep rows that contain a lowest value from one of the columns
-    df = df.loc[keepIndex, :]
-    
-    return df
-
-def get100LowestPercent(lowAchieved, avgProd):
-    """ExPS Exclusive
-    Gets the 100 lowest values as percentage off production average from all the data in the df. 
-    """
-    
-    return int(round((1-lowAchieved/avgProd), 2)*100)
-
-
-def getProductionMean(dfCol, nWeeks, config, nEvents=100, ascending=False):
-    """Mean of nEvents (default 100 events or 25 hours) over last n weeks for each week i guess?
-    Accepts a single column and n of weeks to average over
-    """
-    
-    dfCol = dfCol.to_frame()
-    dfCol = getLastNWeeks(dfCol, nWeeks, config)
-    print(f'nEvents: {nEvents}')
-    avgProd = round(dfCol.loc[dfCol[dfCol.columns[0]]>=0, :].sort_values(dfCol.columns[0], ascending=ascending).head(nEvents).mean())
-    return int(avgProd[0])
-
-def getFilesInFolder(path):
-    fileList = []
-    for (dirpath, dirnames, files) in walk(path):
-        print(path)
-        for file in files:
-            print(file)
-            if (file.endswith('.xlsm') or file.endswith('.xlsx')) and '$' not in file:
-                fileList.append(file)
-        break
-    print(fileList)
-    return fileList
-
-def createDFFromData(book):
-    df = pd.read_excel(book)
-    # totalCols
-    totalCols = df.shape[1]
-    return df
-
-def timeStr2Ts64(df):
-    # This function takes a df with a timestamp that python will understand and turns it into a timestamp that everybody understands.
-    # It doesn't deal with time changes but passing a variable here would be the easiest way.
-    # Returns the entire df, fixed
-
-    # timestamp names to try:
-    timestampNames = ['timestamp', 'Timestamp', 'Date/Time', 'Date']
-
-    for timestampName in timestampNames:
-        if timestampName in df.columns:
-            if timestampName == 'Timestamp':
-                # Need to remove timestamp if it's already there or the thing gets mad'
-                timestampCol = df[timestampName]
-                df.drop(timestampName, axis=1, inplace=True)
-                df.insert(0, 'Timestamp', timestampCol.astype('datetime64[ns]'))
-            else:
-                try:
-                    df.insert(0, 'Timestamp', df[timestampName].astype('datetime64[ns]'))
-                except:
-                    # I'm assuming that if this throws an error then there are 2 timestamp columns. we'll just drop this one.
-                    print("Either there are 2 timestamp columns or the timestamp column is messed up. Try a different method.")
-                    pass
-                df.drop(timestampName, axis="columns", inplace=True)
-    return df
 
 def createGraph(df, config, i):
     """
