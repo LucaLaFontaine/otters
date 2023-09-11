@@ -164,7 +164,7 @@ class Plot(Plot):
         self.parent = parent
         # self.config = self.parent.config
         # self.df = self.parent.df
-        self.yAxisRange = self.parent.config['yAxisRange']
+        # self.yAxisRange = self.parent.config['yAxisRange']
         super().__init__(self.parent)
         return
     
@@ -357,7 +357,11 @@ class Plot(Plot):
         # we just take that number as yAxisMax because we can't go over it 
         # This should not be this complex. refactoring the code wuold make this a lot simpler and more robust. 
         full_fig = self.fig.full_figure_for_development(warn=False)
-        self.y2AxisMax = sum([max(x['y']) for x in full_fig.data if x['yaxis'] == 'y2'])
+        # print(full_fig.data)
+        # if len([x for x in full_fig.data if x['yaxis'] == 'y2']) > 0:
+        self.y2AxisMax = sum([max(x['y'], default=0) if x['yaxis'] == 'y2' else 0 for x in full_fig.data])
+        # else:
+            # self.y2AxisMax = 0
 
         self.fig.update_yaxes(
             secondary_y=True,

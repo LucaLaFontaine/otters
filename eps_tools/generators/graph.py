@@ -29,7 +29,7 @@ class Plot(Graph):
         self.height = self.config['plotHeight'] or (self.width*self.config['aspectRatio'])
         self.lineColours = self.config['lineColours']
         self.margin = self.config['margin']
-        self.yAxisRange = self.config['yAxisRange']
+        self.setYAxisRange()
         self.createPlot()
 
 
@@ -124,3 +124,8 @@ class Plot(Graph):
         else:
             dTick='M1'
         return dTick
+    
+    def setYAxisRange(self):
+        self.yAxisRange = self.config['yAxisRange']
+        if type(self.yAxisRange) == str:
+            self.yAxisRange = [eval(x) for x in self.yAxisRange.split(', ')]
