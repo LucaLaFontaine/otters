@@ -1,5 +1,6 @@
 import pandas as pd
 import gc
+from math import ceil
 from datetime import datetime, timedelta, date, time
 from dateutil.relativedelta import relativedelta, MO
 
@@ -49,6 +50,7 @@ weekday: int, Default 0 (0=Monday, 6=Sunday)
 Returns: DataFrame
     """
     # Get the last monday as the root of the week. subtract n weeks from there and add weekdays in that week
+    # We actually want n+1 because we want the week previous to this one in addition to the days so far of this week.
     dayOne = date.today() + relativedelta(weekday=(MO(-(n+1)))) + timedelta(days=weekday)
 
     # Get the first row in the the df
@@ -58,3 +60,16 @@ Returns: DataFrame
 
     df = df.loc[df.index >= startDatetime, :]
     return df
+
+def overlayPast(df, nDays):
+    """
+    Run if you want to overlay last year's consumption on the graph. Controlled in the config.
+    Currently the figure is not supplied/returned, that'll have to change for abstraction
+    """
+    dfPast = df.copy()
+    dfPast.index = df.index+pd.Timedelta(days=nDays)
+    dfPast.columns = dfPast.columns+'_past'
+    # df = df.join(dfPast, how='outer', rsuffix='_past')
+
+    return dfPast
+

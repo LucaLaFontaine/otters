@@ -9,26 +9,28 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 class Graph():
-    def __init__(self, df, config={}):
-        self.df = df
+    def __init__(self, config):
         self.config = config
-        self.title = config['title']
-        self.xTitle	= config['xTitle']
-        self.yTitle	= config['yTitle']
+        self.title = config['title'] if config['title'] == config['title'] else ''
         self.cols = config['graphCols'].split(',')
+        self.xTitle	= config['xTitle'] if config['xTitle'] == config['xTitle'] else ''
+        self.yTitle	= config['yTitle'] if config['yTitle'] == config['yTitle'] else ''
         return
 
 class Plot(Graph):
-    def __init__(self, df, parent, config):
-        super().__init__(df, config)
+    def __init__(self, parent):
         self.parent = parent
-        self.config = config
+        self.config = self.parent.config   
+        self.df = self.parent.df 
+        self.title = self.parent.title
+        self.xTitle	= self.parent.xTitle
+        self.yTitle	= self.parent.yTitle
         self.width = self.config['plotWidth']
         self.height = self.config['plotHeight'] or (self.width*self.config['aspectRatio'])
         self.lineColours = self.config['lineColours']
         self.margin = self.config['margin']
-
         self.yAxisRange = self.config['yAxisRange']
+        self.createPlot()
 
 
     def createPlot(self):
@@ -45,16 +47,16 @@ class Plot(Graph):
             margin=self.margin,
             paper_bgcolor="white", 
             plot_bgcolor="white",
-            title_text=self.title, 
+            title_text=self.parent.title, 
             title_x=0.5,
             legend=dict(title='', orientation='h',yanchor='top',xanchor='center', y=1.1, x=0.48),
         )
         return
     
-    def addLine(self, col):
+    def addLine(self):
         self.fig.add_trace(
             go.Scatter(
-                y=self.df[col],
+                y=self.df.squeeze(),
                 x=self.df.index,
                 mode='lines',
                 name=self.yTitle,
@@ -93,7 +95,7 @@ class Plot(Graph):
 
     def formatYAxis(self):
         self.fig.update_yaxes(
-            range=list([self.yAxisRange[0], self.df.max().max()*self.yAxisRange[1]]),
+            range=list([self.yAxisRange[0], self.df.squeeze().max()*self.yAxisRange[1]]),
             showline=True, 
             linewidth=1, 
             linecolor='#262626', 
@@ -105,7 +107,6 @@ class Plot(Graph):
     
     def scaleDTick(self):
         dateDifference = (self.df.index[-1]-self.df.index[0]).days
-        print(dateDifference)
         if dateDifference < 1:
             dTick=86400000.0/24
         elif dateDifference < 2:

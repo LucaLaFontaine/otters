@@ -1,0 +1,8 @@
+# Environment name
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Ignore jupyter checkpoints
+.ipynb_checkpoints/

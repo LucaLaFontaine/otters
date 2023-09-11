@@ -20,8 +20,9 @@ Returns: DataFrame
     df  = pd.concat(colList, axis=1)   
     return df
 
-def getNRowAvg(self, rows, ascending):
-    return round(self.df.sort_values(self.col, ascending=ascending).reset_index().loc[:rows, self.col].mean(), 0)
+def getNRowAvg(df, rows, ascending):
+    # should be a series
+    return round(df.sort_values(ascending=ascending).reset_index().loc[:rows].mean())
 
 def gapAndIsland(dfCol):
     """Should be renamed to gapAndIsland

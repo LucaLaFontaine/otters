@@ -23,6 +23,7 @@ from datetime import timedelta
 class ExPS():
     def __init__(self):
         self.config = file_loader.import_config()
+        self.plant = self.config['plant']
         self.graphs = []
 
         return
@@ -62,20 +63,34 @@ class ExPS():
         return dfXl
     
     def createPPT(self):
-        self.ppt = PPTGen(self.config)
+        self.reportFolder = self.config['reportFolder']
+        self.PPT = PPTGen(self)
         return
     
+    def savePPT(self):
+        self.pptTitle = self.PPT.ExPSStyleName()
+        self.PPT.savePPT(self.pptTitle)
+        print(f'Saved to:\n{self.pptTitle}')
+    
 class Graph(Graph):
-    def __init__(self, parent, df, config):
-        super().__init__(df, config)
+    def __init__(self, parent, config):
+        super().__init__(config)
         self.parent = parent
-        self.df = df
         self.NPThreshold = config['NPThreshold']
         self.numWeeks = config['numWeeks']
+        self.setDf()
+       
         # self.DS	= config['DS'] Plant specific, assign in notebook
         # self.WS = config['WS']
         self.col = self.cols[0]
+        self.plot = Plot(self)
         return
+    
+    def setDf(self):
+        self.df = self.parent.dfAll.loc[:, self.config['graphCols']]
+        self.df = time_tools.getLastNWeeks(self.df, self.numWeeks, hour=self.config['tick0']['hour'],
+                                            minute=self.config['tick0']['minute'])
+        
     
     def setLowAchieved(self):
         self.lowAchieved = int(round(self.parent.lowDf.loc[:, self.col].mean()))
@@ -147,9 +162,10 @@ class DowntimeEvent():
 class Plot(Plot):
     def __init__(self, parent):
         self.parent = parent
-        self.config = self.parent.config
-        self.df = self.parent.df
-        super().__init__(self.df, self.parent, self.config)
+        # self.config = self.parent.config
+        # self.df = self.parent.df
+        self.yAxisRange = self.parent.config['yAxisRange']
+        super().__init__(self.parent)
         return
     
     def addLegendLabels(self):
@@ -266,18 +282,15 @@ class Plot(Plot):
         dfBuilt.drop('Day', axis=1, inplace=True)
         # Get the relevant dates in dfBuilt
         dfBuilt = time_tools.getLastNWeeks(dfBuilt, self.parent.numWeeks)
+        dfBuilt.fillna(0, inplace=True)
 
-        if self.parent.DS == False or self.parent.WS == False:
+        if self.parent.DS == True or self.parent.WS == True:
             self.fig.update_yaxes(
                 showline=False,
                 showgrid=False, 
-                title_text="Production Count", 
+                title_text="Build Count", 
                 secondary_y=True,
             )
-
-            self.fig.update_yaxes(
-                secondary_y=True,
-                range=list([self.yAxisRange[0], dfBuilt.max().max()*self.yAxisRange[1]]))
 
         if self.parent.DS == True:
             DS_shifts = []
@@ -292,18 +305,20 @@ class Plot(Plot):
 
             DSTrace = go.Bar(y=DSBuilt,
                         x = DSBuilt.index,
-                        name="DS Production",
+                        name="DS Built",
                         marker=dict(color='rgba(135, 206, 235, 0.15)',
                                     line=dict(color='rgba(0, 0, 0, 0)'
                                     ),
                         ),
-            )
-            
+            ) 
             self.fig.add_trace(DSTrace,
                 secondary_y=True,
             )
+            self.fig.update_yaxes(
+                secondary_y=True,
+            )
 
-        if self.parent.WS == False:
+        if self.parent.WS == True:
             WS_shifts = []
 
             for shift in self.config['WTAPSchedule'].values():
@@ -322,16 +337,32 @@ class Plot(Plot):
                             ),
                 ),
             )   
-
             self.fig.add_trace(WSTrace,
                             secondary_y=True,
             )
+            self.fig.update_yaxes(
+                secondary_y=True,
+            )
+
             
         self.fig.update_layout(
             bargap=0,
             barmode='stack',
         )
+        
+        # Once again the most complicated section in the code is this func.
+        # We go get the 'full_figure_for_dev' method which returns us the entire dataset and config of the figure
+        # We crawl that set for traces on y2, and take the max y axis of each y2 trace
+        # we add the all the trace maxes together to give the max possible bar height
+        # we just take that number as yAxisMax because we can't go over it 
+        # This should not be this complex. refactoring the code wuold make this a lot simpler and more robust. 
+        full_fig = self.fig.full_figure_for_development(warn=False)
+        self.y2AxisMax = sum([max(x['y']) for x in full_fig.data if x['yaxis'] == 'y2'])
 
+        self.fig.update_yaxes(
+            secondary_y=True,
+            range=list([self.yAxisRange[0], int(self.y2AxisMax)])
+        )
         return
     
     def createDTEventLabel(self, event):
@@ -404,3 +435,57 @@ class Plot(Plot):
                 now = now+1
             series.drop(row[0], inplace=True) # Clears the row you started with
         return series
+    
+    def showLastYear(self, dfAll):
+
+        dfPastAll = time_tools.overlayPast(dfAll, 364)
+        # Remove columns not in this plot
+        dfPastAll = dfPastAll.loc[:, self.df.columns+'_past']
+        # dfPast = self.df.join(dfPastAll.loc[:, self.df.columns+'_past'], how='outer')
+        dfPast = pd.concat([dfPastAll, self.df], axis=1)
+        dfPast = dfPast.loc[(dfPast.index >= self.df.index.min()) & (dfPast.index <= self.df.index.max())]
+        for col in dfPast.columns:
+            if '_past' in col:
+                self.fig.add_trace(
+                    go.Scatter(
+                        y=dfPast.loc[:, col],
+                        x=dfPast.index,
+                        mode='lines',
+                        name='Last Year kW',
+                        showlegend=True,
+                        line=dict(color='#FF883E',) 
+                    )
+                )
+
+        self.fig.update_yaxes(secondary_y=False,
+            range=list([self.yAxisRange[0], dfPast.max().max()*self.yAxisRange[1]]),
+        )
+        
+        return
+    
+    def showLastWeek(self, dfAll):
+
+        dfPastAll = time_tools.overlayPast(dfAll, 7)
+        # Remove columns not in this plot
+        dfPastAll = dfPastAll.loc[:, self.df.columns+'_past']
+        # dfPast = self.df.join(dfPastAll.loc[:, self.df.columns+'_past'], how='outer')
+        dfPast = pd.concat([dfPastAll, self.df], axis=1)
+        dfPast = dfPast.loc[(dfPast.index >= self.df.index.min()) & (dfPast.index <= self.df.index.max())]
+        for col in dfPast.columns:
+            if '_past' in col:
+                self.fig.add_trace(
+                    go.Scatter(
+                        y=dfPast.loc[:, col],
+                        x=dfPast.index,
+                        mode='lines',
+                        name='Last Week kW',
+                        showlegend=True,
+                        line=dict(color='#A14494',) 
+                    )
+                )
+
+        self.fig.update_yaxes(secondary_y=False,
+            range=list([self.yAxisRange[0], dfPast.max().max()*self.yAxisRange[1]]),
+        )
+        
+        return
