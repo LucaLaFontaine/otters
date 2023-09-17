@@ -1,4 +1,6 @@
 pandas==2.1.0
 pyyaml==6.0.1
-win32compi==306
+pywin32==306
 plotly==5.16.1
+kaleido==0.1.0.post1
+pdoc==14.1.0

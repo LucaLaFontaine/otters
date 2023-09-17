@@ -1,3 +1,9 @@
+"""
+The file_loader module provides functions used to load data from files (excel, csv, pdf, etc) or into files.
+"""
+
+
+
 import pandas as pd
 import yaml
 import os
@@ -7,13 +13,16 @@ import inspect
 
 def import_config(configFolder=''):
     """
-Import all config files from the supplied folder. Defaults to the root folder
-Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'
+    Import all config files from the supplied folder. Defaults to the root folder  
 
-Parameters:
-configFolder: string, default: empty
-
-Returns: dict
+    Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'  
+    
+    **Parameters:**
+    > **configFolder: *string, default: empty***  
+    >> The relative path to the config folder. Recursive, so it'll find the files if their anywhere in this directory
+ 
+    **Returns:**  
+    > **dict**
     """
 
     # Load any config files
@@ -48,13 +57,22 @@ Returns: dict
 
 def getFiles(path='*', recursive=False, fileTypes=['']):
     """
-Get list of all files in a supplied path. Can pass file types
+    Get list of all files in a supplied path. Can pass file types  
 
-Parameters:
-path: string, default: empty
-recursive: bool, default: False
+    **Parameters:**  
+    > **path: *string, default: empty***  
+    >> Pass a relative or absolute path
 
-Returns: list
+    > **recursive: *bool, default: False***  
+    >> If True search recursively, meaning it will search the folder supplied and any subfolders.
+
+    > **fileTypes: *list, default: empty list***  
+    >> Example: ['.xlsx', '.xls']
+
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click here for more info</a>
+
+    **Returns:**  
+    > **list**  
     """
     files = []
     for fileType in fileTypes:
@@ -64,14 +82,20 @@ Returns: list
 
 def getExcelDFs(path='*', recursive=False, verbose=False,):
     """
-Import all Excel files from a path into a list of DataFrames
+    Import all Excel files from a path into a list of DataFrames  
 
-Parameters:
-path: string, default: '*'
-recursive: bool, default: False
-verbose: bool, default: False
+    **Parameters:**
+    > **path: *string, default: "\*"***  
+    >> Pass a relative or absolute path
 
-Returns: list of DataFrames
+    > **recursive: *bool, default: False***  
+    >> If True search recursively, meaning it will search the folder supplied and any subfolders.
+
+    > **verbose: *bool, default: False***  
+    >> If True prints each file as it's being imported.
+
+    **Returns:**  
+    > **list of DataFrames**  
     """
     fileTypes = ['.xlsx', '.xlsm' , '.xls',]
     files = getFiles(path=path, recursive=recursive, fileTypes=fileTypes)

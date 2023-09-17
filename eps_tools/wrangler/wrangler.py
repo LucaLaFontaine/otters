@@ -55,3 +55,23 @@ def mergeCloseEvents(events, mergeWithinHours=12, i=1):
     else:
         mergeCloseEvents(events, i=i+1)
     return events
+
+def extendTags(tags,  maxNum, exampleNum=1, missing=[],):
+    """
+    Use to extend a list of tags (usually tags in an EMS or files) for one grouping into many
+    Say you have 5 tags each for 10 AHUs that you have to pull. Use this to generate all 50 tags from the first 5
+
+    Parameters:
+    tags: list, Required
+    maxNum: int, Required, largest number in the set
+    exampleNum: int, Default: 1, number you're replacing in the exmple set
+    missing: list, Default: empty, any missing numbers in the set
+    """
+    extendedTags = []
+    for i in range(1, maxNum+1):
+        for j, tag in enumerate(tags):
+            if i in missing:
+                continue
+            if tag.find(str(i)):
+                extendedTags.append(tag.replace(str(exampleNum), str(i)))     
+    return extendedTags

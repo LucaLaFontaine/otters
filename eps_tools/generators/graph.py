@@ -129,3 +129,84 @@ class Plot(Graph):
         self.yAxisRange = self.config['yAxisRange']
         if type(self.yAxisRange) == str:
             self.yAxisRange = [eval(x) for x in self.yAxisRange.split(', ')]
+
+    def createTimeline(self, df):
+        """
+        Creates a standalone timeline from a supplied events DataFrame  
+
+        Paramaters:
+        df: DataFrame, Required
+        > Should be format: ['Timsetamp', 'Name'].  
+        It only takes the first 2 columns so you can put like a description or whatever after. Eventually a description willl be rolled into hover text
+        
+        """
+        df['ZeroCol'] = 1
+        # Add just the time series
+        self.fig.add_trace(
+            go.Scatter(
+                y=[0],
+                x=[self.df.index.min()],
+                mode='lines',
+                name=self.title,
+                showlegend=False
+            )
+        )
+        padding = timedelta(days=30)
+        self.fig.update_xaxes(
+            range=[self.df.index.min()-padding, self.df.index.max()+padding],
+            tickfont=dict(
+                size=15,
+            ),
+            ticklabelposition = 'outside right',
+            title='If anyone knows how to style a timeline email me at luka@aol.com',
+            # title
+            # gridcolor='#000'
+
+        )
+
+
+        from random import randint, uniform
+        import textwrap
+
+        colours = [
+            'rgba(8, 84, 158,1)',
+            'rgba(255, 136, 62,1)',
+            'rgba(146, 92, 59,1)',
+            'rgba(204, 158, 115,1)',
+            'rgba(223, 197, 79,1)',
+            'rgba(148, 0, 28,1)',            
+        ]
+
+        yPos = [0, 0.3, 0.60, 0.9]
+
+
+        i=0 # don't leave this implementation this way with the i
+        for row in self.df.iterrows():
+            colour = 'rgba(8, 84, 158,1)'
+            colour2 = 'rgba(255, 136, 62,1)'
+            
+            ran = round(uniform(-1, 1), 1)
+            self.fig.add_vline(x=row[0], line_width=5, line_color=colour)
+            self.fig.add_annotation(y=1-(yPos[i%4]),
+                            x=row[0],
+                            text="<b>"+row[1][1]+":<br>"+"<br>".join(textwrap.wrap(row[1][0],width =13, break_long_words=False))+"</b>",
+                            showarrow=False,
+                            # yshift=20, 
+                            xshift=-2.5,
+                            xanchor='left',
+                            font=dict(color = colour),
+                            # xref="paper",
+                            align='left',
+                            bgcolor=f'rgba(255, 255, 255, 1)',
+                            bordercolor=colour2,
+                            borderwidth=3,
+                            borderpad=2,
+                            )
+            
+            i += 1
+            
+        self.fig.update_yaxes(
+            visible = False,
+            
+        )
+        return
