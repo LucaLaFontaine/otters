@@ -48,9 +48,7 @@ def mergeCloseEvents(events, mergeWithinHours=12, i=1):
     lastEventEnd = events[i-1][-1]
 
     if ((eventStart-lastEventEnd).total_seconds()/3600)<=mergeWithinHours:
-        # Pretty sure this was copies of lastEnd and eventEnd rather than pointers to the event
         events[i-1][-1] = events[i][-1]
-        # lastEventEnd = eventEnd
         events.pop(i)
         events = mergeCloseEvents(events, i = i)
         
