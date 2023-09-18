@@ -1,9 +1,6 @@
 """
 The file_loader module provides functions used to load data from files (excel, csv, pdf, etc) or into files.
 """
-
-
-
 import pandas as pd
 import yaml
 import os
@@ -110,3 +107,18 @@ def getExcelDFs(path='*', recursive=False, verbose=False,):
         chunk = pd.read_excel(file,)
         dfList.append(chunk)
     return dfList
+
+def save2xl(df, file, sheet='Data', startCell=[3, 2], table=True):
+    """
+    IN DEVELOPMENT, PROBABLY WILL NOT WORK  
+
+    Saves a DataFrame to an excel file  
+     
+    It will either overwrite the sheet in an existing file or create a new one  
+
+    Accepts relative or absolute paths  
+    """
+
+
+    # Put an if here being like: If it's a timestamp then format it nicely as a timeseries
+    return

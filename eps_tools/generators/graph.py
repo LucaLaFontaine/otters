@@ -137,7 +137,7 @@ class Plot(Graph):
         Paramaters:
         df: DataFrame, Required
         > Should be format: ['Timsetamp', 'Name'].  
-        It only takes the first 2 columns so you can put like a description or whatever after. Eventually a description willl be rolled into hover text
+        It only takes the first 2 columns so you can put like a description or whatever after. Eventually a description will be rolled into hover text
         
         """
         df['ZeroCol'] = 1

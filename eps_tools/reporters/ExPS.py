@@ -107,7 +107,7 @@ class Graph(Graph):
         colName = dfCol.squeeze().name
         return round(dfCol.squeeze().sort_values(ascending=ascending).reset_index().loc[:rows, colName].mean(), 0)
     
-    def setDowntimeEvents(self, dropEventsBelowNRows=16):
+    def setDowntimeEvents(self, dropEventsBelowNRows=16, mergeWithinHours=12, mergeClose=True):
         
         if isinstance(self.df, pd.Series):
             self.df = self.df.to_frame()
@@ -120,7 +120,8 @@ class Graph(Graph):
             if round(event.mean()) == 1 and len(event) >= dropEventsBelowNRows:
                 downtimeEventDates.append([event.index[0], event.index[-1]])
 
-        downtimeEventDates = wrangler.mergeCloseEvents(downtimeEventDates, mergeWithinHours=12)
+        if mergeClose:
+            downtimeEventDates = wrangler.mergeCloseEvents(downtimeEventDates, mergeWithinHours=mergeWithinHours)
 
         self.downtimeEvents = []
         for event in downtimeEventDates:

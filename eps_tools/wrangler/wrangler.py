@@ -25,8 +25,8 @@ def getNRowAvg(df, rows, ascending):
     return round(df.sort_values(ascending=ascending).reset_index().loc[:rows].mean())
 
 def gapAndIsland(dfCol):
-    """Should be renamed to gapAndIsland
-    takes an np.series data type (ie. a df single column)
+    """
+    Takes an np.series data type (ie. a df single column)
     returns the entire column broken up into sections where all the numbers are the same. 
     Good for iterating on an events column or tracking flags. 
 
@@ -48,7 +48,9 @@ def mergeCloseEvents(events, mergeWithinHours=12, i=1):
     lastEventEnd = events[i-1][-1]
 
     if ((eventStart-lastEventEnd).total_seconds()/3600)<=mergeWithinHours:
-        lastEventEnd = eventEnd
+        # Pretty sure this was copies of lastEnd and eventEnd rather than pointers to the event
+        events[i-1][-1] = events[i][-1]
+        # lastEventEnd = eventEnd
         events.pop(i)
         events = mergeCloseEvents(events, i = i)
         
