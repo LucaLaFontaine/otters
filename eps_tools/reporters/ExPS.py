@@ -163,10 +163,11 @@ class DowntimeEvent():
 class Plot(Plot):
     def __init__(self, parent):
         self.parent = parent
-        # self.config = self.parent.config
+        # self.config = self.parent.configupdate_yaxes
         # self.df = self.parent.df
         # self.yAxisRange = self.parent.config['yAxisRange']
         super().__init__(self.parent)
+        self.formatYAxisUnits()
         return
     
     def addLegendLabels(self):
@@ -469,7 +470,7 @@ class Plot(Plot):
         return
     
     def showLastWeek(self, dfAll):
-
+        
         dfPastAll = time_tools.overlayPast(dfAll, 7)
         # Remove columns not in this plot
         dfPastAll = dfPastAll.loc[:, self.df.columns+'_past']
@@ -494,3 +495,8 @@ class Plot(Plot):
         )
         
         return
+    
+    def formatYAxisUnits(self):
+        self.fig.update_yaxes(
+            tickformat=",",
+            )

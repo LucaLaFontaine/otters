@@ -6,6 +6,8 @@ import yaml
 import os
 from glob import glob
 import inspect
+import xlwings as xw
+os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
 
 
 def import_config(configFolder=''):
@@ -108,7 +110,7 @@ def getExcelDFs(path='*', recursive=False, verbose=False,):
         dfList.append(chunk)
     return dfList
 
-def save2xl(df, file, sheet='Data', startCell=[3, 2], table=True):
+def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=False):
     """
     IN DEVELOPMENT, PROBABLY WILL NOT WORK  
 
@@ -118,7 +120,27 @@ def save2xl(df, file, sheet='Data', startCell=[3, 2], table=True):
 
     Accepts relative or absolute paths  
     """
+    if file:
+        xw.Book(file).sheets[sheet]
+    else:
+        xw.Book().sheets[sheet]
+    
+    #     Clear Filters
+    if sheet.api.AutoFilter:
+        sheet.api.AutoFilter.ShowAllData()
 
+    #get the number of columns/rows the query has
+    queryCols, queryRows = createDF(sheet).shape
+    print(queryCols)
+#     queryRows = createDF(sheet).shape[0]
+    #if queryCols is less than the # of columns the Python makes, we'll insert those columns as blanks and then paset the Python overtop.
+    if (df.shape[1] > queryCols):
+        for col in range(queryCols+2, df.shape[1]+2):
+            sheet.api.Columns(queryCols+2).Insert()
+    
+    #Paste the treated DataFrame into excel
+    sheet.range(startCell).expand('table').options(index=True, header=True, empty="0").value = df  
 
+    sht = xw.Book(fileOut).sheets['Data']
     # Put an if here being like: If it's a timestamp then format it nicely as a timeseries
     return

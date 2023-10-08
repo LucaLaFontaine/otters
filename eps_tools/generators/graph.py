@@ -64,6 +64,9 @@ class Plot(Graph):
             )
         )
         return
+    
+    def addScatter(self):
+        return
 
     def formatXAxis(self):
 
@@ -79,7 +82,6 @@ class Plot(Graph):
         return
     def timeFormatXAxis(self):
         self.formatXAxis()
-        
         self.tickFormat = self.config['tickFormat']
         self.xTickAngle = self.config['xTickAngle']
         self.xMaxTicks = self.config['xMaxTicks']

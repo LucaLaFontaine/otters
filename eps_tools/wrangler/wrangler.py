@@ -12,6 +12,8 @@ minVal: int, default: 1
 
 Returns: DataFrame
     """    
+    # force the df to a DataFrame
+    df = pd.DataFrame(df)
     colList = []
     for col in df.columns:
         colSeries = df.loc[df[col] >= minVal, col].sort_values().head(100)
@@ -75,3 +77,34 @@ def extendTags(tags,  maxNum, exampleNum=1, missing=[],):
             if tag.find(str(i)):
                 extendedTags.append(tag.replace(str(exampleNum), str(i)))     
     return extendedTags
+
+def merge_dfs(dfs):
+    """
+    Merge 2 or more dfs where you have some overlapping data.  
+    Keeps the values randomly as far as I can tell, though it drops nan values
+
+    **Parameters:**  
+    > **dfs: *list of DataFrames/Series, Required***  
+    >> It will take any number of dfs
+
+    **Returns:**  
+    > **Merged DataFrame**  
+    """
+    # Create the set of all columns in the list of dataframes
+    allCols = []
+    [allCols.extend(list(df.columns)) for df in dfs]
+    allCols = list(set(allCols))
+
+    # dfMerged = pd.DataFrame()
+    mergedCols = []
+
+    # for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)
+    # then keep the first index. This will leave out the nans that sink to the bottom.
+    # append each column to a list to concat into a def later 
+    for col in allCols:
+        mergedCol = pd.concat([df[col] for df in dfs if col in df.columns], ).sort_values()
+        mergedCols.append(mergedCol[~mergedCol.index.duplicated(keep="first")])
+
+    dfMerged = pd.concat(mergedCols, axis=1)
+    return dfMerged
+

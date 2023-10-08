@@ -73,3 +73,17 @@ def overlayPast(df, nDays):
 
     return dfPast
 
+
+def selectiveResample(df, freq, meanCols, sumCols, colOrder=None):
+
+    df = df.copy()
+
+    dfMean = df.loc[:, meanCols].resample(freq).mean()
+    dfSum = df.loc[:, sumCols].resample(freq).sum()
+
+    df = pd.concat([dfMean, dfSum], axis=1)
+
+    if colOrder:
+        df = df[colOrder] 
+        
+    return df
