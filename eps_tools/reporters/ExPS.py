@@ -63,6 +63,10 @@ class ExPS():
         return dfXl
     
     def createPPT(self):
+        """
+        If this fails delete the folders in your python version at this address:  
+        C:/Users/%USERNAME%/AppData/Local/Temp/gen_py
+        """
         self.reportFolder = self.config['reportFolder']
         self.PPT = PPTGen(self)
         return
