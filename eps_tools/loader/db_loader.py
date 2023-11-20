@@ -45,7 +45,6 @@ def create_table(conn, table_name, df):
             queryStr = queryStr + f"{colName} float not null,"
         else:
             raise Exception(f"There is no case for dtype {dtype}, please add one")
-            exit()
     queryStr = queryStr.removesuffix(",") + ");"
 
     sql_create_features_table = queryStr
@@ -53,6 +52,41 @@ def create_table(conn, table_name, df):
         conn.execute(sql_create_features_table)
     except Error as e:
         print(e)
+
+def upsert(conn, table_name, df, primary_key='id'):
+    
+    # Create the table with to_sql if it doesn't exist
+    if pd.read_sql_query(f"PRAGMA table_info({table_name})", conn).empty:
+        df.to_sql(table_name, conn, if_exists='replace', dtype={primary_key: 'INTEGER PRIMARY KEY'}, index=False)
+        print(f'There was no table named {table_name}. One was created')
+        return
+    
+    # Create the temp transfer table
+    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={primary_key: 'INTEGER PRIMARY KEY'}, index=False)
+
+    cur = conn.cursor()
+    for _, row in df.iterrows():
+        row_dict = row.to_dict()
+
+        # Cols and vals are set in different places, it make sense to separate them
+        columns = list(row_dict.keys())
+        values = list(row_dict.values())
+
+        sql = f"""
+        INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
+            SELECT {', '.join([f'"{col}"' for col in columns])}
+            FROM transfer_tbl
+            WHERE true
+            ON CONFLICT("Project No")
+            DO UPDATE SET
+            {', '.join([f'"{col}"=excluded."{col}"' for col in columns])}"""
+        cur.execute(sql)
+
+    # Drop the transfer table once we're done with it
+    cur.execute("DROP TABLE IF EXISTS transfer_tbl;")
+    # I'm like pretty sure you can commit all this at the end. There were no issues in testing. I'm guessing it's also faster.
+    conn.commit()
+    return
 
 
 def load(conn, table_name, df):
@@ -81,6 +115,7 @@ def dedupe(conn, dedupe_cols, table_name):
     cur = conn.cursor()
     cur.execute(dedupe_sql)
     conn.commit()
+
  
 def close_conn(conn):
     conn.close()
@@ -114,8 +149,8 @@ def getNasaWeather(plant, dates='urmom', params=['T2M', 'RH2M'], type='Daily', u
     df = read_sql(conn, query)
     df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
 
-    lat = df.loc[df.index == 'mack', 'latitude'][0]
-    long = df.loc[df.index == 'mack', 'longitude'][0]
+    lat = df.loc[df.index == plant, 'latitude'][0]
+    long = df.loc[df.index == plant, 'longitude'][0]
 
     requestURL = f"""
     https://power.larc.nasa.gov/api/temporal/{type.lower()}/point?

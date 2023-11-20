@@ -41,8 +41,12 @@ def import_config(configFolder=''):
 
     config = {}
     for file in yamlFiles:
+        print(f"file: {file}")
         with open(file) as f:
-            config.update(yaml.load(f, Loader=yaml.FullLoader))
+            try:
+                config.update(yaml.load(f, Loader=yaml.FullLoader))
+            except:
+                raise Exception("That didn't work, the bug shown above is likely a bug in your config file")
             f.close()
 
     for file in xlFiles:
