@@ -10,24 +10,31 @@ import xlwings as xw
 os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
 
 
-def import_config(configFolder=''):
+def import_config(configFolder='', recursive=True):
     """
     Import all config files from the supplied folder. Defaults to the root folder  
-
     Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'  
     
     **Parameters:**
-    > **configFolder: *string, default: empty***  
-    >> The relative path to the config folder. Recursive, so it'll find the files if their anywhere in this directory
- 
+    > **configFolder:** *string, default: empty*  
+    >> The relative path to the config folder. 
+
+    > **recursive:** *boolean, default: `True`* 
+    >> Returns all files in dir and sub-dirs if `True`. Only files in root dir if `False`.
+
     **Returns:**  
-    > **dict**
+    > **dict*
     """
 
     # Load any config files
-    yamlFiles = glob(os.getcwd()+configFolder+'/**/*config.yaml', recursive=True)
+    if recursive == True:
+        yamlFiles = glob(os.getcwd()+configFolder+'/**/*config.yaml', recursive=True)
+        xlFiles = glob(os.getcwd()+configFolder+'/**/*config.xlsx', recursive=True)
+    else:
+        yamlFiles = glob(os.getcwd()+configFolder+'/./*config.yaml', recursive=False)
+        xlFiles = glob(os.getcwd()+configFolder+'/./*config.xlsx', recursive=True)
+
     yamlFiles = [file.replace(os.getcwd(), '').lstrip('/\\') for file in yamlFiles]
-    xlFiles = glob(os.getcwd()+configFolder+'/**/*config.xlsx', recursive=True)
     xlFiles = [file.replace(os.getcwd(), '').lstrip('/\\') for file in xlFiles]
     xlFiles = [file for file in xlFiles if '~' not in file]
 
