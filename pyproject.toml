@@ -1,0 +1,47 @@
+
+
+[build-system]
+build-backend = "setuptools.build_meta"
+
+requires = ["setuptools>=61.0.0", "wheel", "pandas", "pyyaml",
+    "xlwings", 
+# "pywin32>=306", 
+#    "plotly",
+#    "kaleido==0.1.0.post1",
+#    "pdoc",
+]
+
+[project]
+name = "otters"
+version = "0.1.0-beta"
+description = "Useful functions and structures for energy analysis and data handling"
+readme = "README.md"
+authors = [{ name = "Luca LaFontaine", email = "lafoluca@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["energy analysis", "data science", "psychometrics"]
+dependencies = [
+    "pandas", 
+    "pyyaml",
+    "xlwings",
+
+# "pywin32>=306", 
+#    "plotly",
+#    "kaleido==0.1.0.post1",
+#    "pdoc",
+]
+
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+[none]
+
+[project.urls]
+Homepage = "https://github.com/LucaLaFontaine/otters"
+
+[project.scripts]
+# otters = "otters.__main__:main"
