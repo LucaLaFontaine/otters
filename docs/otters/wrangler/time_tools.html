@@ -34,6 +34,9 @@
                     <a class="function" href="#str2dt">str2dt</a>
             </li>
             <li>
+                    <a class="function" href="#time2timedelta">time2timedelta</a>
+            </li>
+            <li>
                     <a class="function" href="#getLastNWeeks">getLastNWeeks</a>
             </li>
             <li>
@@ -102,56 +105,64 @@
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">return</span> <span class="n">df</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="k">def</span> <span class="nf">getLastNWeeks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weekday</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">Get the last n weeks of data starting this past &#39;weekday&#39; where (0=Monday, 6=Sunday)</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">It&#39;s important that the timestamp is already in the index</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">Parameters:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">df: DataFrame, required</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">n: int, required</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">weekday: int, Default 0 (0=Monday, 6=Sunday)</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">Returns: DataFrame</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="c1"># Get the last monday as the root of the week. subtract n weeks from there and add weekdays in that week</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="c1"># We actually want n+1 because we want the week previous to this one in addition to the days so far of this week.</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="n">dayOne</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">weekday</span><span class="o">=</span><span class="p">(</span><span class="n">MO</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">weekday</span><span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="c1"># Get the first row in the the df</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="n">startDatetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">dayOne</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">))</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">startDatetime</span><span class="p">,</span> <span class="p">:]</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="k">return</span> <span class="n">df</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="k">def</span> <span class="nf">time2timedelta</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%H%M&#39;</span><span class="p">):</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">))</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">))</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">return</span> <span class="n">s</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="k">def</span> <span class="nf">getLastNWeeks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weekday</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">Get the last n weeks of data starting this past &#39;weekday&#39; where (0=Monday, 6=Sunday)</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">It&#39;s important that the timestamp is already in the index</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">Parameters:</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">df: DataFrame, required</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="sd">n: int, required</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">weekday: int, Default 0 (0=Monday, 6=Sunday)</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="sd">Returns: DataFrame</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>    <span class="c1"># Get the last monday as the root of the week. subtract n weeks from there and add weekdays in that week</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="c1"># We actually want n+1 because we want the week previous to this one in addition to the days so far of this week.</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="n">dayOne</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">weekday</span><span class="o">=</span><span class="p">(</span><span class="n">MO</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">weekday</span><span class="p">)</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="k">def</span> <span class="nf">overlayPast</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nDays</span><span class="p">):</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="sd">    Run if you want to overlay last year&#39;s consumption on the graph. Controlled in the config.</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">    Currently the figure is not supplied/returned, that&#39;ll have to change for abstraction</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="n">dfPast</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">nDays</span><span class="p">)</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span><span class="o">+</span><span class="s1">&#39;_past&#39;</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>    <span class="c1"># df = df.join(dfPast, how=&#39;outer&#39;, rsuffix=&#39;_past&#39;)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>    <span class="k">return</span> <span class="n">dfPast</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="k">def</span> <span class="nf">selectiveResample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">meanCols</span><span class="p">,</span> <span class="n">sumCols</span><span class="p">,</span> <span class="n">colOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>    <span class="n">dfMean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">meanCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    <span class="n">dfSum</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">sumCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>    <span class="c1"># Get the first row in the the df</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="n">startDatetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">dayOne</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">))</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">startDatetime</span><span class="p">,</span> <span class="p">:]</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">return</span> <span class="n">df</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="k">def</span> <span class="nf">overlayPast</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nDays</span><span class="p">):</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a><span class="sd">    Run if you want to overlay last year&#39;s consumption on the graph. Controlled in the config.</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="sd">    Currently the figure is not supplied/returned, that&#39;ll have to change for abstraction</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>    <span class="n">dfPast</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">nDays</span><span class="p">)</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span><span class="o">+</span><span class="s1">&#39;_past&#39;</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>    <span class="c1"># df = df.join(dfPast, how=&#39;outer&#39;, rsuffix=&#39;_past&#39;)</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    <span class="k">return</span> <span class="n">dfPast</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>
-</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfMean</span><span class="p">,</span> <span class="n">dfSum</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>
-</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="k">if</span> <span class="n">colOrder</span><span class="p">:</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">colOrder</span><span class="p">]</span> 
-</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>        
-</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>    <span class="k">return</span> <span class="n">df</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a><span class="k">def</span> <span class="nf">selectiveResample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">meanCols</span><span class="p">,</span> <span class="n">sumCols</span><span class="p">,</span> <span class="n">colOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>    <span class="n">dfMean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">meanCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a>    <span class="n">dfSum</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">sumCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a>
+</span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfMean</span><span class="p">,</span> <span class="n">dfSum</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos">93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos">94</span></a>    <span class="k">if</span> <span class="n">colOrder</span><span class="p">:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos">95</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">colOrder</span><span class="p">]</span> 
+</span><span id="L-96"><a href="#L-96"><span class="linenos">96</span></a>        
+</span><span id="L-97"><a href="#L-97"><span class="linenos">97</span></a>    <span class="k">return</span> <span class="n">df</span>
 </span></pre></div>
 
 
@@ -213,6 +224,30 @@ timeCol: string, Default: empty</p>
 
 
                 </section>
+                <section id="time2timedelta">
+                            <input id="time2timedelta-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">time2timedelta</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">s</span>, </span><span class="param"><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%H%M&#39;</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="time2timedelta-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#time2timedelta"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="time2timedelta-41"><a href="#time2timedelta-41"><span class="linenos">41</span></a><span class="k">def</span> <span class="nf">time2timedelta</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%H%M&#39;</span><span class="p">):</span>
+</span><span id="time2timedelta-42"><a href="#time2timedelta-42"><span class="linenos">42</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="time2timedelta-43"><a href="#time2timedelta-43"><span class="linenos">43</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+</span><span id="time2timedelta-44"><a href="#time2timedelta-44"><span class="linenos">44</span></a>    
+</span><span id="time2timedelta-45"><a href="#time2timedelta-45"><span class="linenos">45</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">))</span>
+</span><span id="time2timedelta-46"><a href="#time2timedelta-46"><span class="linenos">46</span></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">))</span>
+</span><span id="time2timedelta-47"><a href="#time2timedelta-47"><span class="linenos">47</span></a>    <span class="k">return</span> <span class="n">s</span>
+</span></pre></div>
+
+
+    
+
+                </section>
                 <section id="getLastNWeeks">
                             <input id="getLastNWeeks-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -224,29 +259,29 @@ timeCol: string, Default: empty</p>
 
     </div>
     <a class="headerlink" href="#getLastNWeeks"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="getLastNWeeks-41"><a href="#getLastNWeeks-41"><span class="linenos">41</span></a><span class="k">def</span> <span class="nf">getLastNWeeks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weekday</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-</span><span id="getLastNWeeks-42"><a href="#getLastNWeeks-42"><span class="linenos">42</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="getLastNWeeks-43"><a href="#getLastNWeeks-43"><span class="linenos">43</span></a><span class="sd">Get the last n weeks of data starting this past &#39;weekday&#39; where (0=Monday, 6=Sunday)</span>
-</span><span id="getLastNWeeks-44"><a href="#getLastNWeeks-44"><span class="linenos">44</span></a><span class="sd">It&#39;s important that the timestamp is already in the index</span>
-</span><span id="getLastNWeeks-45"><a href="#getLastNWeeks-45"><span class="linenos">45</span></a>
-</span><span id="getLastNWeeks-46"><a href="#getLastNWeeks-46"><span class="linenos">46</span></a><span class="sd">Parameters:</span>
-</span><span id="getLastNWeeks-47"><a href="#getLastNWeeks-47"><span class="linenos">47</span></a><span class="sd">df: DataFrame, required</span>
-</span><span id="getLastNWeeks-48"><a href="#getLastNWeeks-48"><span class="linenos">48</span></a><span class="sd">n: int, required</span>
-</span><span id="getLastNWeeks-49"><a href="#getLastNWeeks-49"><span class="linenos">49</span></a><span class="sd">weekday: int, Default 0 (0=Monday, 6=Sunday)</span>
-</span><span id="getLastNWeeks-50"><a href="#getLastNWeeks-50"><span class="linenos">50</span></a>
-</span><span id="getLastNWeeks-51"><a href="#getLastNWeeks-51"><span class="linenos">51</span></a><span class="sd">Returns: DataFrame</span>
-</span><span id="getLastNWeeks-52"><a href="#getLastNWeeks-52"><span class="linenos">52</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="getLastNWeeks-53"><a href="#getLastNWeeks-53"><span class="linenos">53</span></a>    <span class="c1"># Get the last monday as the root of the week. subtract n weeks from there and add weekdays in that week</span>
-</span><span id="getLastNWeeks-54"><a href="#getLastNWeeks-54"><span class="linenos">54</span></a>    <span class="c1"># We actually want n+1 because we want the week previous to this one in addition to the days so far of this week.</span>
-</span><span id="getLastNWeeks-55"><a href="#getLastNWeeks-55"><span class="linenos">55</span></a>    <span class="n">dayOne</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">weekday</span><span class="o">=</span><span class="p">(</span><span class="n">MO</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">weekday</span><span class="p">)</span>
-</span><span id="getLastNWeeks-56"><a href="#getLastNWeeks-56"><span class="linenos">56</span></a>
-</span><span id="getLastNWeeks-57"><a href="#getLastNWeeks-57"><span class="linenos">57</span></a>    <span class="c1"># Get the first row in the the df</span>
-</span><span id="getLastNWeeks-58"><a href="#getLastNWeeks-58"><span class="linenos">58</span></a>    <span class="n">startDatetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">dayOne</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">))</span>
-</span><span id="getLastNWeeks-59"><a href="#getLastNWeeks-59"><span class="linenos">59</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-</span><span id="getLastNWeeks-60"><a href="#getLastNWeeks-60"><span class="linenos">60</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
-</span><span id="getLastNWeeks-61"><a href="#getLastNWeeks-61"><span class="linenos">61</span></a>
-</span><span id="getLastNWeeks-62"><a href="#getLastNWeeks-62"><span class="linenos">62</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">startDatetime</span><span class="p">,</span> <span class="p">:]</span>
-</span><span id="getLastNWeeks-63"><a href="#getLastNWeeks-63"><span class="linenos">63</span></a>    <span class="k">return</span> <span class="n">df</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="getLastNWeeks-49"><a href="#getLastNWeeks-49"><span class="linenos">49</span></a><span class="k">def</span> <span class="nf">getLastNWeeks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weekday</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+</span><span id="getLastNWeeks-50"><a href="#getLastNWeeks-50"><span class="linenos">50</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="getLastNWeeks-51"><a href="#getLastNWeeks-51"><span class="linenos">51</span></a><span class="sd">Get the last n weeks of data starting this past &#39;weekday&#39; where (0=Monday, 6=Sunday)</span>
+</span><span id="getLastNWeeks-52"><a href="#getLastNWeeks-52"><span class="linenos">52</span></a><span class="sd">It&#39;s important that the timestamp is already in the index</span>
+</span><span id="getLastNWeeks-53"><a href="#getLastNWeeks-53"><span class="linenos">53</span></a>
+</span><span id="getLastNWeeks-54"><a href="#getLastNWeeks-54"><span class="linenos">54</span></a><span class="sd">Parameters:</span>
+</span><span id="getLastNWeeks-55"><a href="#getLastNWeeks-55"><span class="linenos">55</span></a><span class="sd">df: DataFrame, required</span>
+</span><span id="getLastNWeeks-56"><a href="#getLastNWeeks-56"><span class="linenos">56</span></a><span class="sd">n: int, required</span>
+</span><span id="getLastNWeeks-57"><a href="#getLastNWeeks-57"><span class="linenos">57</span></a><span class="sd">weekday: int, Default 0 (0=Monday, 6=Sunday)</span>
+</span><span id="getLastNWeeks-58"><a href="#getLastNWeeks-58"><span class="linenos">58</span></a>
+</span><span id="getLastNWeeks-59"><a href="#getLastNWeeks-59"><span class="linenos">59</span></a><span class="sd">Returns: DataFrame</span>
+</span><span id="getLastNWeeks-60"><a href="#getLastNWeeks-60"><span class="linenos">60</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="getLastNWeeks-61"><a href="#getLastNWeeks-61"><span class="linenos">61</span></a>    <span class="c1"># Get the last monday as the root of the week. subtract n weeks from there and add weekdays in that week</span>
+</span><span id="getLastNWeeks-62"><a href="#getLastNWeeks-62"><span class="linenos">62</span></a>    <span class="c1"># We actually want n+1 because we want the week previous to this one in addition to the days so far of this week.</span>
+</span><span id="getLastNWeeks-63"><a href="#getLastNWeeks-63"><span class="linenos">63</span></a>    <span class="n">dayOne</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">weekday</span><span class="o">=</span><span class="p">(</span><span class="n">MO</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">weekday</span><span class="p">)</span>
+</span><span id="getLastNWeeks-64"><a href="#getLastNWeeks-64"><span class="linenos">64</span></a>
+</span><span id="getLastNWeeks-65"><a href="#getLastNWeeks-65"><span class="linenos">65</span></a>    <span class="c1"># Get the first row in the the df</span>
+</span><span id="getLastNWeeks-66"><a href="#getLastNWeeks-66"><span class="linenos">66</span></a>    <span class="n">startDatetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">dayOne</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">))</span>
+</span><span id="getLastNWeeks-67"><a href="#getLastNWeeks-67"><span class="linenos">67</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+</span><span id="getLastNWeeks-68"><a href="#getLastNWeeks-68"><span class="linenos">68</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+</span><span id="getLastNWeeks-69"><a href="#getLastNWeeks-69"><span class="linenos">69</span></a>
+</span><span id="getLastNWeeks-70"><a href="#getLastNWeeks-70"><span class="linenos">70</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">startDatetime</span><span class="p">,</span> <span class="p">:]</span>
+</span><span id="getLastNWeeks-71"><a href="#getLastNWeeks-71"><span class="linenos">71</span></a>    <span class="k">return</span> <span class="n">df</span>
 </span></pre></div>
 
 
@@ -274,17 +309,17 @@ weekday: int, Default 0 (0=Monday, 6=Sunday)</p>
 
     </div>
     <a class="headerlink" href="#overlayPast"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="overlayPast-65"><a href="#overlayPast-65"><span class="linenos">65</span></a><span class="k">def</span> <span class="nf">overlayPast</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nDays</span><span class="p">):</span>
-</span><span id="overlayPast-66"><a href="#overlayPast-66"><span class="linenos">66</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="overlayPast-67"><a href="#overlayPast-67"><span class="linenos">67</span></a><span class="sd">    Run if you want to overlay last year&#39;s consumption on the graph. Controlled in the config.</span>
-</span><span id="overlayPast-68"><a href="#overlayPast-68"><span class="linenos">68</span></a><span class="sd">    Currently the figure is not supplied/returned, that&#39;ll have to change for abstraction</span>
-</span><span id="overlayPast-69"><a href="#overlayPast-69"><span class="linenos">69</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="overlayPast-70"><a href="#overlayPast-70"><span class="linenos">70</span></a>    <span class="n">dfPast</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="overlayPast-71"><a href="#overlayPast-71"><span class="linenos">71</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">nDays</span><span class="p">)</span>
-</span><span id="overlayPast-72"><a href="#overlayPast-72"><span class="linenos">72</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span><span class="o">+</span><span class="s1">&#39;_past&#39;</span>
-</span><span id="overlayPast-73"><a href="#overlayPast-73"><span class="linenos">73</span></a>    <span class="c1"># df = df.join(dfPast, how=&#39;outer&#39;, rsuffix=&#39;_past&#39;)</span>
-</span><span id="overlayPast-74"><a href="#overlayPast-74"><span class="linenos">74</span></a>
-</span><span id="overlayPast-75"><a href="#overlayPast-75"><span class="linenos">75</span></a>    <span class="k">return</span> <span class="n">dfPast</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="overlayPast-73"><a href="#overlayPast-73"><span class="linenos">73</span></a><span class="k">def</span> <span class="nf">overlayPast</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nDays</span><span class="p">):</span>
+</span><span id="overlayPast-74"><a href="#overlayPast-74"><span class="linenos">74</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="overlayPast-75"><a href="#overlayPast-75"><span class="linenos">75</span></a><span class="sd">    Run if you want to overlay last year&#39;s consumption on the graph. Controlled in the config.</span>
+</span><span id="overlayPast-76"><a href="#overlayPast-76"><span class="linenos">76</span></a><span class="sd">    Currently the figure is not supplied/returned, that&#39;ll have to change for abstraction</span>
+</span><span id="overlayPast-77"><a href="#overlayPast-77"><span class="linenos">77</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="overlayPast-78"><a href="#overlayPast-78"><span class="linenos">78</span></a>    <span class="n">dfPast</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="overlayPast-79"><a href="#overlayPast-79"><span class="linenos">79</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">nDays</span><span class="p">)</span>
+</span><span id="overlayPast-80"><a href="#overlayPast-80"><span class="linenos">80</span></a>    <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">dfPast</span><span class="o">.</span><span class="n">columns</span><span class="o">+</span><span class="s1">&#39;_past&#39;</span>
+</span><span id="overlayPast-81"><a href="#overlayPast-81"><span class="linenos">81</span></a>    <span class="c1"># df = df.join(dfPast, how=&#39;outer&#39;, rsuffix=&#39;_past&#39;)</span>
+</span><span id="overlayPast-82"><a href="#overlayPast-82"><span class="linenos">82</span></a>
+</span><span id="overlayPast-83"><a href="#overlayPast-83"><span class="linenos">83</span></a>    <span class="k">return</span> <span class="n">dfPast</span>
 </span></pre></div>
 
 
@@ -305,19 +340,19 @@ Currently the figure is not supplied/returned, that'll have to change for abstra
 
     </div>
     <a class="headerlink" href="#selectiveResample"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="selectiveResample-78"><a href="#selectiveResample-78"><span class="linenos">78</span></a><span class="k">def</span> <span class="nf">selectiveResample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">meanCols</span><span class="p">,</span> <span class="n">sumCols</span><span class="p">,</span> <span class="n">colOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="selectiveResample-79"><a href="#selectiveResample-79"><span class="linenos">79</span></a>
-</span><span id="selectiveResample-80"><a href="#selectiveResample-80"><span class="linenos">80</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="selectiveResample-81"><a href="#selectiveResample-81"><span class="linenos">81</span></a>
-</span><span id="selectiveResample-82"><a href="#selectiveResample-82"><span class="linenos">82</span></a>    <span class="n">dfMean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">meanCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="selectiveResample-83"><a href="#selectiveResample-83"><span class="linenos">83</span></a>    <span class="n">dfSum</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">sumCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</span><span id="selectiveResample-84"><a href="#selectiveResample-84"><span class="linenos">84</span></a>
-</span><span id="selectiveResample-85"><a href="#selectiveResample-85"><span class="linenos">85</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfMean</span><span class="p">,</span> <span class="n">dfSum</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="selectiveResample-86"><a href="#selectiveResample-86"><span class="linenos">86</span></a>
-</span><span id="selectiveResample-87"><a href="#selectiveResample-87"><span class="linenos">87</span></a>    <span class="k">if</span> <span class="n">colOrder</span><span class="p">:</span>
-</span><span id="selectiveResample-88"><a href="#selectiveResample-88"><span class="linenos">88</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">colOrder</span><span class="p">]</span> 
-</span><span id="selectiveResample-89"><a href="#selectiveResample-89"><span class="linenos">89</span></a>        
-</span><span id="selectiveResample-90"><a href="#selectiveResample-90"><span class="linenos">90</span></a>    <span class="k">return</span> <span class="n">df</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="selectiveResample-86"><a href="#selectiveResample-86"><span class="linenos">86</span></a><span class="k">def</span> <span class="nf">selectiveResample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">meanCols</span><span class="p">,</span> <span class="n">sumCols</span><span class="p">,</span> <span class="n">colOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="selectiveResample-87"><a href="#selectiveResample-87"><span class="linenos">87</span></a>
+</span><span id="selectiveResample-88"><a href="#selectiveResample-88"><span class="linenos">88</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="selectiveResample-89"><a href="#selectiveResample-89"><span class="linenos">89</span></a>
+</span><span id="selectiveResample-90"><a href="#selectiveResample-90"><span class="linenos">90</span></a>    <span class="n">dfMean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">meanCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="selectiveResample-91"><a href="#selectiveResample-91"><span class="linenos">91</span></a>    <span class="n">dfSum</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">sumCols</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span id="selectiveResample-92"><a href="#selectiveResample-92"><span class="linenos">92</span></a>
+</span><span id="selectiveResample-93"><a href="#selectiveResample-93"><span class="linenos">93</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfMean</span><span class="p">,</span> <span class="n">dfSum</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="selectiveResample-94"><a href="#selectiveResample-94"><span class="linenos">94</span></a>
+</span><span id="selectiveResample-95"><a href="#selectiveResample-95"><span class="linenos">95</span></a>    <span class="k">if</span> <span class="n">colOrder</span><span class="p">:</span>
+</span><span id="selectiveResample-96"><a href="#selectiveResample-96"><span class="linenos">96</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">colOrder</span><span class="p">]</span> 
+</span><span id="selectiveResample-97"><a href="#selectiveResample-97"><span class="linenos">97</span></a>        
+</span><span id="selectiveResample-98"><a href="#selectiveResample-98"><span class="linenos">98</span></a>    <span class="k">return</span> <span class="n">df</span>
 </span></pre></div>
 
 

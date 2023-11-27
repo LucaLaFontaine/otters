@@ -36,6 +36,13 @@ Returns: DataFrame
         df.drop([defaultName, matches[0]], axis=1, inplace=True, errors='ignore')
     return df
 
+def time2timedelta(s, format='%H%M'):
+    s = s.copy()
+    s = s.squeeze()
+    
+    s = (pd.to_datetime(s.astype(str).str.zfill(4), format=format))
+    s = pd.to_timedelta(s.dt.strftime('%H:%M:%S'))
+    return s
 
 def getLastNWeeks(df, n, weekday=0, hour=0, minute=0):
     """
