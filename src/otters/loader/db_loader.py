@@ -5,8 +5,21 @@ import pandas as pd
 import requests
 import json
 
+
+
 def create_db(db_file):
-    """ create a database connection to a SQLite database """
+    """
+    Create an SQLite database if none exists.  
+    Does not open a connection.
+    
+    **Parameters:**
+    > **db_file:** *string, required*  
+    >> The path to where the db will be created. Can be relative or absolute path. 
+
+    **Returns:**  
+    > **None**
+    """
+        
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -18,6 +31,16 @@ def create_db(db_file):
 
 
 def create_conn(db_file):
+    """
+    Create a connection (conn) to a SQLite database.  
+    
+    **Parameters:**
+    > **db_file:** *string, required*  
+    >> The path to the db. Can be relative or absolute path. 
+
+    **Returns:**  
+    > **SQLite Connection**
+    """
     try:
         conn = sqlite3.connect(db_file)
         return conn
@@ -27,31 +50,44 @@ def create_conn(db_file):
     return conn
 
 
-def create_table(conn, table_name, df):
-    df = df.copy()
-    df.reset_index(inplace=True)
-    queryStr = f"CREATE TABLE IF NOT EXISTS {table_name} (`index` integer primary key,"
-    for col in df.columns:
-        colName = "_".join(col.split(" "))
-        dtype = df[col].dtype
+##### TEST WHETHERVcreate_table IS DEPRECATED AFTER upsert
 
-        if dtype == "object":
-            queryStr = queryStr + f"{colName} text not null,"
-        elif dtype == "datetime64[ns]":
-            queryStr = queryStr + f"{colName} text not null,"
-        elif dtype == "float64":
-            queryStr = queryStr + f"{colName} float not null,"
-        elif dtype == "float64":
-            queryStr = queryStr + f"{colName} float not null,"
-        else:
-            raise Exception(f"There is no case for dtype {dtype}, please add one")
-    queryStr = queryStr.removesuffix(",") + ");"
+# def create_table(conn, table_name, df):
+#     """
+#     Create a table in a SQLite database if none exists.  
+    
+#     **Parameters:**
+#     > **db_file:** *string, required*  
+#     >> The path to where the db will be created. Can be relative or absolute path. 
 
-    sql_create_features_table = queryStr
-    try:
-        conn.execute(sql_create_features_table)
-    except Error as e:
-        print(e)
+#     **Returns:**  
+#     > **None**
+#     """
+#     df = df.copy()
+#     df.reset_index(inplace=True)
+#     queryStr = f"CREATE TABLE IF NOT EXISTS {table_name} (`index` integer primary key,"
+#     for col in df.columns:
+#         colName = "_".join(col.split(" "))
+#         dtype = df[col].dtype
+
+#         if dtype == "object":
+#             queryStr = queryStr + f"{colName} text not null,"
+#         elif dtype == "datetime64[ns]":
+#             queryStr = queryStr + f"{colName} text not null,"
+#         elif dtype == "float64":
+#             queryStr = queryStr + f"{colName} float not null,"
+#         elif dtype == "float64":
+#             queryStr = queryStr + f"{colName} float not null,"
+#         else:
+#             raise Exception(f"There is no case for dtype {dtype}, please add one")
+#     queryStr = queryStr.removesuffix(",") + ");"
+
+#     sql_create_features_table = queryStr
+#     try:
+#         conn.execute(sql_create_features_table)
+#     except Error as e:
+#         print(e)
+########
 
 def upsert(conn, table_name, df, primary_key='id'):
     
@@ -90,6 +126,25 @@ def upsert(conn, table_name, df, primary_key='id'):
 
 
 def load(conn, table_name, df):
+    """
+    Dumly loads a DataFrame into a new or existing table.  
+    If it loads into an existing table it will append to the table.  
+    If a datetime column is found in the DataFrame it will turn tha into a SQL-readable timestamp and make it the index
+    Never mind the fact that SQL has a time format and I just didn't know that when I wrote this 
+
+    **Parameters:**
+    > **conn:** *SQLite Connection, required*  
+    >> The connection to the SQLite db  
+
+    > **table_name:** *string, required*  
+    >> Name of the new/existing table  
+
+    > **df:** *DataFrame, required*
+    >> Pandas DataFrame containing all data to be loaded. Must contain the primary key somewhere, idk if it has to be in the beginning  
+
+    **Returns:** 
+    > **None**
+    """
     df = df.copy()
     df.columns = ["_".join(col.split(" ")) for col in df.columns]
               
@@ -104,6 +159,13 @@ def load(conn, table_name, df):
     df.to_sql(table_name, conn, if_exists='append', index=True)
         
 def dedupe(conn, dedupe_cols, table_name):
+    """
+    This function de-duplicates rows in a SQLite database but I'm pretty sure it has a bug somewhere and idk where it is.  
+    Download the entire db and deduplicate it with pandas.  
+    Don't flatter yourself into thinking you have enough data to warrant chunking your dataset.   
+    You don't.  
+    """
+
     dedupe_sql = f"""
     DELETE FROM {table_name}
     WHERE ROWID NOT IN (
@@ -115,10 +177,6 @@ def dedupe(conn, dedupe_cols, table_name):
     cur = conn.cursor()
     cur.execute(dedupe_sql)
     conn.commit()
-
- 
-def close_conn(conn):
-    conn.close()
     
     
 def ts2str(col):
@@ -127,10 +185,6 @@ def ts2str(col):
     """
     col = col.dt.strftime("%Y-%m-%d %H-%M")
     return col
-
-def read_sql(conn, query):
-    df = pd.read_sql(query, conn)
-    return df
 
 
 def getNasaWeather(plant, dates='urmom', params=['T2M', 'RH2M'], type='Daily', units='C', db_loc="Z:\Data Governance\Databases\leidos_meta.db"):
