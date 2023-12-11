@@ -67,6 +67,8 @@ class Plot(Graph):
     
     def addScatter(self):
         return
+    
+    
 
     def formatXAxis(self):
 

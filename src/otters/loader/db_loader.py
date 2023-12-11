@@ -7,7 +7,7 @@ import json
 
 
 
-def create_db(db_file):
+def create_db(db_file: str) -> None:
     """
     Create an SQLite database if none exists.  
     Does not open a connection.
@@ -30,7 +30,7 @@ def create_db(db_file):
             conn.close()
 
 
-def create_conn(db_file):
+def create_conn(db_file: str) -> sqlite3.Connection:
     """
     Create a connection (conn) to a SQLite database.  
     
@@ -51,6 +51,7 @@ def create_conn(db_file):
 
 
 ##### TEST WHETHERVcreate_table IS DEPRECATED AFTER upsert
+##### It 
 
 # def create_table(conn, table_name, df):
 #     """
