@@ -4,8 +4,7 @@ import collections
 import pandas as pd
 import requests
 import json
-
-
+from datetime import datetime, timedelta
 
 def create_db(db_file: str) -> None:
     """
@@ -49,48 +48,29 @@ def create_conn(db_file: str) -> sqlite3.Connection:
 
     return conn
 
+def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_key: str ='id') -> None:
+    """
+    Uploads data into a new or existing SQL table.  
+    If data exists it won't replace it, and if data doesn't exist it will inject it in.  
+    Currently cannot create new columns, only new rows and injections into an existing cell.    
 
-##### TEST WHETHERVcreate_table IS DEPRECATED AFTER upsert
-##### It 
+    **Parameters:**
+    > **conn:** *SQLite Connection, required*  
+    >> The connection to the SQLite db  
 
-# def create_table(conn, table_name, df):
-#     """
-#     Create a table in a SQLite database if none exists.  
-    
-#     **Parameters:**
-#     > **db_file:** *string, required*  
-#     >> The path to where the db will be created. Can be relative or absolute path. 
+    > **table_name:** *string, required*  
+    >> Name of the new/existing table. 
 
-#     **Returns:**  
-#     > **None**
-#     """
-#     df = df.copy()
-#     df.reset_index(inplace=True)
-#     queryStr = f"CREATE TABLE IF NOT EXISTS {table_name} (`index` integer primary key,"
-#     for col in df.columns:
-#         colName = "_".join(col.split(" "))
-#         dtype = df[col].dtype
+    > **df:** *DataFrame, required*
+    >> pd.DataFrame containing all data to be loaded. Must contain the primary key somewhere, idk if it has to be in the beginning 
 
-#         if dtype == "object":
-#             queryStr = queryStr + f"{colName} text not null,"
-#         elif dtype == "datetime64[ns]":
-#             queryStr = queryStr + f"{colName} text not null,"
-#         elif dtype == "float64":
-#             queryStr = queryStr + f"{colName} float not null,"
-#         elif dtype == "float64":
-#             queryStr = queryStr + f"{colName} float not null,"
-#         else:
-#             raise Exception(f"There is no case for dtype {dtype}, please add one")
-#     queryStr = queryStr.removesuffix(",") + ");"
+    > **primary_key:** *DataFrame, default: `'id'`*
+    >> primary key of the SQL table. pretty sure this is required cause the funcion will break otherwise. 
+    Not sure if this should be changed.
 
-#     sql_create_features_table = queryStr
-#     try:
-#         conn.execute(sql_create_features_table)
-#     except Error as e:
-#         print(e)
-########
-
-def upsert(conn, table_name, df, primary_key='id'):
+    **Returns:** 
+    > **None**
+    """
     
     # Create the table with to_sql if it doesn't exist
     if pd.read_sql_query(f"PRAGMA table_info({table_name})", conn).empty:
@@ -126,7 +106,7 @@ def upsert(conn, table_name, df, primary_key='id'):
     return
 
 
-def load(conn, table_name, df):
+def load(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame) -> None:
     """
     Dumly loads a DataFrame into a new or existing table.  
     If it loads into an existing table it will append to the table.  
@@ -154,17 +134,18 @@ def load(conn, table_name, df):
             df[col] = ts2str(df[col])
         # elif df[col].dtype == 'floa
         
-                
-    cur = conn.cursor()
     df.reset_index(inplace=True)
     df.to_sql(table_name, conn, if_exists='append', index=True)
+    return
         
-def dedupe(conn, dedupe_cols, table_name):
+def dedupe(conn: sqlite3.Connection, dedupe_cols: list, table_name: str) -> None:
     """
+    Do not use.
     This function de-duplicates rows in a SQLite database but I'm pretty sure it has a bug somewhere and idk where it is.  
     Download the entire db and deduplicate it with pandas.  
-    Don't flatter yourself into thinking you have enough data to warrant chunking your dataset.   
-    You don't.  
+
+    At some point Luca will change this to a funcion that takes your entire table into pandas chunks and dedupes the from there but he hasn't figure that out.  
+    If you need this functionality with chunking (your db would have to be like 10+ GB), then let Luca know. 
     """
 
     dedupe_sql = f"""
@@ -178,30 +159,62 @@ def dedupe(conn, dedupe_cols, table_name):
     cur = conn.cursor()
     cur.execute(dedupe_sql)
     conn.commit()
+    return
     
-    
-def ts2str(col):
+def ts2str(col: pd.Series) -> pd.Series:
     """
-    This will break if you pass a column that is a datetime[64]. make type ambivalent
+    Turn a pd.datetime(I'm pretty sure) into a SQL-readable string.  
+    SQL actually has a timestamp format so you shouldn't really use this unless you're using legacy code  
+    
+    **Parameters:**
+    > **col:** *pd.Series, required*  
+    >> The column object to be changed into a string. Pretty sure you can send a Series or DataFrame
+
+    **Returns:**  
+    > **pd.Series**
     """
     col = col.dt.strftime("%Y-%m-%d %H-%M")
     return col
 
-
-def getNasaWeather(plant, dates='urmom', params=['T2M', 'RH2M'], type='Daily', units='C', db_loc="Z:\Data Governance\Databases\leidos_meta.db"):
+def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=365), datetime.today()], 
+                   params=['T2M', 'RH2M'], type='Daily', units='C', 
+                   db_loc="Z:\Data Governance\Databases\leidos_meta.db") -> pd.DataFrame:
     """
-    Get the weather at a given plant from Nasa  
-
-    Assumes said plant is in the DB
+    Get the weather at a given plant from Nasa.  
+    Assumes said plant is in the db.  
 
     <a href="https://power.larc.nasa.gov/#resources">Parameters can be found here</a>  
-    Check the Resources > Parameter Dictionary dropdown
+    Check the Resources > Parameter Dictionary dropdown  
+
+    **Parameters:**  
+    > **plant:** *str, required*  
+    >> The name of the plant in the database  
+
+    > **dates:** *list of dates, default: `[today-timedelta(days=365), today()]`*  
+    >> Follows format: [start_date, end_date]. Pretty sure it can be a python date, a pd date, but not a string  
+
+    > **params:** *list of strs, default: `['T2M', 'RH2M']`*  
+    >> The type of data you want to receive from NASA. These can be found in the resources section of the Power LARC website.
+    default: [temperature_at_2_meters, relative_humidity_at_2_meters]  
+
+    > **type:** *String, default: `'Daily'`*  
+    >> The frequency of the data. Pretty sure the options are `Daily` and `Hourly`
+
+    > **units:** *String, default: `'C'`*  
+    >> The units for temperatures. Only works for T2M right now. Can be `'C'` or `'F'`
+
+    > **db_loc:** *String, default: `"Z:\Data Governance\Databases\leidos_meta.db"`*  
+    >> Path to the database with plant coordinates
+
+    **Returns:**  
+    > **pd.DataFrame**
     """
+
     query = f"""SELECT plant, latitude, longitude
     FROM plants;
     """
     conn = create_conn(db_loc)
-    df = read_sql(conn, query)
+    df = df.read_sql(conn, query)
     df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
 
     lat = df.loc[df.index == plant, 'latitude'][0]
@@ -229,7 +242,7 @@ def getNasaWeather(plant, dates='urmom', params=['T2M', 'RH2M'], type='Daily', u
 
     dfWeather.index.name = 'Timestamp'
 
-    if units =='F':
+    if units.lower() =='f':
         dfWeather['Temp (F)'] = dfWeather['T2M']*9/5+32
     else:
         dfWeather['Temp (C)'] = dfWeather['T2M']
