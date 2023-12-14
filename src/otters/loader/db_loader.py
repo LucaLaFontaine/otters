@@ -210,11 +210,12 @@ def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=36
     > **pd.DataFrame**
     """
 
-    query = f"""SELECT plant, latitude, longitude
+    query = f"""
+    SELECT plant, latitude, longitude
     FROM plants;
     """
     conn = create_conn(db_loc)
-    df = df.read_sql(conn, query)
+    df = pd.read_sql(query, conn)
     df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
 
     lat = df.loc[df.index == plant, 'latitude'][0]
