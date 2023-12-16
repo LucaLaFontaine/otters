@@ -87,7 +87,8 @@ def create_conn(db_file: str) -> sqlite3.Connection:
 #     except Error as e:
 #         print(e)
 ########
-def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_key: str ='id') -> None:
+
+def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_key: str ='id', PK_type: str='INTEGER') -> None:
     """
     Uploads data into a new or existing SQL table.  
     If data exists it won't replace it, and if data doesn't exist it will inject it in.  
@@ -121,30 +122,17 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
     print(f"PK: {PKs}")
     ########################
 
-def upsert(conn, table_name, df, primary_key='id'):
+    cur = conn.cursor()
+    pragma = pd.read_sql_query(f"PRAGMA table_info({table_name})", conn)
+
     
     # Create the table with to_sql if it doesn't exist
-    if pragma.empty:
-        df.to_sql(table_name, conn, if_exists='replace', dtype={', '.join(PKs): 'INTEGER PRIMARY KEY'}, index=False)
     if pragma.empty:
         df.to_sql(table_name, conn, if_exists='replace', dtype={', '.join(PKs): 'INTEGER PRIMARY KEY'}, index=False)
         print(f'There was no table named {table_name}. One was created')
         return
     
     # Create the temp transfer table
-    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={', '.join(PKs): f'{PK_type} PRIMARY KEY'}, index=False)
-    transfer_pragma = pd.read_sql_query(f"PRAGMA table_info(transfer_tbl)", conn)
-
-    # Add new columns if they don't exist
-    # keep in mind you can't add new primary key columns! Use add_primary_key()
-    new_cols = [col for col in transfer_pragma.name if col not in list(pragma.name)]
-    for col in new_cols:
-        sql = f"""
-            ALTER TABLE {table_name}
-            ADD "{col}" {transfer_pragma.loc[transfer_pragma.name == col, 'type'][0]};
-        """
-        cur.execute(sql)
-
     df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={', '.join(PKs): f'{PK_type} PRIMARY KEY'}, index=False)
     transfer_pragma = pd.read_sql_query(f"PRAGMA table_info(transfer_tbl)", conn)
 
@@ -183,8 +171,6 @@ def upsert(conn, table_name, df, primary_key='id'):
     # I'm like pretty sure you can commit all this at the end. There were no issues in testing. I'm guessing it's also faster.
     conn.commit()
     return
-
-
 
 def load(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame) -> None:
     """
