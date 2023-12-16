@@ -88,11 +88,11 @@ def create_conn(db_file: str) -> sqlite3.Connection:
 #         print(e)
 ########
 
-def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_key: str ='id', PK_type: str='INTEGER') -> None:
+def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_key: list | str='id', PK_type: str='INTEGER', verbose: bool = False) -> None:
     """
     Uploads data into a new or existing SQL table.  
     If data exists it won't replace it, and if data doesn't exist it will inject it in.  
-    Currently cannot create new columns, only new rows and injections into an existing cell.    
+    Can create new columns, but not new Foreign or Primary Keys
 
     **Parameters:**
     > **conn:** *SQLite Connection, required*  
@@ -104,9 +104,12 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
     > **df:** *DataFrame, required*
     >> pd.DataFrame containing all data to be loaded. Must contain the primary key somewhere, idk if it has to be in the beginning 
 
-    > **primary_key:** *DataFrame, default: `'id'`*
+    > **primary_key:** *String, default: `'id'`*
     >> primary key of the SQL table. pretty sure this is required cause the funcion will break otherwise. 
     Not sure if this should be changed.
+
+    > **PK_type:** *String or List, default: `'INTEGER'`*
+    >> Pass in the primary key(s), which can be a string or multi-column list
 
     **Returns:** 
     > **None**
@@ -150,16 +153,15 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
         values = list(row_dict.values())
 
     sql = f"""
-    INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
+        INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
         SELECT {', '.join([f'"{col}"' for col in columns])}
         FROM transfer_tbl
         WHERE true
         ON CONFLICT({', '.join(PKs)})
         DO UPDATE SET
         {', '.join([f'"{col}"=excluded."{col}"' for col in columns])}"""
-    ########################
-    print(sql)
-    ########################
+    if verbose:
+        print(sql)
     cur.execute(sql)
 
     # Drop the transfer table once we're done with it
