@@ -49,58 +49,49 @@ def create_conn(db_file):
 
     return conn
 
+def create_table(conn, table_name, primary_key, foreign_keys):
+    """
+    Need to create all my PKs and FKs on table creation, so that makes this an important process  
+    I've learned that If we're gonna create complex table relationships we should just do it in pure SQL. 
+    Idk how to generlaize that process yet so this func is just a placeholder
+    """
+    return
 
-##### TEST WHETHERVcreate_table IS DEPRECATED AFTER upsert
+def upsert(conn, table_name, df, primary_key='id', PK_type='INTEGER'):
 
-# def create_table(conn, table_name, df):
-#     """
-#     Create a table in a SQLite database if none exists.  
+    # The primary key needs to be either a string OR a list, so we have to force it to a list here.
+    if type(primary_key) is str:
+        PKs = [primary_key]
+    else:
+        PKs = primary_key
+    PKs = [f'"{key}"' for key in PKs]
+    ########################
+    print(f"PK: {PKs}")
+    ########################
     
-#     **Parameters:**
-#     > **db_file:** *string, required*  
-#     >> The path to where the db will be created. Can be relative or absolute path. 
-
-#     **Returns:**  
-#     > **None**
-#     """
-#     df = df.copy()
-#     df.reset_index(inplace=True)
-#     queryStr = f"CREATE TABLE IF NOT EXISTS {table_name} (`index` integer primary key,"
-#     for col in df.columns:
-#         colName = "_".join(col.split(" "))
-#         dtype = df[col].dtype
-
-#         if dtype == "object":
-#             queryStr = queryStr + f"{colName} text not null,"
-#         elif dtype == "datetime64[ns]":
-#             queryStr = queryStr + f"{colName} text not null,"
-#         elif dtype == "float64":
-#             queryStr = queryStr + f"{colName} float not null,"
-#         elif dtype == "float64":
-#             queryStr = queryStr + f"{colName} float not null,"
-#         else:
-#             raise Exception(f"There is no case for dtype {dtype}, please add one")
-#     queryStr = queryStr.removesuffix(",") + ");"
-
-#     sql_create_features_table = queryStr
-#     try:
-#         conn.execute(sql_create_features_table)
-#     except Error as e:
-#         print(e)
-########
-
-def upsert(conn, table_name, df, primary_key='id'):
+    cur = conn.cursor()
+    pragma = pd.read_sql_query(f"PRAGMA table_info({table_name})", conn)
     
     # Create the table with to_sql if it doesn't exist
-    if pd.read_sql_query(f"PRAGMA table_info({table_name})", conn).empty:
-        df.to_sql(table_name, conn, if_exists='replace', dtype={primary_key: 'INTEGER PRIMARY KEY'}, index=False)
+    if pragma.empty:
+        df.to_sql(table_name, conn, if_exists='replace', dtype={', '.join(PKs): 'INTEGER PRIMARY KEY'}, index=False)
         print(f'There was no table named {table_name}. One was created')
         return
     
     # Create the temp transfer table
-    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={primary_key: 'INTEGER PRIMARY KEY'}, index=False)
+    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={', '.join(PKs): f'{PK_type} PRIMARY KEY'}, index=False)
+    transfer_pragma = pd.read_sql_query(f"PRAGMA table_info(transfer_tbl)", conn)
 
-    cur = conn.cursor()
+    # Add new columns if they don't exist
+    # keep in mind you can't add new primary key columns! Use add_primary_key()
+    new_cols = [col for col in transfer_pragma.name if col not in list(pragma.name)]
+    for col in new_cols:
+        sql = f"""
+            ALTER TABLE {table_name}
+            ADD "{col}" {transfer_pragma.loc[transfer_pragma.name == col, 'type'][0]};
+        """
+        cur.execute(sql)
+
     for _, row in df.iterrows():
         row_dict = row.to_dict()
 
@@ -108,21 +99,55 @@ def upsert(conn, table_name, df, primary_key='id'):
         columns = list(row_dict.keys())
         values = list(row_dict.values())
 
-        sql = f"""
-        INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
-            SELECT {', '.join([f'"{col}"' for col in columns])}
-            FROM transfer_tbl
-            WHERE true
-            ON CONFLICT("Project No")
-            DO UPDATE SET
-            {', '.join([f'"{col}"=excluded."{col}"' for col in columns])}"""
-        cur.execute(sql)
+    sql = f"""
+    INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
+        SELECT {', '.join([f'"{col}"' for col in columns])}
+        FROM transfer_tbl
+        WHERE true
+        ON CONFLICT({', '.join(PKs)})
+        DO UPDATE SET
+        {', '.join([f'"{col}"=excluded."{col}"' for col in columns])}"""
+    ########################
+    print(sql)
+    ########################
+    cur.execute(sql)
 
     # Drop the transfer table once we're done with it
     cur.execute("DROP TABLE IF EXISTS transfer_tbl;")
     # I'm like pretty sure you can commit all this at the end. There were no issues in testing. I'm guessing it's also faster.
     conn.commit()
     return
+
+def add_primary_key(conn, table_name, primary_key='id'):
+    """
+    Add a primary key to a tbale after the table has been created.  
+    Works by just copying the whole table into a new table that has the correct PK.  
+    You can't actually alter new keys into SQLite tables...  
+    This is also a placeholder as we need to figure this out eventually.
+    """
+
+    sql = f"""
+    PRAGMA foreign_keys=off;
+
+    BEGIN TRANSACTION;
+
+    ALTER TABLE {table_name} RENAME TO transfer_{table_name};
+
+    CREATE TABLE {table_name} (
+    {primary_key} INTEGER NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL
+    );
+
+    INSERT INTO cities 
+    SELECT * FROM old_cities;
+
+    DROP TABLE old_cities;
+
+    COMMIT;
+
+    PRAGMA foreign_keys=on;
+    
+    """
 
 
 def load(conn, table_name, df):
@@ -131,6 +156,7 @@ def load(conn, table_name, df):
     If it loads into an existing table it will append to the table.  
     If a datetime column is found in the DataFrame it will turn tha into a SQL-readable timestamp and make it the index
     Never mind the fact that SQL has a time format and I just didn't know that when I wrote this 
+    This func is definitely useful because upsert takes a long time
 
     **Parameters:**
     > **conn:** *SQLite Connection, required*  
