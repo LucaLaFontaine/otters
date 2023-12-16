@@ -118,13 +118,9 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
     else:
         PKs = primary_key
     PKs = [f'"{key}"' for key in PKs]
-    ########################
-    print(f"PK: {PKs}")
-    ########################
 
     cur = conn.cursor()
     pragma = pd.read_sql_query(f"PRAGMA table_info({table_name})", conn)
-
     
     # Create the table with to_sql if it doesn't exist
     if pragma.empty:
