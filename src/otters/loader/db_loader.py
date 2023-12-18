@@ -163,8 +163,8 @@ def dedupe(conn: sqlite3.Connection, dedupe_cols: list, table_name: str) -> None
     
 def ts2str(col: pd.Series) -> pd.Series:
     """
-    Turn a pd.datetime(I'm pretty sure) into a SQL-readable string.  
-    SQL actually has a timestamp format so you shouldn't really use this unless you're using legacy code  
+    Turn a pd.datetime(I'm pretty sure) into a SQLite-readable string.  
+    Most SQL flvaours have timestamps data types but sqlite3 does not.  
     
     **Parameters:**
     > **col:** *pd.Series, required*  
@@ -201,7 +201,7 @@ def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=36
     >> The frequency of the data. Pretty sure the options are `Daily` and `Hourly`
 
     > **units:** *String, default: `'C'`*  
-    >> The units for temperatures. Only works for T2M right now. Can be `'C'` or `'F'`
+    >> The units for temperatures. Only works for T2M right now. Can be `'C'` or `'F'`  
 
     > **db_loc:** *String, default: `"Z:\Data Governance\Databases\leidos_meta.db"`*  
     >> Path to the database with plant coordinates
