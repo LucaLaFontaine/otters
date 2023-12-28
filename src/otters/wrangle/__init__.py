@@ -5,4 +5,4 @@ The wrangler sub module is for tools to 'wrangle' data, meaning to clean, organi
 
 
 
-__all__ = ['time_tools', 'wrangler', 'psychometrics']
+__all__ = ['time_tools', 'wrangler', 'psychrometrics', 'db_loader', 'file_loader']

@@ -2,20 +2,36 @@
 from functools import wraps
 import inspect
 
-from datetime import datetime
+import pandas as pd
 from datetime import date, timedelta, time, datetime
 # import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 class Graph():
-    def __init__(self, config):
-        self.config = config
-        self.title = config['title'] if config['title'] == config['title'] else ''
-        self.cols = config['graphCols'].split(',')
-        self.xTitle	= config['xTitle'] if config['xTitle'] == config['xTitle'] else ''
-        self.yTitle	= config['yTitle'] if config['yTitle'] == config['yTitle'] else ''
+    def __init__(self, df=pd.DataFrame(), **kwargs):
+
+
+        # Default kwarg values, later updated with the passed kwargs
+        options = {
+            'title' : '',
+            'df' : df,
+            'graphCols' : df.columns,
+            'xTitle' : '',
+            'yTitle' : '',     
+        }
+        options.update(kwargs)
+        # unpack the arguments and assign them to self.{argName}
+        for arg in options.keys():
+            self.__setattr__(arg, options[arg])
+
+        self.config = options
+        # self.cols = config['graphCols'].split(',')
         return
+    
+    def __repr__(self):
+            return f"Graph(name='{self.title}', cols={self.df.columns})"
+        
 
 class Plot(Graph):
     def __init__(self, parent):
@@ -68,8 +84,6 @@ class Plot(Graph):
     def addScatter(self):
         return
     
-    
-
     def formatXAxis(self):
 
         self.fig.update_xaxes(
