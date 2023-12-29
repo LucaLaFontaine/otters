@@ -47,7 +47,10 @@ class Graph():
     
     def __repr__(self):
             return f"Graph(name='{self.title}', cols={self.df.columns})"
-        
+    
+    def show(self):
+        self.plot.fig.show()
+        return
 
 class Plot(Graph):
     def __init__(self, parent):
@@ -300,11 +303,16 @@ class Plot(Graph):
         )
         return
     
-    def sparklines(self, cols=None, colWidth=3, **kwargs):
+    def sparklines(self, cols=None, colWidth=3, yTitles=None, **kwargs):
         if not cols:
             cols = self.df.columns
         # for col in cols:
         
+        if not yTitles:
+            yTitles = ['' for col in cols]
+        elif type(yTitles) is str:
+            yTitles = [yTitles for col in cols]
+
         from math import ceil
         numRows = ceil(len(cols)/colWidth)
         fig = make_subplots(
@@ -315,9 +323,9 @@ class Plot(Graph):
         
         self.full_setup(fig=fig)
 
+        ctr = 0
         for row in range(1, numRows+1):
             for i, col in enumerate(cols[row*colWidth-colWidth:row*colWidth]):
-                # vm.AHUs[f'AHU {ahu}'].df.sort_index(inplace=True)
                 self.fig.add_trace(
                     go.Scatter(
                         x=self.df.index, 
@@ -327,7 +335,13 @@ class Plot(Graph):
                     row=row, 
                     col=i+1
                     )
-                # .fig.update_layout(yaxis2=dict(range=[0, y in sp.plot.fig100]))
+                try:
+                    self.fig.update_yaxes(title_text=yTitles[ctr], row=row, col=i+1)
+                    # Simple and dirty, but also readable lol
+                    ctr += 1
+                except Exception as e:
+                    raise IndexError("It's likely that you passed a list of the wrong length for your 'yTitles'") from e
+
         self.fig.update_layout(
             height=numRows*400, 
             width=self.config['plotWidth'],
