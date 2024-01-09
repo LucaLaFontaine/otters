@@ -1,31 +1,22 @@
-import sys
-sys.path.append(r'C:\Users\Luca\Documents\Data Science\ExPS Reports v2')
+# import sys
+# sys.path.append(r'C:\Users\Luca\Documents\Data Science\ExPS Reports v2')
+from datetime import timedelta
 
 import pandas as pd
 import numpy as np
-
-import eps_tools.wrangler
-import eps_tools.wrangler.wrangler as wrangler
-from eps_tools.wrangler import *
-# from eps_tools.wrangler import time_tools as time_tools
-import eps_tools.loader as loader
-from eps_tools.loader import *
-from eps_tools.generators.ppt_gen import PPTGen
-from eps_tools.generators.graph import Graph, Plot
-
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from datetime import timedelta
-
-
+import otters.wrangle.wrangler as wrangler
+from otters.wrangle import *
+from otters.drive.ppt_gen import PPTGen
+from otters.vis.graph import Graph, Plot
 
 class ExPS():
     def __init__(self):
         self.config = file_loader.import_config()
         self.plant = self.config['plant']
         self.graphs = []
-
         return
     
     def getSQL(self, verbose=False):

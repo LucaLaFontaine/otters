@@ -4,7 +4,7 @@ from math import ceil
 from datetime import datetime, timedelta, date, time
 from dateutil.relativedelta import relativedelta, MO
 
-def str2dt(df, timeCol='', drop=False, **datetime_args):
+def str2dt(df, timeCol='', drop=True, **datetime_args):
     """
 Finds the timestamp in a dataframe, translates it to_datetime, renames it "Timestamp", and sets it as the index
 Bumps the index to the first column if it isn't a timestamp

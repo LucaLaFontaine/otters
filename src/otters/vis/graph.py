@@ -1,20 +1,55 @@
 
 from functools import wraps
 import inspect
+from glob import glob
 
-from datetime import datetime
+# within package/mymodule1.py, for example
+import pkgutil
+import yaml
+
+import pandas as pd
 from datetime import date, timedelta, time, datetime
-# import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from otters.wrangle.file_loader import import_config
+
+
+
 class Graph():
-    def __init__(self, config):
-        self.config = config
-        self.title = config['title'] if config['title'] == config['title'] else ''
-        self.cols = config['graphCols'].split(',')
-        self.xTitle	= config['xTitle'] if config['xTitle'] == config['xTitle'] else ''
-        self.yTitle	= config['yTitle'] if config['yTitle'] == config['yTitle'] else ''
+    def __init__(self, df=pd.DataFrame(), plot=True, **kwargs):
+
+        # An apparently good way to load a static file in the tree of the package, not the caller. 
+            # This is the default config for plots and is overwritten by everything
+        default_conf_binary = pkgutil.get_data(__name__, "conf.yaml")
+        default_conf = yaml.load(default_conf_binary, Loader=yaml.FullLoader)
+
+        # Default kwarg values, later updated with the passed kwargs
+        options = {
+            'title' : '',
+            'df' : df,
+            'graphCols' : df.columns,
+            'xTitle' : '',
+            'yTitle' : '',     
+        }
+        options.update(default_conf)
+        options.update(kwargs)
+        
+        # unpack the arguments and assign them to self.{argName}
+        for arg in options.keys():
+            self.__setattr__(arg, options[arg])
+        self.config = options
+
+        if plot:
+            self.plot = Plot(self)
+
+        return
+    
+    def __repr__(self):
+            return f"Graph(name='{self.title}', cols={self.df.columns})"
+    
+    def show(self):
+        self.plot.fig.show()
         return
 
 class Plot(Graph):
@@ -29,17 +64,31 @@ class Plot(Graph):
         self.height = self.config['plotHeight'] or (self.width*self.config['aspectRatio'])
         self.lineColours = self.config['lineColours']
         self.margin = self.config['margin']
+        self.full_setup()
+
+
+    def __repr__(self):
+                return f"Plot(name='{self.title}', cols={self.df.columns})"
+
+    def full_setup(self, fig=None):
+        self.createPlot(fig)
         self.setYAxisRange()
-        self.createPlot()
-
-
-    def createPlot(self):
+        self.formatYAxis()
+        if self.df.index.inferred_type == "datetime64":
+            self.timeFormatXAxis()
+        else:
+            self.formatXAxis()
+        return
+    def createPlot(self, fig=None):
         """
         Creates a plot in the EPS style. Most of this crap is formatting
         We add here the trendline(s), the legend, x/y axes.
         """
-        self.fig = make_subplots(specs=[[{"secondary_y": True}]])
-
+        if fig:
+            self.fig = fig
+        else:
+            self.fig = make_subplots(specs=[[{"secondary_y": True}]])
+        
         self.fig.update_layout(
             colorway=self.lineColours,
             width=self.width,
@@ -49,27 +98,37 @@ class Plot(Graph):
             plot_bgcolor="white",
             title_text=self.parent.title, 
             title_x=0.5,
-            legend=dict(title='', orientation='h',yanchor='top',xanchor='center', y=1.1, x=0.48),
+        )
+        self.fig.update_legends(
+            title='', 
+            orientation='h',
+            yanchor='top', 
+            xanchor='center', 
+            xref='container', 
+            yref='container', 
+            y=0.9, x=0.5
         )
         return
     
-    def addLine(self):
-        self.fig.add_trace(
-            go.Scatter(
-                y=self.df.squeeze(),
-                x=self.df.index,
-                mode='lines',
-                name=self.yTitle,
-                showlegend=True
+    def addLines(self, cols=None, **kwargs):
+        if not cols:
+            cols = self.df.columns
+        for col in cols:
+            self.fig.add_trace(
+                go.Scatter(
+                    y=self.df[col],
+                    x=self.df.index,
+                    mode='lines',
+                    name=col,
+                    showlegend=True,
+                    **kwargs
+                )
             )
-        )
         return
     
     def addScatter(self):
         return
     
-    
-
     def formatXAxis(self):
 
         self.fig.update_xaxes(
@@ -99,7 +158,7 @@ class Plot(Graph):
 
     def formatYAxis(self):
         self.fig.update_yaxes(
-            range=list([self.yAxisRange[0], self.df.squeeze().max()*self.yAxisRange[1]]),
+            range=list([self.yAxisRange[0], self.df.squeeze().max().max()*self.yAxisRange[1]]),
             showline=True, 
             linewidth=1, 
             linecolor='#262626', 
@@ -108,6 +167,37 @@ class Plot(Graph):
             gridcolor='rgba(235, 235, 235, 1)', 
             title_text=self.yTitle,
             )
+        
+        # Remove some stuff off the secondary axis by default
+        self.fig['layout']['yaxis2']['title'] = ''
+        self.fig['layout']['yaxis2']['showgrid'] = False
+        
+    def boundYAxis(self):
+        """
+        **Should be replaced by the folloifing:**
+        self.fig.update_yaxes(autorange="max", autorangeoptions_include=0)  
+
+        Bounds the range of each y axis to the traces currently present on the plot
+        This is way too complicated, but I need to move on
+        """
+        # Get all the y_maxes on the plot and their y axis
+        y_maxes = [{'yaxis':item['yaxis'], 'max':item['y'].max()} for item in self.fig.data]
+
+        # Create a dict of the y_maxes sorted by max. Then update another dict with the highest max for that axis, creating a "set" of the axes with the highest max
+        y_maxes_set = {}
+        y_maxes_dict = [{ymax['yaxis'] : ymax['max']} for ymax in sorted(y_maxes, key=lambda x: x['max'])]
+        for axis in y_maxes_dict:
+            y_maxes_set.update(axis)
+
+        # the primary axis is 'null' so that's how I'm checking for a secondary axis. 
+            # Notice this will only work with 2 axes, but who cares
+        for axis in y_maxes_set.items():
+            if axis[0]:
+                sec_y = True
+            else:
+                sec_y=False
+            self.fig.update_yaxes(range=[0,axis[1]], secondary_y=sec_y)
+        return
     
     def scaleDTick(self):
         dateDifference = (self.df.index[-1]-self.df.index[0]).days
@@ -165,9 +255,7 @@ class Plot(Graph):
             title='If anyone knows how to style a timeline email me at luka@aol.com',
             # title
             # gridcolor='#000'
-
         )
-
 
         from random import randint, uniform
         import textwrap
@@ -213,4 +301,52 @@ class Plot(Graph):
             visible = False,
             
         )
+        return
+    
+    def sparklines(self, cols=None, colWidth=3, yTitles=None, **kwargs):
+        if not cols:
+            cols = self.df.columns
+        # for col in cols:
+        
+        if not yTitles:
+            yTitles = ['' for col in cols]
+        elif type(yTitles) is str:
+            yTitles = [yTitles for col in cols]
+
+        from math import ceil
+        numRows = ceil(len(cols)/colWidth)
+        fig = make_subplots(
+            rows=numRows, 
+            cols=colWidth,
+            subplot_titles=cols
+        )
+        
+        self.full_setup(fig=fig)
+
+        ctr = 0
+        for row in range(1, numRows+1):
+            for i, col in enumerate(cols[row*colWidth-colWidth:row*colWidth]):
+                self.fig.add_trace(
+                    go.Scatter(
+                        x=self.df.index, 
+                        y=self.df[col],
+                        name=col
+                    ),
+                    row=row, 
+                    col=i+1
+                    )
+                try:
+                    self.fig.update_yaxes(title_text=yTitles[ctr], row=row, col=i+1)
+                    # Simple and dirty, but also readable lol
+                    ctr += 1
+                except Exception as e:
+                    raise IndexError("It's likely that you passed a list of the wrong length for your 'yTitles'") from e
+
+        self.fig.update_layout(
+            height=numRows*400, 
+            width=self.config['plotWidth'],
+            title_text=self.title,
+        )
+
+        self.fig.update_yaxes(autorange="max", autorangeoptions_include=0)
         return

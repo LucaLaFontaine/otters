@@ -1,0 +1,58 @@
+
+##### NOTES #####
+  # This is the default configuration for plots created using otters.
+    # Everything in this file will be superceded by the user, it's just a default
+
+  # What if you want to make changes to this file? Idk the best way to do that.
+    # Currently my rec is to keep a config file like on you desktop and overwrite it every time with that one.
+    # This is not an elegant solution, but it's the best i can think of.
+
+##### CONFIG #####
+  ##### Y AXIS #####
+    # Sets range of Y axis. necessary to hardcode 0 as the origin. then go to 20% higher than highest number
+    yAxisRange : [0, 1.1]
+
+  ##### X AXIS #####
+    # Max number of ticks you can have in the x axis. Not entirely sure how to regulate this but 25 looks nice as a first glance. More complexity is absolutely needed. 
+    xMaxTicks : 25
+
+    # Angle of x labels
+    xTickAngle : -35
+
+  ##### Graph Sizing #####
+    # Width/height of graph in px I think. tied to aspect ratio below. Keep in mind this affects the quality of the image. 
+    plotWidth : 1200
+    plotHeight: 
+    # Aspect Ratio of graphs
+    aspectRatio : 0.5
+
+    # Margin of the chart area I'm pretty sure. Should this prolly default to 0 for all of them?
+    margin: {
+      l: 30, 
+      r: 10, 
+      t: 100, 
+      b: 60,
+    }
+
+  ##### Colours #####
+    # Colors used for the datasets in a graph. Follows the EPS Style guide. There are 6 here
+    lineColours : ['#08549e', '#FF883E', '#A14494', '#ffcd38', '#0ac798', '#10A8FF',]
+
+  ##### TIME STUFF #####
+    # Default timestamp tick
+    tickFormat: '%a %d/%b/%y %H'
+
+    # Frequency of ticks. D1 is daily, M2 is bi-monthly. can also use logs and stuff, look up 'plotly dtick'
+    # There may be some value in checking the length of the timestamp and auto assinging daily, weekly, monthly, etc but only do it if it becomes a problem
+    # Supercedes XMaxTicks surprisingly
+    dTick : 'D1'
+
+    # Okay this is kind of stupid. [2000, 1, 3] is the first monday of the century, so whatever day you want ticks to be have to scale to that. so [2000, 1, 5, 6, 0] for Wednesdays at 6am
+    tick0 : {
+        year: 2000, 
+        month: 1, 
+        day: 3, 
+        hour: 0, 
+        minute: 0,
+    }
+

@@ -43,8 +43,7 @@ def import_config(configFolder='', recursive=True):
     else:
         configFile = 'config.yaml'
         func_dir_path = '/'.join(os.path.abspath(inspect.getfile(import_config)).split('\\')[0:-1])
-        print(f"""There doesn't appear to be a config file in the root of your folder. \nLoading the default config from here:\n{func_dir_path}/{configFile}""")
-        yamlFiles.append(f'{func_dir_path}/{configFile}')
+        print(f"""There doesn't appear to be a config file in the supplied folder. No config was imported""")
 
     config = {}
     for file in yamlFiles:
