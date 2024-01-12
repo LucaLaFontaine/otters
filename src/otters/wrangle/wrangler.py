@@ -107,4 +107,39 @@ def merge_dfs(dfs):
 
     dfMerged = pd.concat(mergedCols, axis=1)
     return dfMerged
+    
+
+def merge_df_cols(df):
+    # Takes the df and lines up all the same column one of top of each other. 
+    # makes a second index with the count of like which instance of the column it is. 
+        # is this the first instance of the column? the second? etc.
+        # This means the index is now technically unique
+    dfStack = (
+        df.set_axis(
+            pd.MultiIndex.from_arrays([
+                df.columns,
+                df.groupby(level=0, axis=1).cumcount()
+            ]), 
+            axis=1,
+        )
+        .stack(level=1)
+    )
+
+    # You'd think we could just sort index and drop the dupes but this will cause us to lose data. 
+        # The columns aren't eindividually sorted with nulls first or last
+    # So here we split the df by instance number. we can then update one instance into another in the next step. 
+    dfInstances = []
+    for i in range(0, dfStack.index.get_level_values(1).max()+1):
+        dfInstances.append(dfStack.loc[dfStack.index.get_level_values(1) == i, :].droplevel(1))
+
+    # combine_first essentially updates a df with another df, keeping actual values in favour of nulls
+    # So here we just repeatedly update the new df (dfMerged) with each successive instance, keeping values in place of nulls. 
+    # Keep in mind that this will keep later instances over newer ones. I think this is a good approach
+        # This can be reversed by updating the instance wityh the merged instead. 
+    # This will probably treat 0s as real values and not replace them which I don't love. 
+    dfMerged = pd.DataFrame()
+    for dfInstance in dfInstances:
+        dfMerged = dfMerged.combine_first(dfInstance)
+
+    return dfMerged
 
