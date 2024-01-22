@@ -113,6 +113,7 @@ class Plot(Graph):
     def addLines(self, cols=None, **kwargs):
         if not cols:
             cols = self.df.columns
+        self.df = self.df.loc[:, cols]
         for col in cols:
             self.fig.add_trace(
                 go.Scatter(
@@ -124,6 +125,7 @@ class Plot(Graph):
                     **kwargs
                 )
             )
+        self.formatYAxis()
         return
     
     def addScatter(self):

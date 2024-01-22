@@ -120,19 +120,21 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
         PKs = [primary_key]
     else:
         PKs = primary_key
-    PKs = [f'"{key}"' for key in PKs]
+    # PKs = [f'"{key}"' for key in PKs]
 
     cur = conn.cursor()
     pragma = pd.read_sql_query(f"PRAGMA table_info({table_name})", conn)
     
     # Create the table with to_sql if it doesn't exist
     if pragma.empty:
-        df.to_sql(table_name, conn, if_exists='replace', dtype={', '.join(PKs): 'INTEGER PRIMARY KEY'}, index=False)
+        print(PKs)
+        print()
+        df.to_sql(table_name, conn, if_exists='replace', dtype={PK: f'{PK_type} PRIMARY KEY' for PK in PKs}, index=False)
         print(f'There was no table named {table_name}. One was created')
         return
     
     # Create the temp transfer table
-    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={', '.join(PKs): f'{PK_type} PRIMARY KEY'}, index=False)
+    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={PK: f'{PK_type} PRIMARY KEY' for PK in PKs}, index=False)
     transfer_pragma = pd.read_sql_query(f"PRAGMA table_info(transfer_tbl)", conn)
 
     # Add new columns if they don't exist
