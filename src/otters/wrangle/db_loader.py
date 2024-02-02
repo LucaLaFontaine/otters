@@ -154,6 +154,8 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
         columns = list(row_dict.keys())
         values = list(row_dict.values())
 
+    # Need to add the double quotes back to the columns to keep them separate in sql queries
+    PKs = [f'"{key}"' for key in PKs]
     sql = f"""
         INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
         SELECT {', '.join([f'"{col}"' for col in columns])}
