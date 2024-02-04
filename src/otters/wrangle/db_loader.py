@@ -154,6 +154,8 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
         columns = list(row_dict.keys())
         values = list(row_dict.values())
 
+    # This is to enclose the cols in quotes for the sql query
+    PKs = [f'"{key}"' for key in PKs]
     sql = f"""
         INSERT INTO {table_name}({', '.join([f'"{col}"' for col in columns])})
         SELECT {', '.join([f'"{col}"' for col in columns])}
@@ -164,6 +166,7 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
         {', '.join([f'"{col}"=excluded."{col}"' for col in columns])}"""
     if verbose:
         print(sql)
+    print(sql)
     cur.execute(sql)
 
     # Drop the transfer table once we're done with it
