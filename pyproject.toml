@@ -1,15 +1,6 @@
-
-
 [build-system]
 build-backend = "setuptools.build_meta"
-
-requires = ["setuptools>=61.0.0", "wheel", "pandas", "pyyaml",
-    "xlwings", 
-# "pywin32>=306", 
-#    "plotly",
-#    "kaleido==0.1.0.post1",
-#    "pdoc",
-]
+requires = ["setuptools>=61.0.0", "wheel", "pandas", "pyyaml", "xlwings"]
 
 [project]
 name = "otters"
@@ -23,12 +14,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["energy analysis", "data science", "psychometrics"]
+keywords = ["energy analysis", "data science", "psychrometrics"]
 dependencies = [
     "pandas", 
     "pyyaml",
     "xlwings",
-
 # "pywin32>=306", 
 #    "plotly",
 #    "kaleido==0.1.0.post1",
@@ -38,7 +28,7 @@ dependencies = [
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
-[none]
+
 
 [project.urls]
 Homepage = "https://github.com/LucaLaFontaine/otters"

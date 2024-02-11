@@ -4,7 +4,7 @@ Version: 0.1.0b0
 Summary: Useful functions and structures for energy analysis and data handling
 Author-email: Luca LaFontaine <lafoluca@gmail.com>
 Project-URL: Homepage, https://github.com/LucaLaFontaine/otters
-Keywords: energy analysis,data science,psychometrics
+Keywords: energy analysis,data science,psychrometrics
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
@@ -14,3 +14,14 @@ License-File: LICENSE.txt
 Requires-Dist: pandas
 Requires-Dist: pyyaml
 Requires-Dist: xlwings
+
+### How to generate docs:
+
+`pdoc -t "dark mode" src/otters -o ./docs`
+
+### How to update the package:
+
+1. Update the code and commit it
+2. update the verion in the toml file
+3. run: `py -m build`
+4. install with the following: `pip install -e "path/to/folder with setup.py"`

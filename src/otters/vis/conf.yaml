@@ -35,8 +35,8 @@
     }
 
   ##### Colours #####
-    # Colors used for the datasets in a graph. Follows the EPS Style guide. There are 6 here
-    lineColours : ['#08549e', '#FF883E', '#A14494', '#ffcd38', '#0ac798', '#10A8FF',]
+    # Colors used for the datasets in a graph. Follows the EPS Style guide for the first 2 then it's a freestyle. There are 7 here
+    lineColours : ["#08549e","#ff883e","#e5584f","#2e7862","#885bcc","#71879e","#9e7a65"]
 
   ##### TIME STUFF #####
     # Default timestamp tick
