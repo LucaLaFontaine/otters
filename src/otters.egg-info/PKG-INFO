@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: otters
-Version: 0.1.0b0
+Version: 0.1.1b0
 Summary: Useful functions and structures for energy analysis and data handling
 Author-email: Luca LaFontaine <lafoluca@gmail.com>
 Project-URL: Homepage, https://github.com/LucaLaFontaine/otters
@@ -8,7 +8,7 @@ Keywords: energy analysis,data science,psychrometrics
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
-Requires-Python: >=3.10
+Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
 Requires-Dist: pandas

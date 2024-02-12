@@ -128,6 +128,26 @@ class Plot(Graph):
         self.formatYAxis()
         return
     
+    def addAreaLines(self, cols=None, stack_group='one', **kwargs):
+        if not cols:
+            cols = self.df.columns
+        self.df = self.df.loc[:, cols]
+        for col in cols:
+            self.fig.add_trace(
+                go.Scatter(
+                    y=self.df[col],
+                    x=self.df.index,
+                    mode='lines',
+                    name=col,
+                    showlegend=True,
+                    line=dict(width=0.5),
+                    stackgroup=stack_group
+                    **kwargs
+                )
+            )
+        self.formatYAxis()
+        return
+    
     def addScatter(self):
         return
     
