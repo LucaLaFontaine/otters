@@ -163,7 +163,7 @@ class Plot(Graph):
         )
 
         return
-    def timeFormatXAxis(self):
+    def timeFormatXAxis(self, scaleTimestamps=False):
         self.formatXAxis()
         self.tickFormat = self.config['tickFormat']
         self.xTickAngle = self.config['xTickAngle']
@@ -171,16 +171,30 @@ class Plot(Graph):
         self.dTick = self.config['dTick']
         self.tick0 = self.config['tick0']
 
+        # This is only really for ExPS. This should arguably be replaced by just passing an **args thing into update_xaxes
+        if scaleTimestamps:
+            scaleDTick = self.scaleDTick()
+        else:
+            scaleDTick = None
         self.fig.update_xaxes(
             tickformat=self.tickFormat,
             tickangle=self.xTickAngle,
             tick0=datetime(self.tick0['year'], self.tick0['month'], self.tick0['day'], self.tick0['hour'], self.tick0['minute']),
-            dtick=self.scaleDTick(),
+            dtick=scaleDTick,
             )
 
     def formatYAxis(self):
+        
+        # need to handle both series 1-d and 2-d arrays
+        if isinstance(self.df.squeeze(),pd.DataFrame):
+            max_value = self.df.squeeze().max().max()
+        elif isinstance(self.df.squeeze(),pd.Series):
+            max_value = self.df.squeeze().max()
+        else:
+            raise TypeError("Please pass a DataFrame or Series")
+        
         self.fig.update_yaxes(
-            range=list([self.yAxisRange[0], self.df.squeeze().max().max()*self.yAxisRange[1]]),
+            range=list([self.yAxisRange[0], max_value*self.yAxisRange[1]]),
             showline=True, 
             linewidth=1, 
             linecolor='#262626', 
