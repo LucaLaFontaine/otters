@@ -113,12 +113,12 @@ class Plot(Graph):
     def addLines(self, cols=None, **kwargs):
         if not cols:
             cols = self.df.columns
-        self.df = self.df.loc[:, cols]
+        df = self.df.loc[:, cols]
         for col in cols:
             self.fig.add_trace(
                 go.Scatter(
-                    y=self.df[col],
-                    x=self.df.index,
+                    y=df[col],
+                    x=df.index,
                     mode='lines',
                     name=col,
                     showlegend=True,
@@ -131,17 +131,17 @@ class Plot(Graph):
     def addAreaLines(self, cols=None, stack_group='one', **kwargs):
         if not cols:
             cols = self.df.columns
-        self.df = self.df.loc[:, cols]
+        df = self.df.loc[:, cols]
         for col in cols:
             self.fig.add_trace(
                 go.Scatter(
-                    y=self.df[col],
-                    x=self.df.index,
+                    y=df[col],
+                    x=df.index,
                     mode='lines',
                     name=col,
                     showlegend=True,
                     line=dict(width=0.5),
-                    stackgroup=stack_group
+                    stackgroup=stack_group,
                     **kwargs
                 )
             )

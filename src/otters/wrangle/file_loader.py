@@ -7,6 +7,9 @@ import os
 from glob import glob
 import inspect
 import xlwings as xw
+import openpyxl
+from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
+from openpyxl.utils import get_column_letter
 os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
 
 
@@ -119,6 +122,40 @@ def getExcelDFs(path='*', recursive=False, verbose=False,):
         chunk = pd.read_excel(file,)
         dfList.append(chunk)
     return dfList
+
+def formatData(wb_name, sheet='Sheet1'):
+    """
+    This will format an outputted excel file so it doesn't make your eyes bleed.  
+    Most useful for outputting DataFrames to Excel.  
+    Stole it from StackOverflow. It's not super optimal but it's concise which I like.
+
+    **Parameters:**  
+    > **wb_name: *str, Required***  
+    >> The name of the file. Can be relative and prolly absolute
+
+    > **sheet: *string, default: "Sheet1"*** 
+    >> The name of the sheet. Leave blank if you didn't rename the sheet and it's the first/only one in the workbook.
+
+    **Returns:**  
+    > **None**
+    """
+    wb = openpyxl.load_workbook(wb_name)
+    ws = wb[sheet]
+    
+    dim_holder = DimensionHolder(worksheet=ws)
+    
+    for col in range(ws.min_column, ws.max_column + 1):
+        dim_holder[get_column_letter(col)] = ColumnDimension(ws, min=col, max=col, width=19)
+    
+    ws.column_dimensions = dim_holder
+
+    for row in ws.iter_rows():
+        for cell in row:      
+            cell.alignment =  cell.alignment.copy(wrapText=True)
+        break # Oof lol, a break in production. Somebody bonk this guy
+
+    wb.save(wb_name)
+    return
 
 def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=False):
     """

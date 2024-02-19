@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from otters.wrangle.time_tools import str2dt
 
 def get100LowestValues(df, minVal=1):
     """
@@ -143,3 +144,38 @@ def merge_df_cols(df):
 
     return dfMerged
 
+def extractFISTags(df):
+    """
+    Take a raw FIS data stream from a df and pivot it to a table. Outputs 2 dfs: the data and the units.  
+
+    **Parameters:**  
+    > **df: *DataFrame, Required***  
+    >> Should be the raw, concatenated datastream from the raw files. 
+
+    **Returns:**  
+    > **dfAna**   
+    >> Should be the raw, concatenated datastream from the raw files.   
+    
+    > **dfUnits**
+    >> A df with just the units of the columns in dfAna
+    """
+    df = df.copy()
+    # Remove unnamed columns
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    # Reset the index
+    df.reset_index(drop=True, inplace=True)
+    # fill down the machine name so it applies to each row. This is essentially the column name
+    df['Machine Name'].ffill(inplace=True)
+    # "Sample Time" is the time column. Make it the index
+    df = str2dt(df, timeCol='Sample Time', drop=True)
+
+    # It's important to dedupe the timestamp/machine name combo before pivoting
+    df = df.reset_index().drop_duplicates(['Timestamp', 'Machine Name']).set_index('Timestamp')
+    dfAna = df.pivot(columns='Machine Name', values='Actual Value').dropna()
+    dfAna.columns = [col.split(':: : ')[1].strip(' -') for col in dfAna.columns]
+
+    # Now get the units
+    dfUnits = df.pivot(columns='Machine Name', values='Units').dropna().T.iloc[:, 0]
+    dfUnits.name = 'Units'
+
+    return dfAna, dfUnits
