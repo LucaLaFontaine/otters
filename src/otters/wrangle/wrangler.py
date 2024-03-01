@@ -144,7 +144,7 @@ def merge_df_cols(df):
 
     return dfMerged
 
-def extractFISTags(df):
+def extractFISTags(df, strip=True):
     """
     Take a raw FIS data stream from a df and pivot it to a table. Outputs 2 dfs: the data and the units.  
 
@@ -155,7 +155,7 @@ def extractFISTags(df):
     **Returns:**  
     > **dfAna**   
     >> Should be the raw, concatenated datastream from the raw files.   
-    
+
     > **dfUnits**
     >> A df with just the units of the columns in dfAna
     """
@@ -166,13 +166,17 @@ def extractFISTags(df):
     df.reset_index(drop=True, inplace=True)
     # fill down the machine name so it applies to each row. This is essentially the column name
     df['Machine Name'].ffill(inplace=True)
+    
+    # It's important to dedupe the timestamp/machine name combo before pivoting
+    df = df.drop_duplicates(subset=['Sample Time', 'Machine Name'])
+    # df = df.reset_index().groupby(['Timestamp', 'Machine Name']).max()['Actual Value'].set_index('Timestamp')
+
     # "Sample Time" is the time column. Make it the index
     df = str2dt(df, timeCol='Sample Time', drop=True)
 
-    # It's important to dedupe the timestamp/machine name combo before pivoting
-    df = df.reset_index().drop_duplicates(['Timestamp', 'Machine Name']).set_index('Timestamp')
-    dfAna = df.pivot(columns='Machine Name', values='Actual Value').dropna()
-    dfAna.columns = [col.split(':: : ')[1].strip(' -') for col in dfAna.columns]
+    dfAna = df.pivot(columns='Machine Name', values='Actual Value')#.dropna()
+    if strip:
+        dfAna.columns = [col.split(':: : ')[1].strip(' -') for col in dfAna.columns]
 
     # Now get the units
     dfUnits = df.pivot(columns='Machine Name', values='Units').dropna().T.iloc[:, 0]

@@ -36,7 +36,7 @@ class VirtualMeter():
     #         print(self.df.columns)
     #     return
     
-    def cleanColNamesEMS(self, filterWords=['Feedback ', ' Digital', 'Percentage ',], index=-1, identifier=' - ', verbose=False):
+    def cleanColNamesEMS(self, filterWords=[], index=-1, identifier=' - ', verbose=False):
         df = self.df.copy()
         colNames = df.columns
         # For each column name, split up the name by instance of ' - ' and then take the last instance. 
@@ -48,12 +48,14 @@ class VirtualMeter():
         # remove one word at a time
         for word in filterWords:
             x=x.replace(word,"")
-            x=x.replace('Temperature' , 'Temp')
-            x=x.replace('Outside Air Temp' , 'OAT')
-            x=x.replace('Running' , 'On')
-            x=x.replace('Gen Assy' , 'GA')
-            x=x.replace(' °F' , '')
-            x=x.replace(' %' , '')
+        x=x.replace('Temperature' , 'Temp')
+        x=x.replace('Outside Air Temp' , 'OAT')
+        x=x.replace('Running' , 'On')
+        x=x.replace('Gen Assy' , 'GA')
+        x=x.replace('Percentage' , '%')
+            # x=x.replace(' °F' , '')
+        x=x.replace(r'% %' , '%')
+
         # split up the cols again
         colNames =x.split(".")
         # print(colNames)
@@ -101,9 +103,9 @@ class VirtualMeter():
         for identifier in identifiers:
             for i in range(1, identifier['maxNum']+1):
                 if paddingDigits != False:
-                    regex = re.compile(identifier['id'].replace('*', str(i).zfill(paddingDigits)).lower())
+                    regex = re.compile(identifier['id'].replace('*', str(i).zfill(paddingDigits)).lower()+' ')
                 else:
-                    regex = re.compile(identifier['id'].replace('*', str(i)).lower())
+                    regex = re.compile(identifier['id'].replace('*', str(i)).lower()+' ')
                 matches = [colName for colName in df.columns if re.match(regex, colName.lower())]
                 if not df.loc[:, matches].empty:
                     entities.append(df.loc[:, matches])
