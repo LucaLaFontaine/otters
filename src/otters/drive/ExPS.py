@@ -53,6 +53,19 @@ class ExPS():
 
         return dfXl
     
+    def getCSV(self, verbose=False):
+        csvList = file_loader.getCSVDFs(self.config['CSVdataFolder'])
+
+        dfCSV = pd.concat(csvList)
+        dfCSV = time_tools.str2dt(dfCSV, drop=True)
+        dfCSV = dfCSV[~dfCSV.index.duplicated(keep='last')]
+
+        if verbose:
+            print(dfCSV.info())
+            display(dfCSV.head())
+
+        return dfCSV
+
     def createPPT(self):
         """
         If this fails delete the folders in your python version at this address:  
@@ -73,6 +86,7 @@ class Graph(Graph):
         self.parent = parent
         self.NPThreshold = config['NPThreshold']
         self.numWeeks = config['numWeeks']
+        self.unit = config['unit']
         self.setDf()
        
         # self.DS	= config['DS'] Plant specific, assign in notebook

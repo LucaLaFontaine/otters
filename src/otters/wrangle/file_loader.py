@@ -123,6 +123,37 @@ def getExcelDFs(path='*', recursive=False, verbose=False,):
         dfList.append(chunk)
     return dfList
 
+def getCSVDFs(path='*', recursive=False, verbose=False,):
+    """
+    Import all CSV files from a path into a list of DataFrames  
+
+    **Parameters:**
+    > **path: *string, default: "\*"***  
+    >> Pass a relative or absolute path
+
+    > **recursive: *bool, default: False***  
+    >> If True search recursively, meaning it will search the folder supplied and any subfolders.
+
+    > **verbose: *bool, default: False***  
+    >> If True prints each file as it's being imported.
+
+    **Returns:**  
+    > **list of DataFrames**  
+    """
+    fileTypes = ['.csv',]
+    files = getFiles(path=path, recursive=recursive, fileTypes=fileTypes)
+
+    if verbose:
+        print(f'File list:\n{files}\n')
+
+    dfList = []
+    for file in files:
+        if verbose:
+            print(f'Importing file: {file}')
+        chunk = pd.read_csv(file,)
+        dfList.append(chunk)
+    return dfList
+
 def formatData(wb_name, sheet='Sheet1'):
     """
     This will format an outputted excel file so it doesn't make your eyes bleed.  
