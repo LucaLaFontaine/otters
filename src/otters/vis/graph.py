@@ -185,11 +185,12 @@ class Plot(Graph):
 
     def formatYAxis(self):
         
+        numeric_types = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         # need to handle both series 1-d and 2-d arrays
-        if isinstance(self.df.squeeze(),pd.DataFrame):
-            max_value = self.df.squeeze().max().max()
-        elif isinstance(self.df.squeeze(),pd.Series):
-            max_value = self.df.squeeze().max()
+        if isinstance(self.df.select_dtypes(include=numeric_types).squeeze(),pd.DataFrame):
+            max_value = self.df.select_dtypes(include=numeric_types).squeeze().max().max()
+        elif isinstance(self.df.select_dtypes(include=numeric_types).squeeze(),pd.Series):
+            max_value = self.df.select_dtypes(include=numeric_types).squeeze().max()
         else:
             raise TypeError("Please pass a DataFrame or Series")
         

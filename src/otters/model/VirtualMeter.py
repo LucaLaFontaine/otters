@@ -76,20 +76,19 @@ class VirtualMeter():
 
         Example: if you have a list of tags from AHUs 1-15, all with the prefix 'BIW AHU {number}' you can separate them by ahu number.  
 
-        The func takes the id with '*' as a wildcard and tries each number from 1 - maxNum to get the tags associated to that number.  
+        The func takes the id with '*' as a wildcard and tries each number from 1 - maxNum to get the tags associated to that number. 
+        There should be a trailing space on the identifier as that's the complete term. 
 
         There can be missing tag numbers, it'll ignore empty tags.
 
-        Paramters:
-        identifiers: list of dictionaries, Required
-        > dict format (from above example):
-        >>{
-        >> 'id': 'BIW AHU *',  
-        >> 'maxNum' : '15',  
-        >>}
+        **Parameters:**  
+        >**identifiers:** *list of dictionaries, Required*
 
-        Returns: 
-        list of DataFrames
+        >**paddingDigits:** *bool, default:* `False`  
+        >>Defines whether the numbers in the tags have 0-padding. Eg: 01, 02, etc.
+
+        **Returns:**  
+        >**list of DataFrames**
 
         Example:
         ```
@@ -103,10 +102,11 @@ class VirtualMeter():
         for identifier in identifiers:
             for i in range(1, identifier['maxNum']+1):
                 if paddingDigits != False:
-                    regex = re.compile(identifier['id'].replace('*', str(i).zfill(paddingDigits)).lower()+' ')
+                    regex = re.compile(identifier['id'].replace('*', str(i).zfill(paddingDigits)).lower())
                 else:
-                    regex = re.compile(identifier['id'].replace('*', str(i)).lower()+' ')
-                matches = [colName for colName in df.columns if re.match(regex, colName.lower())]
+                    regex = re.compile(identifier['id'].replace('*', str(i)).lower())
+                matches = [colName for colName in df.columns if re.search(regex, colName.lower())]
+                # Matches
                 if not df.loc[:, matches].empty:
                     entities.append(df.loc[:, matches])
 

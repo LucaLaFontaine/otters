@@ -1,5 +1,3 @@
-# import sys
-# sys.path.append(r'C:\Users\Luca\Documents\Data Science\ExPS Reports v2')
 from datetime import timedelta
 
 import pandas as pd
@@ -8,15 +6,17 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import otters.wrangle.wrangler as wrangler
-from otters.wrangle import *
+from otters.wrangle.wrangler import *
 from otters.drive.ppt_gen import PPTGen
 from otters.vis.graph import Graph, Plot
+from  otters.wrangle.wrangler import file_loader, db_loader, time_tools
 
 class ExPS():
     def __init__(self):
         self.config = file_loader.import_config()
         self.plant = self.config['plant']
         self.graphs = []
+
         return
     
     def getSQL(self, verbose=False):
@@ -30,7 +30,7 @@ class ExPS():
         dfSQL = pd.read_sql_query(query, conn)
         conn.close()
 
-        dfSQL = time_tools.str2dt(dfSQL, drop=True)
+        dfSQL = str2dt(dfSQL, drop=True)
         dfSQL.sort_index(inplace=True)
         dfSQL = dfSQL[~dfSQL.index.duplicated(keep='last')]
 
@@ -44,7 +44,7 @@ class ExPS():
         excelList = file_loader.getExcelDFs(self.config['dataFolder'])
 
         dfXl = pd.concat(excelList)
-        dfXl = time_tools.str2dt(dfXl, drop=True)
+        dfXl = str2dt(dfXl, drop=True)
         dfXl = dfXl[~dfXl.index.duplicated(keep='last')]
 
         if verbose:
@@ -62,17 +62,22 @@ class ExPS():
         self.PPT = PPTGen(self)
         return
     
-    def savePPT(self):
-        self.pptTitle = self.PPT.ExPSStyleName()
+    def savePPT(self, plant=None):
+        self.pptTitle = self.PPT.ExPSStyleName(plant)
         self.PPT.savePPT(self.pptTitle)
         print(f'Saved to:\n{self.pptTitle}')
     
 class Graph(Graph):
+    """
+    This is an extension of the Graph object in the vis.graph section.  
+    Bascially we're taking that object and adding to it.
+    """
     def __init__(self, parent, config):
         super().__init__(config)
         self.parent = parent
         self.NPThreshold = config['NPThreshold']
         self.numWeeks = config['numWeeks']
+        self.unit = config['unit']
         self.setDf()
        
         # self.DS	= config['DS'] Plant specific, assign in notebook
@@ -86,7 +91,6 @@ class Graph(Graph):
         self.df = time_tools.getLastNWeeks(self.df, self.numWeeks, hour=self.config['tick0']['hour'],
                                             minute=self.config['tick0']['minute'])
         
-    
     def setLowAchieved(self):
         self.lowAchieved = int(round(self.parent.lowDf.loc[:, self.col].mean()))
         return
@@ -186,7 +190,7 @@ class Plot(Plot):
         self.fig.add_trace(
             go.Scatter(y=[0, 0],
                     x = [self.df.index[0]],
-                    name="Actual Achieved Non-Prouction kW",
+                    name=f"Actual Achieved Non-Prouction {self.parent.unit}",
                     mode='lines',
                     # fill='toself',
                     # fillcolor='rgba(226,240,217,1)',
@@ -198,7 +202,7 @@ class Plot(Plot):
         self.fig.add_trace(
             go.Scatter(y=[0, 0],
                 x = [self.df.index[0]],
-                name="Target kW",
+                name=f"Target {self.parent.unit}",
                 mode='lines',
                 # fill='toself',
                 # fillcolor='rgba(226,240,217,1)',
@@ -218,7 +222,7 @@ class Plot(Plot):
         
         self.fig.add_hline(y=self.parent.avgProd, line_width=3, line_dash="dot", line_color="#4472C4")
         self.fig.add_annotation(y=self.parent.avgProd,
-                        text="<b>{:,} kW".format(self.parent.avgProd),
+                        text="<b>{:,} {}".format(self.parent.avgProd, self.parent.unit),
                         showarrow=False,
                         yshift=15, 
                         font=dict(color = '#4472C4'),
@@ -230,7 +234,7 @@ class Plot(Plot):
         self.fig.add_trace(
                 go.Scatter(y=[0, 0],
                         x = [self.df.index[0]],
-                        name="Average Normal Production kW",
+                        name=f"Average Normal Production {self.parent.unit}",
                         mode='lines',
                         # fill='toself',
                         # fillcolor='rgba(226,240,217,1)',
@@ -245,7 +249,7 @@ class Plot(Plot):
             # fig.add_trace(go.Scatter(y=[4, 2, 1], mode="lines"), row=1, col=1)
         self.fig.add_hline(y=self.parent.lowAchieved, line_width=3, line_dash="dot", line_color="#E2AC00")
         self.fig.add_annotation(y=self.parent.lowAchieved,
-                        text="<b>{:,} kW<br>({}%)</b>".format(self.parent.lowAchieved, round(100*(1-self.parent.lowAchieved/self.parent.avgProd))),
+                        text="<b>{:,} {}<br>({}%)</b>".format(self.parent.lowAchieved, self.parent.unit, round(100*(1-self.parent.lowAchieved/self.parent.avgProd))),
                         showarrow=False,
                         yshift=20, 
                         font=dict(color = '#7F6000'),
@@ -257,7 +261,7 @@ class Plot(Plot):
         self.fig.add_trace(
                 go.Scatter(y=[0, 0],
                         x = [self.df.index[0]],
-                        name="Lowest Achieved kW",
+                        name=f"Lowest Achieved {self.parent.unit}",
                         mode='lines',
                         # fill='toself',
                         # fillcolor='rgba(226,240,217,1)',
@@ -406,7 +410,7 @@ class Plot(Plot):
         
         #instead of fretting about label proximity just scale the label frequency to the timescale.  
         # Downtime achieved label.
-        self.fig.add_annotation(text="<b>{:,} kW<br>({}%)</b>".format(event.actualNPAvg, round(100*(1-event.actualNPAvg/self.parent.avgProd))),
+        self.fig.add_annotation(text="<b>{:,} {}<br>({}%)</b>".format(event.actualNPAvg, self.parent.unit, round(100*(1-event.actualNPAvg/self.parent.avgProd))),
                         # editable=True,
                     showarrow=False,
                     # yshift=-20, 
@@ -416,7 +420,7 @@ class Plot(Plot):
                     y=1,
                     )
         # Downtime achieved label.
-        self.fig.add_annotation(text="<b>{:,} kW<br>({}%)</b>".format(event.targetNPAvg, round(100*(1-event.targetNPAvg/self.parent.avgProd))),
+        self.fig.add_annotation(text="<b>{:,} {}<br>({}%)</b>".format(event.targetNPAvg, self.parent.unit, round(100*(1-event.targetNPAvg/self.parent.avgProd))),
                     showarrow=False,
                     # yshift=-20, 
                     font=dict(color = 'red'),
@@ -452,7 +456,7 @@ class Plot(Plot):
                         y=dfPast.loc[:, col],
                         x=dfPast.index,
                         mode='lines',
-                        name='Last Year kW',
+                        name=f'Last Year {self.parent.unit}',
                         showlegend=True,
                         line=dict(color='#FF883E',) 
                     )
@@ -479,7 +483,7 @@ class Plot(Plot):
                         y=dfPast.loc[:, col],
                         x=dfPast.index,
                         mode='lines',
-                        name='Last Week kW',
+                        name=f'Last Week {self.parent.unit}',
                         showlegend=True,
                         line=dict(color='#A14494',) 
                     )
