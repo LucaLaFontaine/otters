@@ -23,12 +23,18 @@ class Graph():
             # This is the default config for plots and is overwritten by everything
         default_conf_binary = pkgutil.get_data(__name__, "conf.yaml")
         default_conf = yaml.load(default_conf_binary, Loader=yaml.FullLoader)
+        
+
+        # correct a series to a df
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
 
         # Default kwarg values, later updated with the passed kwargs
         options = {
             'title' : '',
             'df' : df,
-            'graphCols' : df.columns,
+            # This will tank if the df is a series.
+            'graphCols' : list(df.columns),
             'xTitle' : '',
             'yTitle' : '',     
         }
@@ -185,11 +191,17 @@ class Plot(Graph):
 
     def formatYAxis(self):
         
+        numeric_types = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+        
+        # if the data is a series even before it get's squozen down we have to reset it to a df
+        if isinstance(self.df,pd.Series):
+            self.df = self.df.to_frame()
+
         # need to handle both series 1-d and 2-d arrays
-        if isinstance(self.df.squeeze(),pd.DataFrame):
-            max_value = self.df.squeeze().max().max()
-        elif isinstance(self.df.squeeze(),pd.Series):
-            max_value = self.df.squeeze().max()
+        if isinstance(self.df.select_dtypes(include=numeric_types).squeeze(),pd.DataFrame):
+            max_value = self.df.select_dtypes(include=numeric_types).squeeze().max().max()
+        elif isinstance(self.df.select_dtypes(include=numeric_types).squeeze(),pd.Series):
+            max_value = self.df.select_dtypes(include=numeric_types).squeeze().max()
         else:
             raise TypeError("Please pass a DataFrame or Series")
         
