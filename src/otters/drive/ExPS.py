@@ -9,9 +9,12 @@ import otters.wrangle.wrangler as wrangler
 from otters.wrangle.wrangler import *
 from otters.drive.ppt_gen import PPTGen
 from otters.vis.graph import Graph, Plot
-from  otters.wrangle.wrangler import file_loader, db_loader, time_tools
+from  otters.wrangle import file_loader, db_loader, time_tools
 
 class ExPS():
+    """
+    The main object that all the ExPS data lives in.
+    """
     def __init__(self):
         self.config = file_loader.import_config()
         self.plant = self.config['plant']
@@ -20,6 +23,10 @@ class ExPS():
         return
     
     def getSQL(self, verbose=False):
+        """
+        Meant specifically to get data from the loadwatch database or a db with that schema.  
+        Just makes it easier to see what's going on. 
+        """
         conn = db_loader.create_conn(self.config['db_file'])
         cursor = conn.cursor()
         query = f'''
@@ -63,39 +70,50 @@ class ExPS():
         return
     
     def savePPT(self, plant=None):
-        self.pptTitle = self.PPT.ExPSStyleName(plant)
+        self.pptTitle = self.PPT.ExPSStyleName()
         self.PPT.savePPT(self.pptTitle)
         print(f'Saved to:\n{self.pptTitle}')
     
 class Graph(Graph):
     """
     This is an extension of the Graph object in the vis.graph section.  
-    Bascially we're taking that object and adding to it.
+    Bascially we're taking that object and adding to it. This keeps the main Graph object clean
     """
     def __init__(self, parent, config):
-        super().__init__(config)
         self.parent = parent
+        self.df = self.parent.dfAll.loc[:, config['graphCols']]#.to_frame()
+        # super means basically run something from the parent. So here we're running the parent init as well (the main Graph function)
+        super().__init__(self.df, **config)
+        self.setDf()
         self.NPThreshold = config['NPThreshold']
         self.numWeeks = config['numWeeks']
         self.unit = config['unit']
-        self.setDf()
        
         # self.DS	= config['DS'] Plant specific, assign in notebook
         # self.WS = config['WS']
-        self.col = self.cols[0]
+        self.cols = config['graphCols'].split(',')
         self.plot = Plot(self)
         return
     
     def setDf(self):
-        self.df = self.parent.dfAll.loc[:, self.config['graphCols']]
         self.df = time_tools.getLastNWeeks(self.df, self.numWeeks, hour=self.config['tick0']['hour'],
                                             minute=self.config['tick0']['minute'])
         
     def setLowAchieved(self):
-        self.lowAchieved = int(round(self.parent.lowDf.loc[:, self.col].mean()))
+        """
+        Assign the lowest achieved number from the average for that column in the lowDf. 
+
+        Takes and returns nothing
+        """
+        self.lowAchieved = int(round(self.parent.lowDf.loc[:, self.cols].mean()))
         return
     
     def setLowPercentage(self):    
+        """
+        Assign the lowest achieved percentage based on current production average and the lowest achieved nummber. 
+
+        Takes and returns nothing
+        """
         self.lowPercentage = int(round((1-self.lowAchieved/self.avgProd), 2)*100)
         return
     def setAvgProd(self, rows):
