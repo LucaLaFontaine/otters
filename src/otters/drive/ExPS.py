@@ -472,9 +472,9 @@ class Plot(Plot):
             series.drop(row[0], inplace=True) # Clears the row you started with
         return series
     
-    def showLastYear(self, dfAll):
+    def showLastYear(self, dfAll, days=364):
 
-        dfPastAll = time_tools.overlayPast(dfAll, 364)
+        dfPastAll = time_tools.overlayPast(dfAll, days)
         # Remove columns not in this plot
         dfPastAll = dfPastAll.loc[:, self.df.columns+'_past']
         # dfPast = self.df.join(dfPastAll.loc[:, self.df.columns+'_past'], how='outer')
