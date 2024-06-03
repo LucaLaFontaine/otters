@@ -116,17 +116,24 @@ class Plot(Graph):
         )
         return
     
-    def addLines(self, cols=None, **kwargs):
-        if not cols:
+    def addLines(self, cols=[], level=-1, **kwargs):
+        if len(cols) == 0:
             cols = self.df.columns
         df = self.df.loc[:, cols]
         for col in cols:
+            # Allows us to decide how many and which levels of the column name we want to keep and then make sure it's a string for the legend
+            if type(col) is str:
+                name = col
+            else:
+                name = col[level]
+                if type(name) is not str:
+                    name = "_".join(name)
             self.fig.add_trace(
                 go.Scatter(
                     y=df[col],
                     x=df.index,
                     mode='lines',
-                    name=col,
+                    name=name,
                     showlegend=True,
                     **kwargs
                 )
@@ -134,17 +141,27 @@ class Plot(Graph):
         self.formatYAxis()
         return
     
-    def addAreaLines(self, cols=None, stack_group='one', **kwargs):
-        if not cols:
+    def addAreaLines(self, cols=[], stack_group='one', level=-1, **kwargs):
+        if len(cols) == 0:
+            print("No columns passed")
             cols = self.df.columns
         df = self.df.loc[:, cols]
         for col in cols:
+            # Allows us to decide how many and which levels of the column name we want to keep and then make sure it's a string for the legend
+            if type(col) is str:
+                name = col
+            else:
+                name = col[level]
+                if type(name) is not str:
+                    name = "_".join(name)
             self.fig.add_trace(
                 go.Scatter(
                     y=df[col],
                     x=df.index,
                     mode='lines',
-                    name=col,
+                    # name="_".join(df[col].squeeze().name),
+                    name=name,
+
                     showlegend=True,
                     line=dict(width=0.5),
                     stackgroup=stack_group,
@@ -154,7 +171,24 @@ class Plot(Graph):
         self.formatYAxis()
         return
     
-    def addScatter(self):
+    def addScatter(self, x, y, **kwargs):
+        """
+        You're gonna need to add an x and y. You should be able to add 2 Ys, and so those are a list. With the Xs idk suck a lemon.
+
+        """
+        # df = self.df.loc[:, y.append(x)]
+        for var in y:
+            self.fig.add_trace(
+                go.Scatter(
+                    y=self.df[var],
+                    x=self.df[x],
+                    mode='markers',
+                    name=var,
+                    showlegend=True,
+                    **kwargs
+                )
+            )
+        self.formatYAxis()
         return
     
     def formatXAxis(self):
@@ -214,6 +248,7 @@ class Plot(Graph):
             gridwidth=0.75, 
             gridcolor='rgba(235, 235, 235, 1)', 
             title_text=self.yTitle,
+            tickformat=",",
             )
         
         # Remove some stuff off the secondary axis by default
@@ -398,3 +433,4 @@ class Plot(Graph):
 
         self.fig.update_yaxes(autorange="max", autorangeoptions_include=0)
         return
+

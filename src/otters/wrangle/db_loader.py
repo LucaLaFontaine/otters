@@ -247,9 +247,9 @@ def ts2str(col: pd.Series) -> pd.Series:
     col = col.dt.strftime("%Y-%m-%d %H-%M")
     return col
 
-def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=365), datetime.today()], 
+def getNasaWeather(plant: str = '', dates: list = [datetime.today()-timedelta(days=365), datetime.today()], 
                    params=['T2M', 'RH2M'], type='Daily', units='C', 
-                   db_loc="Z:\Data Governance\Databases\leidos_meta.db") -> pd.DataFrame:
+                   db_loc="Z:\Data Governance\Databases\leidos_meta.db", coords=[]) -> pd.DataFrame:
     """
     Get the weather at a given plant from Nasa.  
     Assumes said plant is in the db.  
@@ -285,12 +285,17 @@ def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=36
     SELECT plant, latitude, longitude
     FROM plants;
     """
-    conn = create_conn(db_loc)
-    df = pd.read_sql(query, conn)
-    df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
 
-    lat = df.loc[df.index == plant, 'latitude'][0]
-    long = df.loc[df.index == plant, 'longitude'][0]
+    if not coords:
+        conn = create_conn(db_loc)
+        df = pd.read_sql(query, conn)
+        df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
+
+        lat = df.loc[df.index == plant, 'latitude'][0]
+        long = df.loc[df.index == plant, 'longitude'][0]
+    else:
+        lat = coords[0]
+        long = coords[1]
 
     requestURL = f"""
     https://power.larc.nasa.gov/api/temporal/{type.lower()}/point?
