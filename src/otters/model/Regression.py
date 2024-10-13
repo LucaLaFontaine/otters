@@ -68,7 +68,7 @@ class Models():
                     'Intercept': model.reg.intercept_,
                     'Coef(s)': ['{:,.2f}'.format(coef) for coef in model.reg.coef_[0]],
                     'P-Values': model.reg.p,
-                    'N_Samples': model.y.shape[0],
+                    'N_Samples': model.Y.shape[0],
                     # 'Description': model.description
                 }
             }
@@ -76,6 +76,9 @@ class Models():
         pd.options.display.float_format = '{:,.3f}'.format
         dfModels = pd.DataFrame(modelTable)
         return dfModels
+    
+    # def cusum():
+
 
 class Model():
     """
@@ -90,6 +93,8 @@ class Model():
             'end' : None,
             'description' : '',
             'fit_intercept' : True,  
+            'just_baseline' : True,  
+            'mapping' : {},
         }
         options.update(kwargs)
 
@@ -135,7 +140,7 @@ class Regression(Model):
         self.score = self.reg.score(self.X, self.Y)
         return
     
-    def getCVRMSE(self):
+    def getCVRMSE(self, just_baseline=True):
         """
         Take the coefficient of variation of the residual.  
 
@@ -147,10 +152,13 @@ class Regression(Model):
         **Returns:**  
         >**float**
         """
-
-        # regenerate the df. not super efficient
-        self.to_frame()
+        
+        # regenerate the df. not super efficient but needed to decide wheter to take morte than the baseline
+        self.just_baseline = just_baseline
+        self.to_frame(just_baseline=just_baseline)
         df = self.df.copy()
+        # if just_baseline==True:
+        #     df = df.loc[(df.index >= self.start) & (df.index <= self.end)]
         # create the residuals/diff column temporarily
         df['residuals', 'diff'] = df.loc[:, ('Y', slice(None))].squeeze() - df.loc[:, ('Y_hat', slice(None))].squeeze()
         standard_error = np.std(df['residuals', 'diff'])    
@@ -176,9 +184,15 @@ class Regression(Model):
         self.cv = self.cv[0]
         return self.cv
     
-    def to_frame(self):
-        X = self.x.copy()  
-        Y = self.y.copy()
+    def to_frame(self, just_baseline=False, mapping=None):
+        if self.just_baseline:
+            just_baseline = self.just_baseline
+        if just_baseline:
+            X = self.X.copy()  
+            Y = self.Y.copy()  
+        else:
+            X = self.x.copy()  
+            Y = self.y.copy()
 
         X.columns = pd.MultiIndex.from_product([['X'], X.columns, ])
         Y.columns = pd.MultiIndex.from_product([['Y'], Y.columns, ])
@@ -193,21 +207,37 @@ class Regression(Model):
 
         self.df = pd.concat([Y_hat, Y, X], axis=1)
 
+        if mapping:
+            self.mapping = mapping
+        
+        self.df.rename(columns=self.mapping, level=-1, inplace=True)
+
         return self.df
     
-    def model_component_graph(self, mapping=None, title='Model Component Graph', **kwargs):
+    # def remapColumnNames(self):
+    #     self.df.rename(columns=self.mapping, level=-1, inplace=True)
+    #     return 
+    
+    def model_component_graph(self, mapping=None, title='Model Component Graph', just_baseline=False, **kwargs):
+        if mapping:
+            print("mapping exists")
+            self.mapping = mapping
+        # self.remapColumnNames()
+        # regenerate the df. not super efficient
+        self.just_baseline = just_baseline
+        self.to_frame()
         df = self.df.copy()
         df.loc[:, ('X', slice(None))] *= np.array(self.reg.coef_)
-        df.rename(columns=mapping, level=-1, inplace=True)
+        # df.rename(columns=mapping, level=-1, inplace=True)
         lp = Graph(df, title=title, **kwargs)
         df.sort_index(ascending=[1, 0], inplace=True, axis=1)
         lp.plot.addAreaLines(df.loc[:, (['intercept', 'X'], slice(None))].columns)
         lp.plot.addLines(df.loc[:, ('Y', slice(None))].columns, level=slice(0, 2), line=dict(width=5, color="rgba(196, 30, 58, 1)"))
         lp.plot.addLines(df.loc[:, ('Y_hat', slice(None))].columns, line=dict(width=5, color="rgba(68, 114, 96, 1)"))
 
-        lp.plot.fig.update_legends(
-            y=1.08,
-        )
+        # lp.plot.fig.update_legends(
+        #     y=1.08,
+        # )
         # lp.plot.addAreaLines()
 
         # df.join()
@@ -215,4 +245,24 @@ class Regression(Model):
         # return df.loc[:, (slice("Y_hat", 'Y', 'X'), slice(None))].columns
         # return df.loc[:, (slice("Y_hat", 'Y', 'X'), slice(None))].columns
         return lp
+    
+    def getRegEquation(self, mapping=None):
+        if mapping:
+            self.mapping = mapping
+        # self.remapColumnNames()
+
+        equationXs = list(zip(self.df.loc[:, ("X", slice(None))].columns.get_level_values(-1), self.reg.coef_[0]))
+
+        equationXs = ["[{}]*{:,.6g}".format(termName, termCoef) for termName, termCoef in equationXs]
+
+        equationXs = " + ".join(equationXs)
+        equationStr = """Modèle = {:,.6g} + {}""".format(self.reg.intercept_[0], equationXs)
+        
+        return equationStr
+
+    
+
+
+    
+    
     

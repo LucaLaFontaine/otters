@@ -111,8 +111,10 @@ class Plot(Graph):
             yanchor='top', 
             xanchor='center', 
             xref='container', 
-            yref='container', 
-            y=0.9, x=0.5
+            # Changing this to 'paper' squeezes the graphto the side for some reason
+            yref='container',
+ 
+            y=0.90, x=0.5
         )
         return
     
