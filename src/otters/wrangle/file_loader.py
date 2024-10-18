@@ -6,7 +6,7 @@ import yaml
 import os
 from glob import glob
 import inspect
-import xlwings as xw
+
 import openpyxl
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.utils import get_column_letter
@@ -189,6 +189,7 @@ def formatData(wb_name, sheet='Sheet1'):
     return
 
 def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=False):
+    import xlwings as xw
     """
     IN DEVELOPMENT, PROBABLY WILL NOT WORK  
 
