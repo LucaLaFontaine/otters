@@ -8,12 +8,19 @@ def gapAndIsland(dfCol):
     Good for iterating on an events column or tracking flags. 
 
     new: dfCol can be df with one column or series
+
+    **Parameters:**  
+    > **dfCol: *a single df column or series, Required***  
+
+    **Returns:**  
+    > **Series**
     """
     return np.split(dfCol.squeeze(), np.where(np.diff(dfCol.squeeze()) != 0)[0]+1)
 
 def mergeCloseEvents(events, mergeWithinHours=12, i=1):
-    """Merges events that are close so we don't get bunches of events. Not entirely necessary but it makes it cleaner. 
-    Recursive function, so it takes each event and calculates if it's within 3600sec of the last event. 
+    """
+    Merges events that are close so we don't get bunches of events. Not entirely necessary but it makes it cleaner. 
+    Recursive function, so it takes each event and calculates if it's within "mergeWithinHours" (in hours) of the last event. 
     If so it adds this event to the last event and deletes this event.
     returns the new list of events
     """
@@ -98,3 +105,9 @@ def merge_df_cols(df):
 
     return dfMerged
 
+def compareList(strings, patterns):
+    for string in strings:
+        for pattern in patterns:
+            if pattern in string:
+                return True
+    return False 
