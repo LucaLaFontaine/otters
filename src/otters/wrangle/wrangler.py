@@ -106,6 +106,16 @@ def merge_df_cols(df):
     return dfMerged
 
 def compareList(strings, patterns):
+    """
+    IN DEVELOPMENT
+    I orifinally used this in Agg Data fro ABI to get all the valid cols from a list in a df. it's easier to just show the code:  
+    `sumCols = [col for col in df.columns if compareList(list(col), sumCols)]`  
+
+    I think this would have ustility in matching a combo of strings against a series, but I didn't use it that way. 
+
+    **Returns:**  
+    > **boolean**  
+    """
     for string in strings:
         for pattern in patterns:
             if pattern in string:
