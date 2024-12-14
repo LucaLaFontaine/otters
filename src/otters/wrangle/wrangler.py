@@ -1,31 +1,5 @@
 import pandas as pd
 import numpy as np
-from otters.wrangle.time_tools import str2dt
-
-def get100LowestValues(df, minVal=1):
-    """
-Gets the 100 lowest values from each column provided in df
-It will filter anything lower than minVal, so it'll ignore negative or blank values if minVal=1
-
-Parameters:
-df: DataFrame, required
-minVal: int, default: 1  
-
-Returns: DataFrame
-    """    
-    # force the df to a DataFrame
-    df = pd.DataFrame(df)
-    colList = []
-    for col in df.columns:
-        colSeries = df.loc[df[col] >= minVal, col].sort_values().head(100)
-        colList.append(colSeries)
-
-    df  = pd.concat(colList, axis=1)   
-    return df
-
-def getNRowAvg(df, rows, ascending):
-    # should be a series
-    return round(df.sort_values(ascending=ascending).reset_index().loc[:rows].mean())
 
 def gapAndIsland(dfCol):
     """
@@ -58,26 +32,6 @@ def mergeCloseEvents(events, mergeWithinHours=12, i=1):
     else:
         mergeCloseEvents(events, i=i+1)
     return events
-
-def extendTags(tags,  maxNum, exampleNum=1, missing=[],):
-    """
-    Use to extend a list of tags (usually tags in an EMS or files) for one grouping into many
-    Say you have 5 tags each for 10 AHUs that you have to pull. Use this to generate all 50 tags from the first 5
-
-    Parameters:
-    tags: list, Required
-    maxNum: int, Required, largest number in the set
-    exampleNum: int, Default: 1, number you're replacing in the exmple set
-    missing: list, Default: empty, any missing numbers in the set
-    """
-    extendedTags = []
-    for i in range(1, maxNum+1):
-        for j, tag in enumerate(tags):
-            if i in missing:
-                continue
-            if tag.find(str(i)):
-                extendedTags.append(tag.replace(str(exampleNum), str(i)))     
-    return extendedTags
 
 def merge_dfs(dfs):
     """
@@ -144,42 +98,3 @@ def merge_df_cols(df):
 
     return dfMerged
 
-def extractFISTags(df, strip=True):
-    """
-    Take a raw FIS data stream from a df and pivot it to a table. Outputs 2 dfs: the data and the units.  
-
-    **Parameters:**  
-    > **df: *DataFrame, Required***  
-    >> Should be the raw, concatenated datastream from the raw files. 
-
-    **Returns:**  
-    > **dfAna**   
-    >> Should be the raw, concatenated datastream from the raw files.   
-
-    > **dfUnits**
-    >> A df with just the units of the columns in dfAna
-    """
-    df = df.copy()
-    # Remove unnamed columns
-    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    # Reset the index
-    df.reset_index(drop=True, inplace=True)
-    # fill down the machine name so it applies to each row. This is essentially the column name
-    df['Machine Name'].ffill(inplace=True)
-    
-    # It's important to dedupe the timestamp/machine name combo before pivoting
-    df = df.drop_duplicates(subset=['Sample Time', 'Machine Name'])
-    # df = df.reset_index().groupby(['Timestamp', 'Machine Name']).max()['Actual Value'].set_index('Timestamp')
-
-    # "Sample Time" is the time column. Make it the index
-    df = str2dt(df, timeCol='Sample Time', drop=True)
-
-    dfAna = df.pivot(columns='Machine Name', values='Actual Value')#.dropna()
-    if strip:
-        dfAna.columns = [col.split(':: : ')[1].strip(' -') for col in dfAna.columns]
-
-    # Now get the units
-    dfUnits = df.pivot(columns='Machine Name', values='Units').dropna().T.iloc[:, 0]
-    dfUnits.name = 'Units'
-
-    return dfAna, dfUnits
