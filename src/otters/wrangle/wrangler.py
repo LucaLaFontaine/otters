@@ -105,7 +105,7 @@ def merge_df_cols(df):
 
     return dfMerged
 
-def compareList(strings, patterns):
+def compare_lists(strings, patterns):
     """
     IN DEVELOPMENT
     I orifinally used this in Agg Data fro ABI to get all the valid cols from a list in a df. it's easier to just show the code:  
@@ -121,3 +121,23 @@ def compareList(strings, patterns):
             if pattern in string:
                 return True
     return False 
+
+
+
+def find_strs(S):
+    """
+    Find all the unique strings in a series.  
+    Usefull for finding string errors in an otherwise numeric column
+
+    Normally you would want to search all the string columns in a df. YOu can jsut loop over all the columns with the type `object`  
+    
+    **Parameters:**  
+    > **S: *Series, Required***  
+
+    **Returns:**  
+    > **list**  
+    """
+    num_mask = pd.to_numeric(S, errors='coerce').isnull()
+    if num_mask.sum() > 0:
+        # return num_mask.loc[num_mask == True]
+        return list(S[num_mask == True].unique())
