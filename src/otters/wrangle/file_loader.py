@@ -17,7 +17,7 @@ def replace_backslashes_in_dict(dictionary):
         if isinstance(val, list):
             dictionary.update({key: [i.replace('\\', "/") for i in val]})
         elif isinstance(val, dict):
-            dictionary = replace_backslashes_in_dict(val)
+            dictionary.update({key:replace_backslashes_in_dict(val)})
         else:
             dictionary.update({key: val.replace('\\', "/")})
     return dictionary
