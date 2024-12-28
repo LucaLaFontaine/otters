@@ -51,7 +51,7 @@ def import_config(configFolder='', recursive=True):
     config = {}
     for file in yamlFiles:
         print(f"file: {file}")
-        with open(file) as f:
+        with open(file, encoding='utf8') as f:
             try:
                 config.update(yaml.load(f, Loader=yaml.FullLoader))
             except:

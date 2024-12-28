@@ -1,6 +1,6 @@
 ### How to generate docs:
 
-`pdoc -t "dark mode" src/otters -o ./docs`  
+`pdoc -t "dark mode" src/otters -o ./pdocs`  
 I've replaced this with sphinx but i haven't actually configured anything
 
 ### How to update the package:
