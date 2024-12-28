@@ -12,9 +12,19 @@ from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.utils import get_column_letter
 os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
 
+def replace_backslashes_in_dict(dictionary):
+    for key, val in dictionary.items():
+        if isinstance(val, list):
+            dictionary.update({key: [i.replace('\\', "/") for i in val]})
+        elif isinstance(val, dict):
+            dictionary = replace_backslashes_in_dict(val)
+        else:
+            dictionary.update({key: val.replace('\\', "/")})
+    return dictionary
 
 def import_config(configFolder='', recursive=True):
     """
+    MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK
     Import all config files from the supplied folder. Defaults to the root folder  
     Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'  
     
@@ -65,7 +75,7 @@ def import_config(configFolder='', recursive=True):
         df = df.iloc[1: ,:]
         config.update({dictName: df.T.to_dict()})
 
-    [config.update({conf[0] : conf[1].replace('\\', "/")}) for conf in config.items()]
+    config = replace_backslashes_in_dict(config)
 
     return config
 
