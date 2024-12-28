@@ -65,6 +65,8 @@ def import_config(configFolder='', recursive=True):
         df = df.iloc[1: ,:]
         config.update({dictName: df.T.to_dict()})
 
+    [config.update({conf[0] : conf[1].replace('\\', "/")}) for conf in config.items()]
+
     return config
 
 def getFiles(path='*', recursive=False, fileTypes=['']):
