@@ -413,8 +413,8 @@ class Plot(Graph):
             for i, col in enumerate(cols[row*colWidth-colWidth:row*colWidth]):
                 self.fig.add_trace(
                     go.Scatter(
-                        x=self.df.index, 
-                        y=self.df[col],
+                        x=self.df[col].dropna().index, 
+                        y=self.df[col].dropna(),
                         name=col
                     ),
                     row=row, 
