@@ -15,9 +15,9 @@ os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
 def replace_backslashes_in_dict(dictionary):
     for key, val in dictionary.items():
         if isinstance(val, list):
-            dictionary.update({key: [i.replace('\\', "/") for i in val]})
+            dictionary.update({key: replace_backslashes_in_dict(val)})
         elif isinstance(val, dict):
-            dictionary.update({key:replace_backslashes_in_dict(val)})
+            dictionary.update({key: replace_backslashes_in_dict(val)})
         elif isinstance(val, str):
             dictionary.update({key: val.replace('\\', "/")})
     return dictionary
