@@ -1,1 +1,1 @@
-include src/otters/*.yaml
+include src/otters/vis/*.yaml

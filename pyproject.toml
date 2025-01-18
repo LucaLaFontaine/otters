@@ -35,3 +35,9 @@ Homepage = "https://github.com/LucaLaFontaine/otters"
 
 [project.scripts]
 # otters = "otters.__main__:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
