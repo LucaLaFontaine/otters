@@ -124,26 +124,34 @@ def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_
 
     cur = conn.cursor()
     pragma = pd.read_sql_query(f"PRAGMA table_info({table_name})", conn)
+
+    if verbose:
+        print("pragma:")
+        print(pragma)
     
     # Create the table with to_sql if it doesn't exist
     if pragma.empty:
-        print(PKs)
-        print()
-        df.to_sql(table_name, conn, if_exists='replace', dtype={PK: f'{PK_type} PRIMARY KEY' for PK in PKs}, index=False)
+        sql = pd.io.sql.get_schema(df, table_name, keys=primary_key)
+        cur.execute(sql)
         print(f'There was no table named {table_name}. One was created')
-        return
+        pragma = pd.read_sql_query(f"PRAGMA table_info({table_name})", conn)
     
     # Create the temp transfer table
-    df.to_sql('transfer_tbl', conn, if_exists='replace', dtype={PK: f'{PK_type} PRIMARY KEY' for PK in PKs}, index=False)
+    cur.execute("DROP TABLE IF EXISTS transfer_tbl;")
+    sql = pd.io.sql.get_schema(df, 'transfer_tbl', keys=primary_key)
+    cur.execute(sql)
+    df.to_sql('transfer_tbl', conn, if_exists='replace', index=False)
     transfer_pragma = pd.read_sql_query(f"PRAGMA table_info(transfer_tbl)", conn)
+    if verbose:
+        print(f'transfer pragma:\n {transfer_pragma}')
 
     # Add new columns if they don't exist
     # keep in mind you can't add new primary key columns! Use add_primary_key()
-    new_cols = [col for col in transfer_pragma.name if col not in list(pragma.name)]
+    new_cols = [col for col in transfer_pragma.name if col.lower() not in list(pragma.name.str.lower())]
     for col in new_cols:
         sql = f"""
             ALTER TABLE {table_name}
-            ADD "{col}" {transfer_pragma.loc[transfer_pragma.name == col, 'type'][0]};
+            ADD "{col}" {transfer_pragma.loc[transfer_pragma.name == col, 'type'].item()};
         """
         cur.execute(sql)
 
@@ -247,9 +255,9 @@ def ts2str(col: pd.Series) -> pd.Series:
     col = col.dt.strftime("%Y-%m-%d %H-%M")
     return col
 
-def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=365), datetime.today()], 
+def getNasaWeather(plant: str = '', dates: list = [datetime.today()-timedelta(days=365), datetime.today()], 
                    params=['T2M', 'RH2M'], type='Daily', units='C', 
-                   db_loc="Z:\Data Governance\Databases\leidos_meta.db") -> pd.DataFrame:
+                   db_loc="Z:\Data Governance\Databases\leidos_meta.db", coords=[]) -> pd.DataFrame:
     """
     Get the weather at a given plant from Nasa.  
     Assumes said plant is in the db.  
@@ -285,12 +293,17 @@ def getNasaWeather(plant: str, dates: list = [datetime.today()-timedelta(days=36
     SELECT plant, latitude, longitude
     FROM plants;
     """
-    conn = create_conn(db_loc)
-    df = pd.read_sql(query, conn)
-    df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
 
-    lat = df.loc[df.index == plant, 'latitude'][0]
-    long = df.loc[df.index == plant, 'longitude'][0]
+    if not coords:
+        conn = create_conn(db_loc)
+        df = pd.read_sql(query, conn)
+        df = df.loc[df['plant'] == plant, :].set_index('plant', drop=True)
+
+        lat = df.loc[df.index == plant, 'latitude'][0]
+        long = df.loc[df.index == plant, 'longitude'][0]
+    else:
+        lat = coords[0]
+        long = coords[1]
 
     requestURL = f"""
     https://power.larc.nasa.gov/api/temporal/{type.lower()}/point?

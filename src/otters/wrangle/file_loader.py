@@ -6,15 +6,25 @@ import yaml
 import os
 from glob import glob
 import inspect
-import xlwings as xw
+
 import openpyxl
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.utils import get_column_letter
 os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
 
+def replace_backslashes_in_dict(dictionary):
+    for key, val in dictionary.items():
+        if isinstance(val, list):
+            dictionary.update({key: replace_backslashes_in_dict(val)})
+        elif isinstance(val, dict):
+            dictionary.update({key: replace_backslashes_in_dict(val)})
+        elif isinstance(val, str):
+            dictionary.update({key: val.replace('\\', "/")})
+    return dictionary
 
 def import_config(configFolder='', recursive=True):
     """
+    MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK
     Import all config files from the supplied folder. Defaults to the root folder  
     Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'  
     
@@ -51,7 +61,7 @@ def import_config(configFolder='', recursive=True):
     config = {}
     for file in yamlFiles:
         print(f"file: {file}")
-        with open(file) as f:
+        with open(file, encoding='utf8') as f:
             try:
                 config.update(yaml.load(f, Loader=yaml.FullLoader))
             except:
@@ -64,6 +74,8 @@ def import_config(configFolder='', recursive=True):
         df.columns = df.iloc[0 ,:]
         df = df.iloc[1: ,:]
         config.update({dictName: df.T.to_dict()})
+
+    config = replace_backslashes_in_dict(config)
 
     return config
 
@@ -190,6 +202,7 @@ def formatData(wb_name, sheet='Sheet1'):
     return
 
 def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=False):
+    import xlwings as xw
     """
     IN DEVELOPMENT, PROBABLY WILL NOT WORK  
 
