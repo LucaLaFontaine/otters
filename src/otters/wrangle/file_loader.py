@@ -186,6 +186,7 @@ def formatData(wb_name, sheet='Sheet1'):
         break # Oof lol, a break in production. Somebody bonk this guy
 
     wb.save(wb_name)
+    wb.close()
     return
 
 def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=False):
@@ -198,9 +199,10 @@ def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=Fal
 
     Accepts relative or absolute paths  
     """
-    if file:
+    if glob(file):
         xw.Book(file).sheets[sheet]
     else:
+        
         xw.Book().sheets[sheet]
     
     #     Clear Filters
