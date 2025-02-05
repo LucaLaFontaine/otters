@@ -141,3 +141,27 @@ def find_strs(S):
     if num_mask.sum() > 0:
         # return num_mask.loc[num_mask == True]
         return list(S[num_mask == True].unique())
+    
+def two_letter_month_to_number(date):
+    """Undocumented  
+    Source: C:\Users\LucaLafontaine\AKONOVIA\EMO - Documents\002-ALCOVI\22-673 VSL - Ajustement Lufa\1-Intrant\Factures\Énergir\read_JCI_data.ipynb
+    """
+    month_mappings = {
+        "JA":"01",
+        "FE":"02",
+        "MR":"03",
+        "AL":"04",
+        "MA":"05",
+        "JN":"06",
+        "JL":"07",
+        "AU":"08",
+        "SE":"09",
+        "OC":"10",
+        "NO":"11",
+        "DE":"12",
+    }
+    
+    for month, number in month_mappings.items():
+        date = date.replace(month, number)
+    
+    return date
