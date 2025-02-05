@@ -275,6 +275,10 @@ def standardize_num_format(df):
     return df
 
 def get_table_gaz(file_name, resample=False):
+    """Undocumented
+    Source: C:\Users\LucaLafontaine\AKONOVIA\EMO - Documents\002-ALCOVI\22-673 VSL - Ajustement Lufa\1-Intrant\Factures\Énergir\read_JCI_data.ipynb
+    Untested in this environment. Want to se if having it here will make development faster
+    """
     doc = pymupdf.open(file_name)
     number_pages = doc.page_count
     for i in range(number_pages):
