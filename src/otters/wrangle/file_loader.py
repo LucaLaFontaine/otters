@@ -7,8 +7,10 @@ import os
 from glob import glob
 import inspect
 import warnings
+import re
 
-from wrangler import two_letter_month_to_number
+from .wrangler import two_letter_month_to_number
+from .time_tools import selectiveResample
 
 import pymupdf
 import tabula
@@ -265,9 +267,9 @@ def standardize_num_format(df):
                 new_col = col+f" {symbol.strip('\\')}"
                 df.rename(columns={col:new_col}, inplace=True)
                 col = new_col
-                print(col)
-        print(df.columns)
-        print(df[col])
+                # print(col)
+        # print(df.columns)
+        # print(df[col])
         try:
             df[col] = pd.to_numeric(df[col], )
         except:
@@ -344,10 +346,7 @@ def get_table_gaz(file_name, resample=False):
             table = table.drop(['Période du', "au", ], axis=1)
             table.index = table['Début']
             
-            table = table.loc[:, ["Fin", "Nombre de jours", "Volume (m3)", "Montant* ($)"]] 
-
-
-            # return table
+            table = table.loc[:, ["Fin", "Volume (m3)", "Montant* ($)"]] 
         
             if resample:
                 tableResampled = table.reset_index()
@@ -355,16 +354,96 @@ def get_table_gaz(file_name, resample=False):
 
                 # tableResampled = tableResampled._append({"Début":table.loc[11, "Fin"]}, ignore_index=True)
                 tableResampled = pd.concat([tableResampled.set_index('Début'), tableResampled.set_index('Fin')]).drop(["Début", "Fin"], axis=1)
-                tableResampled = tableResampled.resample("D").mean().ffill().resample("MS").mean()
+                tableResampled = tableResampled.resample("D").mean().ffill()
+                tableResampled['Jours'] = 1
+                tableResampled = selectiveResample(tableResampled, 'MS', tableResampled.columns.drop("Jours"), "Jours") 
 
                 return tableResampled
             else:
                 return table
         
-            # return tableResampled
-            # table = standardize_num_format(str2dt(table, 'Date de début'))
-            # with pd.ExcelWriter(f"{file_name.replace(".pdf", "")} - gas.xlsx") as writer:
-            #     table.to_excel(writer, sheet_name=f'Raw')
-            #     tableResampled.to_excel(writer, sheet_name=f'Resampled')
-            # print(table)
-            return table
+def get_table_tarif_M(file_name, resample=False):
+    """Undocumented
+    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb
+    Untested in this environment. Want to se if having it here will make development faster
+    """
+    doc = pymupdf.open(file_name)
+    number_pages = doc.page_count
+    for i in range(number_pages):
+        page = doc[i]
+
+        ## Find METER NUMBER
+        meter_locations = page.search_for("Numéro de compte")
+        if len(meter_locations)>0:
+            ## Take only the first meter 
+            meter_location = meter_locations[0]
+
+            top = meter_location[1]
+            left = meter_location[0]
+            bottom = meter_location[3]+25
+            right = meter_location[2]+33
+            meter_number_list = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top, left, bottom, right))
+            meter_number_df = meter_number_list[0]
+            meter_number = int(meter_number_df.iloc[0,0].replace(' ', ''))
+        else: 
+            warnings.warn("No meter was found for the file:\n {file_name}\nContinuing with meter number: 0")
+            meter_number = 0
+    
+        tables_historique = page.search_for("HISTORIQUE DE LA CONSOMMATION D’ÉLECTRICITÉ")
+        if len(tables_historique)==0:
+            tables_historique = page.search_for("Consommations antérieures")
+
+        if len(tables_historique)>0:
+            table_historique = tables_historique[0]
+
+            ## SHift the box down to get the headers of the actual table
+            top = table_historique[1]+10
+            left = table_historique[0]-20
+            bottom = table_historique[3]+30
+            right = table_historique[2]+150
+            headers = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top, left, bottom, right))
+
+            header = headers[0]
+            columns = list(zip(header.columns, header.iloc[0,:]))
+            columns = [(' '.join(str(i) for i in x)) for x in columns]
+            columns = [re.sub('Unnamed: .+? ', '', col).strip() for col in columns]
+            header = columns
+            # return header
+            top = bottom-20
+            left = left
+            bottom = bottom+105
+            right = right
+            table = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1,area=(top, left, bottom, right))[0].fillna("")
+            # table = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top+10, left-5, bottom-50, right-115))[0].fillna("")
+            # table.columns = (table.columns + " " + table.iloc[0, :].astype(str)).replace(".[0-9]", "", regex=True).str.strip(' ')
+            table.columns = header
+            # return table
+
+            table['Début'] = table.apply(lambda x: (' ').join(x["Du"].split(' ')[:3]), axis=1).astype('unicode')
+            table['Fin'] = table.apply(lambda x: (' ').join(x["Au"].split(' ')[:3]), axis=1).astype('unicode')
+            table = standardize_num_format(table, )
+            # table = table.drop(['Période du', "au", ], axis=1)
+            table.index = table['Début']
+            
+            table = table.loc[:, [
+                "Fin", 'kWh', 'Moyenne (kWh/j)',
+                'Puissance facturée (kW)', 'Temp. ext. moyenne °C','Montant (taxes comprises) $'
+                ]
+            ]
+
+            if resample:
+                tableResampled = table.reset_index()
+                # return tableResampled
+
+                tableResampled = pd.concat([tableResampled.set_index('Début'), tableResampled.set_index('Fin')]).drop(["Début", "Fin"], axis=1)
+                tableResampled.index = pd.to_datetime(tableResampled.index)
+                tableResampled.index.name = 'Timestamp'
+                # return tableResampled
+
+                tableResampled = tableResampled.resample("D").mean().ffill()
+                tableResampled['Jours'] = 1
+                tableResampled = selectiveResample(tableResampled, 'MS', tableResampled.columns.drop("Jours"), "Jours") 
+
+                return tableResampled
+            else:
+                return table

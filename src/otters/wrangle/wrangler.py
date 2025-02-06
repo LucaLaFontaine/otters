@@ -144,7 +144,8 @@ def find_strs(S):
     
 def two_letter_month_to_number(date):
     """Undocumented  
-    Source: C:\Users\LucaLafontaine\AKONOVIA\EMO - Documents\002-ALCOVI\22-673 VSL - Ajustement Lufa\1-Intrant\Factures\Énergir\read_JCI_data.ipynb
+    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb
+
     """
     month_mappings = {
         "JA":"01",
