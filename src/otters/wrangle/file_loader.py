@@ -246,7 +246,7 @@ def save2xl(df, file='', sheet='Data', startCell=[3, 2], table=True, visible=Fal
 
 def standardize_num_format(df):
     """Undocumented
-    Source: C:\Users\LucaLafontaine\AKONOVIA\EMO - Documents\002-ALCOVI\22-673 VSL - Ajustement Lufa\1-Intrant\Factures\Énergir\read_JCI_data.ipynb
+    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb
     THis is used internally and just for the invoice reading (energir) functions
     """
     # print(df.dtypes)
@@ -276,7 +276,7 @@ def standardize_num_format(df):
 
 def get_table_gaz(file_name, resample=False):
     """Undocumented
-    Source: C:\Users\LucaLafontaine\AKONOVIA\EMO - Documents\002-ALCOVI\22-673 VSL - Ajustement Lufa\1-Intrant\Factures\Énergir\read_JCI_data.ipynb
+    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb
     Untested in this environment. Want to se if having it here will make development faster
     """
     doc = pymupdf.open(file_name)
