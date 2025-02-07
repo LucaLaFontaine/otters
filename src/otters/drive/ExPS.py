@@ -59,19 +59,6 @@ class ExPS():
             display(dfXl.head())
 
         return dfXl
-    
-    def getCSV(self, verbose=False):
-        csvList = file_loader.getCSVDFs(self.config['CSVdataFolder'])
-
-        dfCSV = pd.concat(csvList)
-        dfCSV = time_tools.str2dt(dfCSV, drop=True)
-        dfCSV = dfCSV[~dfCSV.index.duplicated(keep='last')]
-
-        if verbose:
-            print(dfCSV.info())
-            display(dfCSV.head())
-
-        return dfCSV
 
     def createPPT(self):
         """

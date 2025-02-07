@@ -120,9 +120,7 @@ def compare_lists(strings, patterns):
         for pattern in patterns:
             if pattern in string:
                 return True
-    return False 
-
-
+    return False
 
 def find_strs(S):
     """
