@@ -68,8 +68,7 @@ def merge_dfs(dfs):
         mergedCols.append(mergedCol[~mergedCol.index.duplicated(keep="first")])
 
     dfMerged = pd.concat(mergedCols, axis=1)
-    return dfMerged
-    
+    return dfMerged   
 
 def merge_df_cols(df):
     # Takes the df and lines up all the same column one of top of each other. 
@@ -143,7 +142,6 @@ def find_strs(S):
 def two_letter_month_to_number(date):
     """Undocumented  
     Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb
-
     """
     month_mappings = {
         "JA":"01",
@@ -162,5 +160,4 @@ def two_letter_month_to_number(date):
     
     for month, number in month_mappings.items():
         date = date.replace(month, number)
-    
     return date

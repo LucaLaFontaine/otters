@@ -117,7 +117,7 @@ def getExcelDFs(path='*', recursive=False, verbose=False,):
     Import all Excel files from a path into a list of DataFrames  
 
     **Parameters:**
-    > **path: *string, default: "\*"***  
+    > **path: *string, default: "/*"***  
     >> Pass a relative or absolute path
 
     > **recursive: *bool, default: False***  
@@ -230,8 +230,8 @@ def standardize_num_format(df):
 
         for symbol in ['%', r"\$", '¢', "°C"]:
             if df[col].str.contains(symbol).any():
-                print(f"{symbol} {col}")
-                print(df[col].str.contains(symbol, regex=True))
+                # print(f"{symbol} {col}")
+                # print(df[col].str.contains(symbol, regex=True))
                 df.loc[:, col] = df[col].str.replace(symbol, '', regex=True)
                 new_col = col+f" {symbol.strip('\\')}"
                 df.rename(columns={col:new_col}, inplace=True)
@@ -309,8 +309,7 @@ def get_table_gaz(file_name, resample=False):
             table['Fin'] = table.apply(lambda x: (' ').join(x["au"].split(' ')[:3]), axis=1).astype('unicode')
             table['Fin'] = pd.to_datetime(table['Fin'].apply(lambda x: two_letter_month_to_number(x)), format='%d %m %Y')
 
-            table['Volume (m3)'] = table['Volume (m3)'].str.replace("[A-Z\s]", "", regex=True).astype("float")
-            print(table.dtypes)
+            table['Volume (m3)'] = table['Volume (m3)'].str.replace(r"[A-Z\s]", "", regex=True).astype("float")
             table = standardize_num_format(table)
             table = table.drop(['Période du', "au", ], axis=1)
             table.index = table['Début']
