@@ -271,7 +271,21 @@ def get_table_gaz(file_name, resample=False):
             warnings.warn("No meter was found for the file:\n {file_name}\nContinuing with meter number: 0")
             meter_number = 0
 
-        # return meter_number
+        ## Find Invoice number so that the invoices can be sorted
+        invoice_locations = page.search_for("Facture n°")
+        if len(invoice_locations)>0:
+            ## Take only the first invoice number location
+            invoice_location = invoice_locations[0]
+            top = invoice_location[1]-5
+            left = invoice_location[0]+25
+            bottom = invoice_location[3]+5
+            right = invoice_location[2]+100
+            invoice_number_list = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top, left, bottom, right))
+            invoice_number_df = invoice_number_list[0]
+            invoice_number = int(invoice_number_df.columns[1].replace(' ', '')) # We're taking the second header name... i don't love this
+        else: 
+            warnings.warn("No invoice number was found for the file:\n {file_name}\nContinuing with invoice number: 0")
+            invoice_number = 0
     
         tables_historique = page.search_for("Historique de consommation")
         if len(tables_historique)==0:
@@ -292,20 +306,15 @@ def get_table_gaz(file_name, resample=False):
             columns = [(' '.join(str(i) for i in x)) for x in columns]
             columns = [col.replace('Unnamed: 0', '').strip() for col in columns]
             header = columns
-            # return header
             top = bottom-10
             left = left
             bottom = bottom+120
             right = right
             table = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1,area=(top, left, bottom, right))[0].fillna("")
-            # table = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top+10, left-5, bottom-50, right-115))[0].fillna("")
-            # table.columns = (table.columns + " " + table.iloc[0, :].astype(str)).replace(".[0-9]", "", regex=True).str.strip(' ')
             table.columns = header
-            # return table
 
             table['Début'] = table.apply(lambda x: (' ').join(x["Période du"].split(' ')[:3]), axis=1).astype('unicode')
             table['Début'] = pd.to_datetime(table['Début'].apply(lambda x: two_letter_month_to_number(x)), format='%d %m %Y')
-            # table['Début'] = pd.to_datetime(table['Début'], format='%d %m %Y')
             table['Fin'] = table.apply(lambda x: (' ').join(x["au"].split(' ')[:3]), axis=1).astype('unicode')
             table['Fin'] = pd.to_datetime(table['Fin'].apply(lambda x: two_letter_month_to_number(x)), format='%d %m %Y')
 
@@ -315,12 +324,12 @@ def get_table_gaz(file_name, resample=False):
             table.index = table['Début']
             
             table = table.loc[:, ["Fin", "Volume (m3)", "Montant* ($)"]] 
+
+            table['invoice_number'] = invoice_number
+            table['meter_number'] = meter_number
         
             if resample:
                 tableResampled = table.reset_index()
-                # return tableResampled
-
-                # tableResampled = tableResampled._append({"Début":table.loc[11, "Fin"]}, ignore_index=True)
                 tableResampled = pd.concat([tableResampled.set_index('Début'), tableResampled.set_index('Fin')]).drop(["Début", "Fin"], axis=1)
                 tableResampled = tableResampled.resample("D").mean().ffill()
                 tableResampled['Jours'] = 1
@@ -343,7 +352,7 @@ def get_table_tarif_M(file_name, resample=False):
         ## Find METER NUMBER
         meter_locations = page.search_for("Numéro de compte")
         if len(meter_locations)>0:
-            ## Take only the first meter 
+            ## Take only the first meter number location
             meter_location = meter_locations[0]
 
             top = meter_location[1]
@@ -356,6 +365,23 @@ def get_table_tarif_M(file_name, resample=False):
         else: 
             warnings.warn("No meter was found for the file:\n {file_name}\nContinuing with meter number: 0")
             meter_number = 0
+
+        ## Find Invoice number so that the invoices can be sorted
+        invoice_locations = page.search_for("Numéro de facture")
+        if len(invoice_locations)>0:
+            ## Take only the first invoice number location
+            invoice_location = invoice_locations[0]
+
+            top = invoice_location[1]
+            left = invoice_location[0]
+            bottom = invoice_location[3]+25
+            right = invoice_location[2]+33
+            invoice_number_list = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top, left, bottom, right))
+            invoice_number_df = invoice_number_list[0]
+            invoice_number = int(invoice_number_df.iloc[0,0].replace(' ', ''))
+        else: 
+            warnings.warn("No invoice number was found for the file:\n {file_name}\nContinuing with invoice number: 0")
+            invoice_number = 0
     
         tables_historique = page.search_for("HISTORIQUE DE LA CONSOMMATION D’ÉLECTRICITÉ")
         if len(tables_historique)==0:
@@ -376,21 +402,16 @@ def get_table_tarif_M(file_name, resample=False):
             columns = [(' '.join(str(i) for i in x)) for x in columns]
             columns = [re.sub('Unnamed: .+? ', '', col).strip() for col in columns]
             header = columns
-            # return header
             top = bottom-20
             left = left
             bottom = bottom+105
             right = right
             table = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1,area=(top, left, bottom, right))[0].fillna("")
-            # table = tabula.read_pdf(file_name, lattice=False,stream = True,  pages=i+1, area=(top+10, left-5, bottom-50, right-115))[0].fillna("")
-            # table.columns = (table.columns + " " + table.iloc[0, :].astype(str)).replace(".[0-9]", "", regex=True).str.strip(' ')
             table.columns = header
-            # return table
 
             table['Début'] = table.apply(lambda x: (' ').join(x["Du"].split(' ')[:3]), axis=1).astype('unicode')
             table['Fin'] = table.apply(lambda x: (' ').join(x["Au"].split(' ')[:3]), axis=1).astype('unicode')
             table = standardize_num_format(table, )
-            # table = table.drop(['Période du', "au", ], axis=1)
             table.index = table['Début']
             
             table = table.loc[:, [
@@ -398,15 +419,15 @@ def get_table_tarif_M(file_name, resample=False):
                 'Puissance facturée (kW)', 'Temp. ext. moyenne °C','Montant (taxes comprises) $'
                 ]
             ]
+            table['invoice_number'] = invoice_number
+            table['meter_number'] = meter_number
 
             if resample:
                 tableResampled = table.reset_index()
-                # return tableResampled
 
                 tableResampled = pd.concat([tableResampled.set_index('Début'), tableResampled.set_index('Fin')]).drop(["Début", "Fin"], axis=1)
                 tableResampled.index = pd.to_datetime(tableResampled.index)
                 tableResampled.index.name = 'Timestamp'
-                # return tableResampled
 
                 tableResampled = tableResampled.resample("D").mean().ffill()
                 tableResampled['Jours'] = 1
