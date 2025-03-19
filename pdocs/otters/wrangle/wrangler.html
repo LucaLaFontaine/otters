@@ -31,19 +31,10 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="function" href="#get100LowestValues">get100LowestValues</a>
-            </li>
-            <li>
-                    <a class="function" href="#getNRowAvg">getNRowAvg</a>
-            </li>
-            <li>
                     <a class="function" href="#gapAndIsland">gapAndIsland</a>
             </li>
             <li>
                     <a class="function" href="#mergeCloseEvents">mergeCloseEvents</a>
-            </li>
-            <li>
-                    <a class="function" href="#extendTags">extendTags</a>
             </li>
             <li>
                     <a class="function" href="#merge_dfs">merge_dfs</a>
@@ -52,7 +43,13 @@
                     <a class="function" href="#merge_df_cols">merge_df_cols</a>
             </li>
             <li>
-                    <a class="function" href="#extractFISTags">extractFISTags</a>
+                    <a class="function" href="#compare_lists">compare_lists</a>
+            </li>
+            <li>
+                    <a class="function" href="#find_strs">find_strs</a>
+            </li>
+            <li>
+                    <a class="function" href="#two_letter_month_to_number">two_letter_month_to_number</a>
             </li>
     </ul>
 
@@ -77,259 +74,171 @@
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span> <span class="nn">otters.wrangle.time_tools</span> <span class="kn">import</span> <span class="n">str2dt</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="k">def</span> <span class="nf">get100LowestValues</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">minVal</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">Gets the 100 lowest values from each column provided in df</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">It will filter anything lower than minVal, so it&#39;ll ignore negative or blank values if minVal=1</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="k">def</span> <span class="nf">gapAndIsland</span><span class="p">(</span><span class="n">dfCol</span><span class="p">):</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">    Takes an np.series data type (ie. a df single column)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">    returns the entire column broken up into sections where all the numbers are the same. </span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">    Good for iterating on an events column or tracking flags. </span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">Parameters:</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">df: DataFrame, required</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">minVal: int, default: 1  </span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">Returns: DataFrame</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    &quot;&quot;&quot;</span>    
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="c1"># force the df to a DataFrame</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="n">colList</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>        <span class="n">colSeries</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">minVal</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>        <span class="n">colList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colSeries</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>    <span class="n">df</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">colList</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>    <span class="k">return</span> <span class="n">df</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="k">def</span> <span class="nf">getNRowAvg</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">ascending</span><span class="p">):</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="c1"># should be a series</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="n">ascending</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="n">rows</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="k">def</span> <span class="nf">gapAndIsland</span><span class="p">(</span><span class="n">dfCol</span><span class="p">):</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">    Takes an np.series data type (ie. a df single column)</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">    returns the entire column broken up into sections where all the numbers are the same. </span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">    Good for iterating on an events column or tracking flags. </span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">    new: dfCol can be df with one column or series</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="k">def</span> <span class="nf">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">mergeWithinHours</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Merges events that are close so we don&#39;t get bunches of events. Not entirely necessary but it makes it cleaner. </span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">    Recursive function, so it takes each event and calculates if it&#39;s within 3600sec of the last event. </span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">    If so it adds this event to the last event and deletes this event.</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">    returns the new list of events</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="k">return</span> <span class="n">events</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="n">eventStart</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>    <span class="n">eventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="n">lastEventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>    <span class="k">if</span> <span class="p">((</span><span class="n">eventStart</span><span class="o">-</span><span class="n">lastEventEnd</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">mergeWithinHours</span><span class="p">:</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>        <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>        <span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="n">events</span> <span class="o">=</span> <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">)</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>        <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="k">return</span> <span class="n">events</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="k">def</span> <span class="nf">extendTags</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span>  <span class="n">maxNum</span><span class="p">,</span> <span class="n">exampleNum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="p">[],):</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    Use to extend a list of tags (usually tags in an EMS or files) for one grouping into many</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">    Say you have 5 tags each for 10 AHUs that you have to pull. Use this to generate all 50 tags from the first 5</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">    Parameters:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">    tags: list, Required</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">    maxNum: int, Required, largest number in the set</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">    exampleNum: int, Default: 1, number you&#39;re replacing in the exmple set</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">    missing: list, Default: empty, any missing numbers in the set</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>    <span class="n">extendedTags</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxNum</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>                <span class="k">continue</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>            <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)):</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>                <span class="n">extendedTags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exampleNum</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>     
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="k">return</span> <span class="n">extendedTags</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="k">def</span> <span class="nf">merge_dfs</span><span class="p">(</span><span class="n">dfs</span><span class="p">):</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    Merge 2 or more dfs where you have some overlapping data.  </span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">    Keeps the values randomly as far as I can tell, though it drops nan values</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">    **Parameters:**  </span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">    &gt; **dfs: *list of DataFrames/Series, Required***  </span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">    &gt;&gt; It will take any number of dfs</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">    **Returns:**  </span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">    &gt; **Merged DataFrame**  </span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="c1"># Create the set of all columns in the list of dataframes</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="p">[</span><span class="n">allCols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">]</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">allCols</span><span class="p">))</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="c1"># dfMerged = pd.DataFrame()</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="n">mergedCols</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="c1"># for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="c1"># then keep the first index. This will leave out the nans that sink to the bottom.</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="c1"># append each column to a list to concat into a def later </span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">allCols</span><span class="p">:</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="n">mergedCol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="n">mergedCols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mergedCol</span><span class="p">[</span><span class="o">~</span><span class="n">mergedCol</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)])</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mergedCols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">    new: dfCol can be df with one column or series</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">    &gt; **dfCol: *a single df column or series, Required***  </span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">    &gt; **Series**</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">def</span> <span class="nf">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">mergeWithinHours</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    Merges events that are close so we don&#39;t get bunches of events. Not entirely necessary but it makes it cleaner. </span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    Recursive function, so it takes each event and calculates if it&#39;s within &quot;mergeWithinHours&quot; (in hours) of the last event. </span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">    If so it adds this event to the last event and deletes this event.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">    returns the new list of events</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>        <span class="k">return</span> <span class="n">events</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="n">eventStart</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="n">eventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>    <span class="n">lastEventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>    <span class="k">if</span> <span class="p">((</span><span class="n">eventStart</span><span class="o">-</span><span class="n">lastEventEnd</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">mergeWithinHours</span><span class="p">:</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="n">events</span> <span class="o">=</span> <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>    <span class="k">return</span> <span class="n">events</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="k">def</span> <span class="nf">merge_dfs</span><span class="p">(</span><span class="n">dfs</span><span class="p">):</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">    Merge 2 or more dfs where you have some overlapping data.  </span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    Keeps the values randomly as far as I can tell, though it drops nan values</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">    &gt; **dfs: *list of DataFrames/Series, Required***  </span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">    &gt;&gt; It will take any number of dfs</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">    &gt; **Merged DataFrame**  </span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="c1"># Create the set of all columns in the list of dataframes</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="p">[</span><span class="n">allCols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">]</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">allCols</span><span class="p">))</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="c1"># dfMerged = pd.DataFrame()</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>    <span class="n">mergedCols</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="c1"># for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="c1"># then keep the first index. This will leave out the nans that sink to the bottom.</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="c1"># append each column to a list to concat into a def later </span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">allCols</span><span class="p">:</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="n">mergedCol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="n">mergedCols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mergedCol</span><span class="p">[</span><span class="o">~</span><span class="n">mergedCol</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)])</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mergedCols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>   
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="k">def</span> <span class="nf">merge_df_cols</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>    <span class="c1"># Takes the df and lines up all the same column one of top of each other. </span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="c1"># makes a second index with the count of like which instance of the column it is. </span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>        <span class="c1"># is this the first instance of the column? the second? etc.</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="c1"># This means the index is now technically unique</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>    <span class="n">dfStack</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="n">df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>            <span class="p">]),</span> 
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="p">)</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="p">)</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="c1"># You&#39;d think we could just sort index and drop the dupes but this will cause us to lose data. </span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="c1"># The columns aren&#39;t eindividually sorted with nulls first or last</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="c1"># So here we split the df by instance number. we can then update one instance into another in the next step. </span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="n">dfInstances</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="n">dfInstances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dfStack</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="c1"># combine_first essentially updates a df with another df, keeping actual values in favour of nulls</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="c1"># So here we just repeatedly update the new df (dfMerged) with each successive instance, keeping values in place of nulls. </span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="c1"># Keep in mind that this will keep later instances over newer ones. I think this is a good approach</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="c1"># This can be reversed by updating the instance wityh the merged instead. </span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="c1"># This will probably treat 0s as real values and not replace them which I don&#39;t love. </span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">for</span> <span class="n">dfInstance</span> <span class="ow">in</span> <span class="n">dfInstances</span><span class="p">:</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">dfMerged</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">dfInstance</span><span class="p">)</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span> <span class="nf">compare_lists</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">    IN DEVELOPMENT</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    I orifinally used this in Agg Data fro ABI to get all the valid cols from a list in a df. it&#39;s easier to just show the code:  </span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">    `sumCols = [col for col in df.columns if compareList(list(col), sumCols)]`  </span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="k">def</span> <span class="nf">merge_df_cols</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="c1"># Takes the df and lines up all the same column one of top of each other. </span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="c1"># makes a second index with the count of like which instance of the column it is. </span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="c1"># is this the first instance of the column? the second? etc.</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="c1"># This means the index is now technically unique</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="n">dfStack</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="n">df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>            <span class="p">]),</span> 
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="p">)</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>        <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>    <span class="p">)</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">    I think this would have ustility in matching a combo of strings against a series, but I didn&#39;t use it that way. </span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">    &gt; **boolean**  </span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>                <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="k">def</span> <span class="nf">find_strs</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">    Find all the unique strings in a series.  </span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">    Usefull for finding string errors in an otherwise numeric column</span>
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>    <span class="c1"># You&#39;d think we could just sort index and drop the dupes but this will cause us to lose data. </span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="c1"># The columns aren&#39;t eindividually sorted with nulls first or last</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>    <span class="c1"># So here we split the df by instance number. we can then update one instance into another in the next step. </span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="n">dfInstances</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>        <span class="n">dfInstances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dfStack</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>    <span class="c1"># combine_first essentially updates a df with another df, keeping actual values in favour of nulls</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="c1"># So here we just repeatedly update the new df (dfMerged) with each successive instance, keeping values in place of nulls. </span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="c1"># Keep in mind that this will keep later instances over newer ones. I think this is a good approach</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="c1"># This can be reversed by updating the instance wityh the merged instead. </span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>    <span class="c1"># This will probably treat 0s as real values and not replace them which I don&#39;t love. </span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="k">for</span> <span class="n">dfInstance</span> <span class="ow">in</span> <span class="n">dfInstances</span><span class="p">:</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">dfMerged</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">dfInstance</span><span class="p">)</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="k">def</span> <span class="nf">extractFISTags</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="sd">    Take a raw FIS data stream from a df and pivot it to a table. Outputs 2 dfs: the data and the units.  </span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="sd">    **Parameters:**  </span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">    &gt; **df: *DataFrame, Required***  </span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="sd">    &gt;&gt; Should be the raw, concatenated datastream from the raw files. </span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a><span class="sd">    **Returns:**  </span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a><span class="sd">    &gt; **dfAna**   </span>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a><span class="sd">    &gt;&gt; Should be the raw, concatenated datastream from the raw files.   </span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="sd">    &gt; **dfUnits**</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a><span class="sd">    &gt;&gt; A df with just the units of the columns in dfAna</span>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="c1"># Remove unnamed columns</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;^Unnamed&#39;</span><span class="p">)]</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="c1"># Reset the index</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>    <span class="c1"># fill down the machine name so it applies to each row. This is essentially the column name</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Machine Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    
-</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>    <span class="c1"># It&#39;s important to dedupe the timestamp/machine name combo before pivoting</span>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sample Time&#39;</span><span class="p">,</span> <span class="s1">&#39;Machine Name&#39;</span><span class="p">])</span>
-</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>    <span class="c1"># df = df.reset_index().groupby([&#39;Timestamp&#39;, &#39;Machine Name&#39;]).max()[&#39;Actual Value&#39;].set_index(&#39;Timestamp&#39;)</span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>    <span class="c1"># &quot;Sample Time&quot; is the time column. Make it the index</span>
-</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">str2dt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">timeCol</span><span class="o">=</span><span class="s1">&#39;Sample Time&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>
-</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>    <span class="n">dfAna</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;Machine Name&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Actual Value&#39;</span><span class="p">)</span><span class="c1">#.dropna()</span>
-</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>    <span class="k">if</span> <span class="n">strip</span><span class="p">:</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>        <span class="n">dfAna</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:: : &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; -&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dfAna</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>
-</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>    <span class="c1"># Now get the units</span>
-</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>    <span class="n">dfUnits</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;Machine Name&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Units&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>    <span class="n">dfUnits</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Units&#39;</span>
-</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>
-</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>    <span class="k">return</span> <span class="n">dfAna</span><span class="p">,</span> <span class="n">dfUnits</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">    Normally you would want to search all the string columns in a df. YOu can jsut loop over all the columns with the type `object`  </span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">    </span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="sd">    &gt; **S: *Series, Required***  </span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="sd">    &gt; **list**  </span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="n">num_mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">if</span> <span class="n">num_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="c1"># return num_mask.loc[num_mask == True]</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">num_mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="k">def</span> <span class="nf">two_letter_month_to_number</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Undocumented  </span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="n">month_mappings</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="s2">&quot;JA&quot;</span><span class="p">:</span><span class="s2">&quot;01&quot;</span><span class="p">,</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>        <span class="s2">&quot;FE&quot;</span><span class="p">:</span><span class="s2">&quot;02&quot;</span><span class="p">,</span>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>        <span class="s2">&quot;MR&quot;</span><span class="p">:</span><span class="s2">&quot;03&quot;</span><span class="p">,</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="s2">&quot;AL&quot;</span><span class="p">:</span><span class="s2">&quot;04&quot;</span><span class="p">,</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="s2">&quot;MA&quot;</span><span class="p">:</span><span class="s2">&quot;05&quot;</span><span class="p">,</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="s2">&quot;JN&quot;</span><span class="p">:</span><span class="s2">&quot;06&quot;</span><span class="p">,</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="s2">&quot;JL&quot;</span><span class="p">:</span><span class="s2">&quot;07&quot;</span><span class="p">,</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>        <span class="s2">&quot;AU&quot;</span><span class="p">:</span><span class="s2">&quot;08&quot;</span><span class="p">,</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="s2">&quot;SE&quot;</span><span class="p">:</span><span class="s2">&quot;09&quot;</span><span class="p">,</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>        <span class="s2">&quot;OC&quot;</span><span class="p">:</span><span class="s2">&quot;10&quot;</span><span class="p">,</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="s2">&quot;NO&quot;</span><span class="p">:</span><span class="s2">&quot;11&quot;</span><span class="p">,</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>        <span class="s2">&quot;DE&quot;</span><span class="p">:</span><span class="s2">&quot;12&quot;</span><span class="p">,</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>    <span class="p">}</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="k">for</span> <span class="n">month</span><span class="p">,</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">month_mappings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="k">return</span> <span class="n">date</span>
 </span></pre></div>
 
 
             </section>
-                <section id="get100LowestValues">
-                            <input id="get100LowestValues-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">get100LowestValues</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">df</span>, </span><span class="param"><span class="n">minVal</span><span class="o">=</span><span class="mi">1</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="get100LowestValues-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#get100LowestValues"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get100LowestValues-6"><a href="#get100LowestValues-6"><span class="linenos"> 6</span></a><span class="k">def</span> <span class="nf">get100LowestValues</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">minVal</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="get100LowestValues-7"><a href="#get100LowestValues-7"><span class="linenos"> 7</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="get100LowestValues-8"><a href="#get100LowestValues-8"><span class="linenos"> 8</span></a><span class="sd">Gets the 100 lowest values from each column provided in df</span>
-</span><span id="get100LowestValues-9"><a href="#get100LowestValues-9"><span class="linenos"> 9</span></a><span class="sd">It will filter anything lower than minVal, so it&#39;ll ignore negative or blank values if minVal=1</span>
-</span><span id="get100LowestValues-10"><a href="#get100LowestValues-10"><span class="linenos">10</span></a>
-</span><span id="get100LowestValues-11"><a href="#get100LowestValues-11"><span class="linenos">11</span></a><span class="sd">Parameters:</span>
-</span><span id="get100LowestValues-12"><a href="#get100LowestValues-12"><span class="linenos">12</span></a><span class="sd">df: DataFrame, required</span>
-</span><span id="get100LowestValues-13"><a href="#get100LowestValues-13"><span class="linenos">13</span></a><span class="sd">minVal: int, default: 1  </span>
-</span><span id="get100LowestValues-14"><a href="#get100LowestValues-14"><span class="linenos">14</span></a>
-</span><span id="get100LowestValues-15"><a href="#get100LowestValues-15"><span class="linenos">15</span></a><span class="sd">Returns: DataFrame</span>
-</span><span id="get100LowestValues-16"><a href="#get100LowestValues-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>    
-</span><span id="get100LowestValues-17"><a href="#get100LowestValues-17"><span class="linenos">17</span></a>    <span class="c1"># force the df to a DataFrame</span>
-</span><span id="get100LowestValues-18"><a href="#get100LowestValues-18"><span class="linenos">18</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</span><span id="get100LowestValues-19"><a href="#get100LowestValues-19"><span class="linenos">19</span></a>    <span class="n">colList</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="get100LowestValues-20"><a href="#get100LowestValues-20"><span class="linenos">20</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="get100LowestValues-21"><a href="#get100LowestValues-21"><span class="linenos">21</span></a>        <span class="n">colSeries</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">minVal</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-</span><span id="get100LowestValues-22"><a href="#get100LowestValues-22"><span class="linenos">22</span></a>        <span class="n">colList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colSeries</span><span class="p">)</span>
-</span><span id="get100LowestValues-23"><a href="#get100LowestValues-23"><span class="linenos">23</span></a>
-</span><span id="get100LowestValues-24"><a href="#get100LowestValues-24"><span class="linenos">24</span></a>    <span class="n">df</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">colList</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   
-</span><span id="get100LowestValues-25"><a href="#get100LowestValues-25"><span class="linenos">25</span></a>    <span class="k">return</span> <span class="n">df</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Gets the 100 lowest values from each column provided in df
-It will filter anything lower than minVal, so it'll ignore negative or blank values if minVal=1</p>
-
-<p>Parameters:
-df: DataFrame, required
-minVal: int, default: 1  </p>
-
-<p>Returns: DataFrame</p>
-</div>
-
-
-                </section>
-                <section id="getNRowAvg">
-                            <input id="getNRowAvg-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">getNRowAvg</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">df</span>, </span><span class="param"><span class="n">rows</span>, </span><span class="param"><span class="n">ascending</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="getNRowAvg-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#getNRowAvg"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="getNRowAvg-27"><a href="#getNRowAvg-27"><span class="linenos">27</span></a><span class="k">def</span> <span class="nf">getNRowAvg</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">ascending</span><span class="p">):</span>
-</span><span id="getNRowAvg-28"><a href="#getNRowAvg-28"><span class="linenos">28</span></a>    <span class="c1"># should be a series</span>
-</span><span id="getNRowAvg-29"><a href="#getNRowAvg-29"><span class="linenos">29</span></a>    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="n">ascending</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="n">rows</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
-</span></pre></div>
-
-
-    
-
-                </section>
                 <section id="gapAndIsland">
                             <input id="gapAndIsland-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -341,15 +250,21 @@ minVal: int, default: 1  </p>
 
     </div>
     <a class="headerlink" href="#gapAndIsland"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="gapAndIsland-31"><a href="#gapAndIsland-31"><span class="linenos">31</span></a><span class="k">def</span> <span class="nf">gapAndIsland</span><span class="p">(</span><span class="n">dfCol</span><span class="p">):</span>
-</span><span id="gapAndIsland-32"><a href="#gapAndIsland-32"><span class="linenos">32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="gapAndIsland-33"><a href="#gapAndIsland-33"><span class="linenos">33</span></a><span class="sd">    Takes an np.series data type (ie. a df single column)</span>
-</span><span id="gapAndIsland-34"><a href="#gapAndIsland-34"><span class="linenos">34</span></a><span class="sd">    returns the entire column broken up into sections where all the numbers are the same. </span>
-</span><span id="gapAndIsland-35"><a href="#gapAndIsland-35"><span class="linenos">35</span></a><span class="sd">    Good for iterating on an events column or tracking flags. </span>
-</span><span id="gapAndIsland-36"><a href="#gapAndIsland-36"><span class="linenos">36</span></a>
-</span><span id="gapAndIsland-37"><a href="#gapAndIsland-37"><span class="linenos">37</span></a><span class="sd">    new: dfCol can be df with one column or series</span>
-</span><span id="gapAndIsland-38"><a href="#gapAndIsland-38"><span class="linenos">38</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="gapAndIsland-39"><a href="#gapAndIsland-39"><span class="linenos">39</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="gapAndIsland-5"><a href="#gapAndIsland-5"><span class="linenos"> 5</span></a><span class="k">def</span> <span class="nf">gapAndIsland</span><span class="p">(</span><span class="n">dfCol</span><span class="p">):</span>
+</span><span id="gapAndIsland-6"><a href="#gapAndIsland-6"><span class="linenos"> 6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="gapAndIsland-7"><a href="#gapAndIsland-7"><span class="linenos"> 7</span></a><span class="sd">    Takes an np.series data type (ie. a df single column)</span>
+</span><span id="gapAndIsland-8"><a href="#gapAndIsland-8"><span class="linenos"> 8</span></a><span class="sd">    returns the entire column broken up into sections where all the numbers are the same. </span>
+</span><span id="gapAndIsland-9"><a href="#gapAndIsland-9"><span class="linenos"> 9</span></a><span class="sd">    Good for iterating on an events column or tracking flags. </span>
+</span><span id="gapAndIsland-10"><a href="#gapAndIsland-10"><span class="linenos">10</span></a>
+</span><span id="gapAndIsland-11"><a href="#gapAndIsland-11"><span class="linenos">11</span></a><span class="sd">    new: dfCol can be df with one column or series</span>
+</span><span id="gapAndIsland-12"><a href="#gapAndIsland-12"><span class="linenos">12</span></a>
+</span><span id="gapAndIsland-13"><a href="#gapAndIsland-13"><span class="linenos">13</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="gapAndIsland-14"><a href="#gapAndIsland-14"><span class="linenos">14</span></a><span class="sd">    &gt; **dfCol: *a single df column or series, Required***  </span>
+</span><span id="gapAndIsland-15"><a href="#gapAndIsland-15"><span class="linenos">15</span></a>
+</span><span id="gapAndIsland-16"><a href="#gapAndIsland-16"><span class="linenos">16</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="gapAndIsland-17"><a href="#gapAndIsland-17"><span class="linenos">17</span></a><span class="sd">    &gt; **Series**</span>
+</span><span id="gapAndIsland-18"><a href="#gapAndIsland-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="gapAndIsland-19"><a href="#gapAndIsland-19"><span class="linenos">19</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -358,6 +273,18 @@ returns the entire column broken up into sections where all the numbers are the 
 Good for iterating on an events column or tracking flags. </p>
 
 <p>new: dfCol can be df with one column or series</p>
+
+<p><strong>Parameters:</strong>  </p>
+
+<blockquote>
+  <p><strong>dfCol: <em>a single df column or series, Required</em></strong>  </p>
+</blockquote>
+
+<p><strong>Returns:</strong>  </p>
+
+<blockquote>
+  <p><strong>Series</strong></p>
+</blockquote>
 </div>
 
 
@@ -373,79 +300,35 @@ Good for iterating on an events column or tracking flags. </p>
 
     </div>
     <a class="headerlink" href="#mergeCloseEvents"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="mergeCloseEvents-41"><a href="#mergeCloseEvents-41"><span class="linenos">41</span></a><span class="k">def</span> <span class="nf">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">mergeWithinHours</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="mergeCloseEvents-42"><a href="#mergeCloseEvents-42"><span class="linenos">42</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Merges events that are close so we don&#39;t get bunches of events. Not entirely necessary but it makes it cleaner. </span>
-</span><span id="mergeCloseEvents-43"><a href="#mergeCloseEvents-43"><span class="linenos">43</span></a><span class="sd">    Recursive function, so it takes each event and calculates if it&#39;s within 3600sec of the last event. </span>
-</span><span id="mergeCloseEvents-44"><a href="#mergeCloseEvents-44"><span class="linenos">44</span></a><span class="sd">    If so it adds this event to the last event and deletes this event.</span>
-</span><span id="mergeCloseEvents-45"><a href="#mergeCloseEvents-45"><span class="linenos">45</span></a><span class="sd">    returns the new list of events</span>
-</span><span id="mergeCloseEvents-46"><a href="#mergeCloseEvents-46"><span class="linenos">46</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="mergeCloseEvents-47"><a href="#mergeCloseEvents-47"><span class="linenos">47</span></a>    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
-</span><span id="mergeCloseEvents-48"><a href="#mergeCloseEvents-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">events</span>
-</span><span id="mergeCloseEvents-49"><a href="#mergeCloseEvents-49"><span class="linenos">49</span></a>    
-</span><span id="mergeCloseEvents-50"><a href="#mergeCloseEvents-50"><span class="linenos">50</span></a>    <span class="n">eventStart</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="mergeCloseEvents-51"><a href="#mergeCloseEvents-51"><span class="linenos">51</span></a>    <span class="n">eventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="mergeCloseEvents-52"><a href="#mergeCloseEvents-52"><span class="linenos">52</span></a>    <span class="n">lastEventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="mergeCloseEvents-53"><a href="#mergeCloseEvents-53"><span class="linenos">53</span></a>
-</span><span id="mergeCloseEvents-54"><a href="#mergeCloseEvents-54"><span class="linenos">54</span></a>    <span class="k">if</span> <span class="p">((</span><span class="n">eventStart</span><span class="o">-</span><span class="n">lastEventEnd</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">mergeWithinHours</span><span class="p">:</span>
-</span><span id="mergeCloseEvents-55"><a href="#mergeCloseEvents-55"><span class="linenos">55</span></a>        <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="mergeCloseEvents-56"><a href="#mergeCloseEvents-56"><span class="linenos">56</span></a>        <span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span id="mergeCloseEvents-57"><a href="#mergeCloseEvents-57"><span class="linenos">57</span></a>        <span class="n">events</span> <span class="o">=</span> <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">)</span>
-</span><span id="mergeCloseEvents-58"><a href="#mergeCloseEvents-58"><span class="linenos">58</span></a>        
-</span><span id="mergeCloseEvents-59"><a href="#mergeCloseEvents-59"><span class="linenos">59</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="mergeCloseEvents-60"><a href="#mergeCloseEvents-60"><span class="linenos">60</span></a>        <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="mergeCloseEvents-61"><a href="#mergeCloseEvents-61"><span class="linenos">61</span></a>    <span class="k">return</span> <span class="n">events</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="mergeCloseEvents-21"><a href="#mergeCloseEvents-21"><span class="linenos">21</span></a><span class="k">def</span> <span class="nf">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">mergeWithinHours</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+</span><span id="mergeCloseEvents-22"><a href="#mergeCloseEvents-22"><span class="linenos">22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="mergeCloseEvents-23"><a href="#mergeCloseEvents-23"><span class="linenos">23</span></a><span class="sd">    Merges events that are close so we don&#39;t get bunches of events. Not entirely necessary but it makes it cleaner. </span>
+</span><span id="mergeCloseEvents-24"><a href="#mergeCloseEvents-24"><span class="linenos">24</span></a><span class="sd">    Recursive function, so it takes each event and calculates if it&#39;s within &quot;mergeWithinHours&quot; (in hours) of the last event. </span>
+</span><span id="mergeCloseEvents-25"><a href="#mergeCloseEvents-25"><span class="linenos">25</span></a><span class="sd">    If so it adds this event to the last event and deletes this event.</span>
+</span><span id="mergeCloseEvents-26"><a href="#mergeCloseEvents-26"><span class="linenos">26</span></a><span class="sd">    returns the new list of events</span>
+</span><span id="mergeCloseEvents-27"><a href="#mergeCloseEvents-27"><span class="linenos">27</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="mergeCloseEvents-28"><a href="#mergeCloseEvents-28"><span class="linenos">28</span></a>    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+</span><span id="mergeCloseEvents-29"><a href="#mergeCloseEvents-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">events</span>
+</span><span id="mergeCloseEvents-30"><a href="#mergeCloseEvents-30"><span class="linenos">30</span></a>    
+</span><span id="mergeCloseEvents-31"><a href="#mergeCloseEvents-31"><span class="linenos">31</span></a>    <span class="n">eventStart</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="mergeCloseEvents-32"><a href="#mergeCloseEvents-32"><span class="linenos">32</span></a>    <span class="n">eventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="mergeCloseEvents-33"><a href="#mergeCloseEvents-33"><span class="linenos">33</span></a>    <span class="n">lastEventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="mergeCloseEvents-34"><a href="#mergeCloseEvents-34"><span class="linenos">34</span></a>
+</span><span id="mergeCloseEvents-35"><a href="#mergeCloseEvents-35"><span class="linenos">35</span></a>    <span class="k">if</span> <span class="p">((</span><span class="n">eventStart</span><span class="o">-</span><span class="n">lastEventEnd</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">mergeWithinHours</span><span class="p">:</span>
+</span><span id="mergeCloseEvents-36"><a href="#mergeCloseEvents-36"><span class="linenos">36</span></a>        <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="mergeCloseEvents-37"><a href="#mergeCloseEvents-37"><span class="linenos">37</span></a>        <span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span id="mergeCloseEvents-38"><a href="#mergeCloseEvents-38"><span class="linenos">38</span></a>        <span class="n">events</span> <span class="o">=</span> <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">)</span>
+</span><span id="mergeCloseEvents-39"><a href="#mergeCloseEvents-39"><span class="linenos">39</span></a>        
+</span><span id="mergeCloseEvents-40"><a href="#mergeCloseEvents-40"><span class="linenos">40</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="mergeCloseEvents-41"><a href="#mergeCloseEvents-41"><span class="linenos">41</span></a>        <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="mergeCloseEvents-42"><a href="#mergeCloseEvents-42"><span class="linenos">42</span></a>    <span class="k">return</span> <span class="n">events</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Merges events that are close so we don't get bunches of events. Not entirely necessary but it makes it cleaner. 
-Recursive function, so it takes each event and calculates if it's within 3600sec of the last event. 
+Recursive function, so it takes each event and calculates if it's within "mergeWithinHours" (in hours) of the last event. 
 If so it adds this event to the last event and deletes this event.
 returns the new list of events</p>
-</div>
-
-
-                </section>
-                <section id="extendTags">
-                            <input id="extendTags-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">extendTags</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">tags</span>, </span><span class="param"><span class="n">maxNum</span>, </span><span class="param"><span class="n">exampleNum</span><span class="o">=</span><span class="mi">1</span>, </span><span class="param"><span class="n">missing</span><span class="o">=</span><span class="p">[]</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="extendTags-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#extendTags"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="extendTags-63"><a href="#extendTags-63"><span class="linenos">63</span></a><span class="k">def</span> <span class="nf">extendTags</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span>  <span class="n">maxNum</span><span class="p">,</span> <span class="n">exampleNum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="p">[],):</span>
-</span><span id="extendTags-64"><a href="#extendTags-64"><span class="linenos">64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="extendTags-65"><a href="#extendTags-65"><span class="linenos">65</span></a><span class="sd">    Use to extend a list of tags (usually tags in an EMS or files) for one grouping into many</span>
-</span><span id="extendTags-66"><a href="#extendTags-66"><span class="linenos">66</span></a><span class="sd">    Say you have 5 tags each for 10 AHUs that you have to pull. Use this to generate all 50 tags from the first 5</span>
-</span><span id="extendTags-67"><a href="#extendTags-67"><span class="linenos">67</span></a>
-</span><span id="extendTags-68"><a href="#extendTags-68"><span class="linenos">68</span></a><span class="sd">    Parameters:</span>
-</span><span id="extendTags-69"><a href="#extendTags-69"><span class="linenos">69</span></a><span class="sd">    tags: list, Required</span>
-</span><span id="extendTags-70"><a href="#extendTags-70"><span class="linenos">70</span></a><span class="sd">    maxNum: int, Required, largest number in the set</span>
-</span><span id="extendTags-71"><a href="#extendTags-71"><span class="linenos">71</span></a><span class="sd">    exampleNum: int, Default: 1, number you&#39;re replacing in the exmple set</span>
-</span><span id="extendTags-72"><a href="#extendTags-72"><span class="linenos">72</span></a><span class="sd">    missing: list, Default: empty, any missing numbers in the set</span>
-</span><span id="extendTags-73"><a href="#extendTags-73"><span class="linenos">73</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="extendTags-74"><a href="#extendTags-74"><span class="linenos">74</span></a>    <span class="n">extendedTags</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="extendTags-75"><a href="#extendTags-75"><span class="linenos">75</span></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxNum</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="extendTags-76"><a href="#extendTags-76"><span class="linenos">76</span></a>        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
-</span><span id="extendTags-77"><a href="#extendTags-77"><span class="linenos">77</span></a>            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
-</span><span id="extendTags-78"><a href="#extendTags-78"><span class="linenos">78</span></a>                <span class="k">continue</span>
-</span><span id="extendTags-79"><a href="#extendTags-79"><span class="linenos">79</span></a>            <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)):</span>
-</span><span id="extendTags-80"><a href="#extendTags-80"><span class="linenos">80</span></a>                <span class="n">extendedTags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exampleNum</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>     
-</span><span id="extendTags-81"><a href="#extendTags-81"><span class="linenos">81</span></a>    <span class="k">return</span> <span class="n">extendedTags</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Use to extend a list of tags (usually tags in an EMS or files) for one grouping into many
-Say you have 5 tags each for 10 AHUs that you have to pull. Use this to generate all 50 tags from the first 5</p>
-
-<p>Parameters:
-tags: list, Required
-maxNum: int, Required, largest number in the set
-exampleNum: int, Default: 1, number you're replacing in the exmple set
-missing: list, Default: empty, any missing numbers in the set</p>
 </div>
 
 
@@ -461,35 +344,35 @@ missing: list, Default: empty, any missing numbers in the set</p>
 
     </div>
     <a class="headerlink" href="#merge_dfs"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="merge_dfs-83"><a href="#merge_dfs-83"><span class="linenos"> 83</span></a><span class="k">def</span> <span class="nf">merge_dfs</span><span class="p">(</span><span class="n">dfs</span><span class="p">):</span>
-</span><span id="merge_dfs-84"><a href="#merge_dfs-84"><span class="linenos"> 84</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="merge_dfs-85"><a href="#merge_dfs-85"><span class="linenos"> 85</span></a><span class="sd">    Merge 2 or more dfs where you have some overlapping data.  </span>
-</span><span id="merge_dfs-86"><a href="#merge_dfs-86"><span class="linenos"> 86</span></a><span class="sd">    Keeps the values randomly as far as I can tell, though it drops nan values</span>
-</span><span id="merge_dfs-87"><a href="#merge_dfs-87"><span class="linenos"> 87</span></a>
-</span><span id="merge_dfs-88"><a href="#merge_dfs-88"><span class="linenos"> 88</span></a><span class="sd">    **Parameters:**  </span>
-</span><span id="merge_dfs-89"><a href="#merge_dfs-89"><span class="linenos"> 89</span></a><span class="sd">    &gt; **dfs: *list of DataFrames/Series, Required***  </span>
-</span><span id="merge_dfs-90"><a href="#merge_dfs-90"><span class="linenos"> 90</span></a><span class="sd">    &gt;&gt; It will take any number of dfs</span>
-</span><span id="merge_dfs-91"><a href="#merge_dfs-91"><span class="linenos"> 91</span></a>
-</span><span id="merge_dfs-92"><a href="#merge_dfs-92"><span class="linenos"> 92</span></a><span class="sd">    **Returns:**  </span>
-</span><span id="merge_dfs-93"><a href="#merge_dfs-93"><span class="linenos"> 93</span></a><span class="sd">    &gt; **Merged DataFrame**  </span>
-</span><span id="merge_dfs-94"><a href="#merge_dfs-94"><span class="linenos"> 94</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="merge_dfs-95"><a href="#merge_dfs-95"><span class="linenos"> 95</span></a>    <span class="c1"># Create the set of all columns in the list of dataframes</span>
-</span><span id="merge_dfs-96"><a href="#merge_dfs-96"><span class="linenos"> 96</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="merge_dfs-97"><a href="#merge_dfs-97"><span class="linenos"> 97</span></a>    <span class="p">[</span><span class="n">allCols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">]</span>
-</span><span id="merge_dfs-98"><a href="#merge_dfs-98"><span class="linenos"> 98</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">allCols</span><span class="p">))</span>
-</span><span id="merge_dfs-99"><a href="#merge_dfs-99"><span class="linenos"> 99</span></a>
-</span><span id="merge_dfs-100"><a href="#merge_dfs-100"><span class="linenos">100</span></a>    <span class="c1"># dfMerged = pd.DataFrame()</span>
-</span><span id="merge_dfs-101"><a href="#merge_dfs-101"><span class="linenos">101</span></a>    <span class="n">mergedCols</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="merge_dfs-102"><a href="#merge_dfs-102"><span class="linenos">102</span></a>
-</span><span id="merge_dfs-103"><a href="#merge_dfs-103"><span class="linenos">103</span></a>    <span class="c1"># for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)</span>
-</span><span id="merge_dfs-104"><a href="#merge_dfs-104"><span class="linenos">104</span></a>    <span class="c1"># then keep the first index. This will leave out the nans that sink to the bottom.</span>
-</span><span id="merge_dfs-105"><a href="#merge_dfs-105"><span class="linenos">105</span></a>    <span class="c1"># append each column to a list to concat into a def later </span>
-</span><span id="merge_dfs-106"><a href="#merge_dfs-106"><span class="linenos">106</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">allCols</span><span class="p">:</span>
-</span><span id="merge_dfs-107"><a href="#merge_dfs-107"><span class="linenos">107</span></a>        <span class="n">mergedCol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
-</span><span id="merge_dfs-108"><a href="#merge_dfs-108"><span class="linenos">108</span></a>        <span class="n">mergedCols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mergedCol</span><span class="p">[</span><span class="o">~</span><span class="n">mergedCol</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)])</span>
-</span><span id="merge_dfs-109"><a href="#merge_dfs-109"><span class="linenos">109</span></a>
-</span><span id="merge_dfs-110"><a href="#merge_dfs-110"><span class="linenos">110</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mergedCols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="merge_dfs-111"><a href="#merge_dfs-111"><span class="linenos">111</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="merge_dfs-44"><a href="#merge_dfs-44"><span class="linenos">44</span></a><span class="k">def</span> <span class="nf">merge_dfs</span><span class="p">(</span><span class="n">dfs</span><span class="p">):</span>
+</span><span id="merge_dfs-45"><a href="#merge_dfs-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="merge_dfs-46"><a href="#merge_dfs-46"><span class="linenos">46</span></a><span class="sd">    Merge 2 or more dfs where you have some overlapping data.  </span>
+</span><span id="merge_dfs-47"><a href="#merge_dfs-47"><span class="linenos">47</span></a><span class="sd">    Keeps the values randomly as far as I can tell, though it drops nan values</span>
+</span><span id="merge_dfs-48"><a href="#merge_dfs-48"><span class="linenos">48</span></a>
+</span><span id="merge_dfs-49"><a href="#merge_dfs-49"><span class="linenos">49</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="merge_dfs-50"><a href="#merge_dfs-50"><span class="linenos">50</span></a><span class="sd">    &gt; **dfs: *list of DataFrames/Series, Required***  </span>
+</span><span id="merge_dfs-51"><a href="#merge_dfs-51"><span class="linenos">51</span></a><span class="sd">    &gt;&gt; It will take any number of dfs</span>
+</span><span id="merge_dfs-52"><a href="#merge_dfs-52"><span class="linenos">52</span></a>
+</span><span id="merge_dfs-53"><a href="#merge_dfs-53"><span class="linenos">53</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="merge_dfs-54"><a href="#merge_dfs-54"><span class="linenos">54</span></a><span class="sd">    &gt; **Merged DataFrame**  </span>
+</span><span id="merge_dfs-55"><a href="#merge_dfs-55"><span class="linenos">55</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="merge_dfs-56"><a href="#merge_dfs-56"><span class="linenos">56</span></a>    <span class="c1"># Create the set of all columns in the list of dataframes</span>
+</span><span id="merge_dfs-57"><a href="#merge_dfs-57"><span class="linenos">57</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="merge_dfs-58"><a href="#merge_dfs-58"><span class="linenos">58</span></a>    <span class="p">[</span><span class="n">allCols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">]</span>
+</span><span id="merge_dfs-59"><a href="#merge_dfs-59"><span class="linenos">59</span></a>    <span class="n">allCols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">allCols</span><span class="p">))</span>
+</span><span id="merge_dfs-60"><a href="#merge_dfs-60"><span class="linenos">60</span></a>
+</span><span id="merge_dfs-61"><a href="#merge_dfs-61"><span class="linenos">61</span></a>    <span class="c1"># dfMerged = pd.DataFrame()</span>
+</span><span id="merge_dfs-62"><a href="#merge_dfs-62"><span class="linenos">62</span></a>    <span class="n">mergedCols</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="merge_dfs-63"><a href="#merge_dfs-63"><span class="linenos">63</span></a>
+</span><span id="merge_dfs-64"><a href="#merge_dfs-64"><span class="linenos">64</span></a>    <span class="c1"># for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)</span>
+</span><span id="merge_dfs-65"><a href="#merge_dfs-65"><span class="linenos">65</span></a>    <span class="c1"># then keep the first index. This will leave out the nans that sink to the bottom.</span>
+</span><span id="merge_dfs-66"><a href="#merge_dfs-66"><span class="linenos">66</span></a>    <span class="c1"># append each column to a list to concat into a def later </span>
+</span><span id="merge_dfs-67"><a href="#merge_dfs-67"><span class="linenos">67</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">allCols</span><span class="p">:</span>
+</span><span id="merge_dfs-68"><a href="#merge_dfs-68"><span class="linenos">68</span></a>        <span class="n">mergedCol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+</span><span id="merge_dfs-69"><a href="#merge_dfs-69"><span class="linenos">69</span></a>        <span class="n">mergedCols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mergedCol</span><span class="p">[</span><span class="o">~</span><span class="n">mergedCol</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)])</span>
+</span><span id="merge_dfs-70"><a href="#merge_dfs-70"><span class="linenos">70</span></a>
+</span><span id="merge_dfs-71"><a href="#merge_dfs-71"><span class="linenos">71</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mergedCols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="merge_dfs-72"><a href="#merge_dfs-72"><span class="linenos">72</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>   
 </span></pre></div>
 
 
@@ -526,127 +409,179 @@ Keeps the values randomly as far as I can tell, though it drops nan values</p>
 
     </div>
     <a class="headerlink" href="#merge_df_cols"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="merge_df_cols-114"><a href="#merge_df_cols-114"><span class="linenos">114</span></a><span class="k">def</span> <span class="nf">merge_df_cols</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-</span><span id="merge_df_cols-115"><a href="#merge_df_cols-115"><span class="linenos">115</span></a>    <span class="c1"># Takes the df and lines up all the same column one of top of each other. </span>
-</span><span id="merge_df_cols-116"><a href="#merge_df_cols-116"><span class="linenos">116</span></a>    <span class="c1"># makes a second index with the count of like which instance of the column it is. </span>
-</span><span id="merge_df_cols-117"><a href="#merge_df_cols-117"><span class="linenos">117</span></a>        <span class="c1"># is this the first instance of the column? the second? etc.</span>
-</span><span id="merge_df_cols-118"><a href="#merge_df_cols-118"><span class="linenos">118</span></a>        <span class="c1"># This means the index is now technically unique</span>
-</span><span id="merge_df_cols-119"><a href="#merge_df_cols-119"><span class="linenos">119</span></a>    <span class="n">dfStack</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="merge_df_cols-120"><a href="#merge_df_cols-120"><span class="linenos">120</span></a>        <span class="n">df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span>
-</span><span id="merge_df_cols-121"><a href="#merge_df_cols-121"><span class="linenos">121</span></a>            <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([</span>
-</span><span id="merge_df_cols-122"><a href="#merge_df_cols-122"><span class="linenos">122</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-</span><span id="merge_df_cols-123"><a href="#merge_df_cols-123"><span class="linenos">123</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
-</span><span id="merge_df_cols-124"><a href="#merge_df_cols-124"><span class="linenos">124</span></a>            <span class="p">]),</span> 
-</span><span id="merge_df_cols-125"><a href="#merge_df_cols-125"><span class="linenos">125</span></a>            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="merge_df_cols-126"><a href="#merge_df_cols-126"><span class="linenos">126</span></a>        <span class="p">)</span>
-</span><span id="merge_df_cols-127"><a href="#merge_df_cols-127"><span class="linenos">127</span></a>        <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="merge_df_cols-128"><a href="#merge_df_cols-128"><span class="linenos">128</span></a>    <span class="p">)</span>
-</span><span id="merge_df_cols-129"><a href="#merge_df_cols-129"><span class="linenos">129</span></a>
-</span><span id="merge_df_cols-130"><a href="#merge_df_cols-130"><span class="linenos">130</span></a>    <span class="c1"># You&#39;d think we could just sort index and drop the dupes but this will cause us to lose data. </span>
-</span><span id="merge_df_cols-131"><a href="#merge_df_cols-131"><span class="linenos">131</span></a>        <span class="c1"># The columns aren&#39;t eindividually sorted with nulls first or last</span>
-</span><span id="merge_df_cols-132"><a href="#merge_df_cols-132"><span class="linenos">132</span></a>    <span class="c1"># So here we split the df by instance number. we can then update one instance into another in the next step. </span>
-</span><span id="merge_df_cols-133"><a href="#merge_df_cols-133"><span class="linenos">133</span></a>    <span class="n">dfInstances</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="merge_df_cols-134"><a href="#merge_df_cols-134"><span class="linenos">134</span></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="merge_df_cols-135"><a href="#merge_df_cols-135"><span class="linenos">135</span></a>        <span class="n">dfInstances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dfStack</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-</span><span id="merge_df_cols-136"><a href="#merge_df_cols-136"><span class="linenos">136</span></a>
-</span><span id="merge_df_cols-137"><a href="#merge_df_cols-137"><span class="linenos">137</span></a>    <span class="c1"># combine_first essentially updates a df with another df, keeping actual values in favour of nulls</span>
-</span><span id="merge_df_cols-138"><a href="#merge_df_cols-138"><span class="linenos">138</span></a>    <span class="c1"># So here we just repeatedly update the new df (dfMerged) with each successive instance, keeping values in place of nulls. </span>
-</span><span id="merge_df_cols-139"><a href="#merge_df_cols-139"><span class="linenos">139</span></a>    <span class="c1"># Keep in mind that this will keep later instances over newer ones. I think this is a good approach</span>
-</span><span id="merge_df_cols-140"><a href="#merge_df_cols-140"><span class="linenos">140</span></a>        <span class="c1"># This can be reversed by updating the instance wityh the merged instead. </span>
-</span><span id="merge_df_cols-141"><a href="#merge_df_cols-141"><span class="linenos">141</span></a>    <span class="c1"># This will probably treat 0s as real values and not replace them which I don&#39;t love. </span>
-</span><span id="merge_df_cols-142"><a href="#merge_df_cols-142"><span class="linenos">142</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-</span><span id="merge_df_cols-143"><a href="#merge_df_cols-143"><span class="linenos">143</span></a>    <span class="k">for</span> <span class="n">dfInstance</span> <span class="ow">in</span> <span class="n">dfInstances</span><span class="p">:</span>
-</span><span id="merge_df_cols-144"><a href="#merge_df_cols-144"><span class="linenos">144</span></a>        <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">dfMerged</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">dfInstance</span><span class="p">)</span>
-</span><span id="merge_df_cols-145"><a href="#merge_df_cols-145"><span class="linenos">145</span></a>
-</span><span id="merge_df_cols-146"><a href="#merge_df_cols-146"><span class="linenos">146</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="merge_df_cols-74"><a href="#merge_df_cols-74"><span class="linenos"> 74</span></a><span class="k">def</span> <span class="nf">merge_df_cols</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+</span><span id="merge_df_cols-75"><a href="#merge_df_cols-75"><span class="linenos"> 75</span></a>    <span class="c1"># Takes the df and lines up all the same column one of top of each other. </span>
+</span><span id="merge_df_cols-76"><a href="#merge_df_cols-76"><span class="linenos"> 76</span></a>    <span class="c1"># makes a second index with the count of like which instance of the column it is. </span>
+</span><span id="merge_df_cols-77"><a href="#merge_df_cols-77"><span class="linenos"> 77</span></a>        <span class="c1"># is this the first instance of the column? the second? etc.</span>
+</span><span id="merge_df_cols-78"><a href="#merge_df_cols-78"><span class="linenos"> 78</span></a>        <span class="c1"># This means the index is now technically unique</span>
+</span><span id="merge_df_cols-79"><a href="#merge_df_cols-79"><span class="linenos"> 79</span></a>    <span class="n">dfStack</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="merge_df_cols-80"><a href="#merge_df_cols-80"><span class="linenos"> 80</span></a>        <span class="n">df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span>
+</span><span id="merge_df_cols-81"><a href="#merge_df_cols-81"><span class="linenos"> 81</span></a>            <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([</span>
+</span><span id="merge_df_cols-82"><a href="#merge_df_cols-82"><span class="linenos"> 82</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+</span><span id="merge_df_cols-83"><a href="#merge_df_cols-83"><span class="linenos"> 83</span></a>                <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
+</span><span id="merge_df_cols-84"><a href="#merge_df_cols-84"><span class="linenos"> 84</span></a>            <span class="p">]),</span> 
+</span><span id="merge_df_cols-85"><a href="#merge_df_cols-85"><span class="linenos"> 85</span></a>            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="merge_df_cols-86"><a href="#merge_df_cols-86"><span class="linenos"> 86</span></a>        <span class="p">)</span>
+</span><span id="merge_df_cols-87"><a href="#merge_df_cols-87"><span class="linenos"> 87</span></a>        <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="merge_df_cols-88"><a href="#merge_df_cols-88"><span class="linenos"> 88</span></a>    <span class="p">)</span>
+</span><span id="merge_df_cols-89"><a href="#merge_df_cols-89"><span class="linenos"> 89</span></a>
+</span><span id="merge_df_cols-90"><a href="#merge_df_cols-90"><span class="linenos"> 90</span></a>    <span class="c1"># You&#39;d think we could just sort index and drop the dupes but this will cause us to lose data. </span>
+</span><span id="merge_df_cols-91"><a href="#merge_df_cols-91"><span class="linenos"> 91</span></a>        <span class="c1"># The columns aren&#39;t eindividually sorted with nulls first or last</span>
+</span><span id="merge_df_cols-92"><a href="#merge_df_cols-92"><span class="linenos"> 92</span></a>    <span class="c1"># So here we split the df by instance number. we can then update one instance into another in the next step. </span>
+</span><span id="merge_df_cols-93"><a href="#merge_df_cols-93"><span class="linenos"> 93</span></a>    <span class="n">dfInstances</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="merge_df_cols-94"><a href="#merge_df_cols-94"><span class="linenos"> 94</span></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+</span><span id="merge_df_cols-95"><a href="#merge_df_cols-95"><span class="linenos"> 95</span></a>        <span class="n">dfInstances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dfStack</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="merge_df_cols-96"><a href="#merge_df_cols-96"><span class="linenos"> 96</span></a>
+</span><span id="merge_df_cols-97"><a href="#merge_df_cols-97"><span class="linenos"> 97</span></a>    <span class="c1"># combine_first essentially updates a df with another df, keeping actual values in favour of nulls</span>
+</span><span id="merge_df_cols-98"><a href="#merge_df_cols-98"><span class="linenos"> 98</span></a>    <span class="c1"># So here we just repeatedly update the new df (dfMerged) with each successive instance, keeping values in place of nulls. </span>
+</span><span id="merge_df_cols-99"><a href="#merge_df_cols-99"><span class="linenos"> 99</span></a>    <span class="c1"># Keep in mind that this will keep later instances over newer ones. I think this is a good approach</span>
+</span><span id="merge_df_cols-100"><a href="#merge_df_cols-100"><span class="linenos">100</span></a>        <span class="c1"># This can be reversed by updating the instance wityh the merged instead. </span>
+</span><span id="merge_df_cols-101"><a href="#merge_df_cols-101"><span class="linenos">101</span></a>    <span class="c1"># This will probably treat 0s as real values and not replace them which I don&#39;t love. </span>
+</span><span id="merge_df_cols-102"><a href="#merge_df_cols-102"><span class="linenos">102</span></a>    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+</span><span id="merge_df_cols-103"><a href="#merge_df_cols-103"><span class="linenos">103</span></a>    <span class="k">for</span> <span class="n">dfInstance</span> <span class="ow">in</span> <span class="n">dfInstances</span><span class="p">:</span>
+</span><span id="merge_df_cols-104"><a href="#merge_df_cols-104"><span class="linenos">104</span></a>        <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">dfMerged</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">dfInstance</span><span class="p">)</span>
+</span><span id="merge_df_cols-105"><a href="#merge_df_cols-105"><span class="linenos">105</span></a>
+</span><span id="merge_df_cols-106"><a href="#merge_df_cols-106"><span class="linenos">106</span></a>    <span class="k">return</span> <span class="n">dfMerged</span>
 </span></pre></div>
 
 
     
 
                 </section>
-                <section id="extractFISTags">
-                            <input id="extractFISTags-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="compare_lists">
+                            <input id="compare_lists-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">extractFISTags</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">df</span>, </span><span class="param"><span class="n">strip</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">):</span></span>
+        <span class="name">compare_lists</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">strings</span>, </span><span class="param"><span class="n">patterns</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="extractFISTags-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="compare_lists-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#extractFISTags"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="extractFISTags-148"><a href="#extractFISTags-148"><span class="linenos">148</span></a><span class="k">def</span> <span class="nf">extractFISTags</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-</span><span id="extractFISTags-149"><a href="#extractFISTags-149"><span class="linenos">149</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="extractFISTags-150"><a href="#extractFISTags-150"><span class="linenos">150</span></a><span class="sd">    Take a raw FIS data stream from a df and pivot it to a table. Outputs 2 dfs: the data and the units.  </span>
-</span><span id="extractFISTags-151"><a href="#extractFISTags-151"><span class="linenos">151</span></a>
-</span><span id="extractFISTags-152"><a href="#extractFISTags-152"><span class="linenos">152</span></a><span class="sd">    **Parameters:**  </span>
-</span><span id="extractFISTags-153"><a href="#extractFISTags-153"><span class="linenos">153</span></a><span class="sd">    &gt; **df: *DataFrame, Required***  </span>
-</span><span id="extractFISTags-154"><a href="#extractFISTags-154"><span class="linenos">154</span></a><span class="sd">    &gt;&gt; Should be the raw, concatenated datastream from the raw files. </span>
-</span><span id="extractFISTags-155"><a href="#extractFISTags-155"><span class="linenos">155</span></a>
-</span><span id="extractFISTags-156"><a href="#extractFISTags-156"><span class="linenos">156</span></a><span class="sd">    **Returns:**  </span>
-</span><span id="extractFISTags-157"><a href="#extractFISTags-157"><span class="linenos">157</span></a><span class="sd">    &gt; **dfAna**   </span>
-</span><span id="extractFISTags-158"><a href="#extractFISTags-158"><span class="linenos">158</span></a><span class="sd">    &gt;&gt; Should be the raw, concatenated datastream from the raw files.   </span>
-</span><span id="extractFISTags-159"><a href="#extractFISTags-159"><span class="linenos">159</span></a>
-</span><span id="extractFISTags-160"><a href="#extractFISTags-160"><span class="linenos">160</span></a><span class="sd">    &gt; **dfUnits**</span>
-</span><span id="extractFISTags-161"><a href="#extractFISTags-161"><span class="linenos">161</span></a><span class="sd">    &gt;&gt; A df with just the units of the columns in dfAna</span>
-</span><span id="extractFISTags-162"><a href="#extractFISTags-162"><span class="linenos">162</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="extractFISTags-163"><a href="#extractFISTags-163"><span class="linenos">163</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="extractFISTags-164"><a href="#extractFISTags-164"><span class="linenos">164</span></a>    <span class="c1"># Remove unnamed columns</span>
-</span><span id="extractFISTags-165"><a href="#extractFISTags-165"><span class="linenos">165</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;^Unnamed&#39;</span><span class="p">)]</span>
-</span><span id="extractFISTags-166"><a href="#extractFISTags-166"><span class="linenos">166</span></a>    <span class="c1"># Reset the index</span>
-</span><span id="extractFISTags-167"><a href="#extractFISTags-167"><span class="linenos">167</span></a>    <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="extractFISTags-168"><a href="#extractFISTags-168"><span class="linenos">168</span></a>    <span class="c1"># fill down the machine name so it applies to each row. This is essentially the column name</span>
-</span><span id="extractFISTags-169"><a href="#extractFISTags-169"><span class="linenos">169</span></a>    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Machine Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="extractFISTags-170"><a href="#extractFISTags-170"><span class="linenos">170</span></a>    
-</span><span id="extractFISTags-171"><a href="#extractFISTags-171"><span class="linenos">171</span></a>    <span class="c1"># It&#39;s important to dedupe the timestamp/machine name combo before pivoting</span>
-</span><span id="extractFISTags-172"><a href="#extractFISTags-172"><span class="linenos">172</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sample Time&#39;</span><span class="p">,</span> <span class="s1">&#39;Machine Name&#39;</span><span class="p">])</span>
-</span><span id="extractFISTags-173"><a href="#extractFISTags-173"><span class="linenos">173</span></a>    <span class="c1"># df = df.reset_index().groupby([&#39;Timestamp&#39;, &#39;Machine Name&#39;]).max()[&#39;Actual Value&#39;].set_index(&#39;Timestamp&#39;)</span>
-</span><span id="extractFISTags-174"><a href="#extractFISTags-174"><span class="linenos">174</span></a>
-</span><span id="extractFISTags-175"><a href="#extractFISTags-175"><span class="linenos">175</span></a>    <span class="c1"># &quot;Sample Time&quot; is the time column. Make it the index</span>
-</span><span id="extractFISTags-176"><a href="#extractFISTags-176"><span class="linenos">176</span></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">str2dt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">timeCol</span><span class="o">=</span><span class="s1">&#39;Sample Time&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="extractFISTags-177"><a href="#extractFISTags-177"><span class="linenos">177</span></a>
-</span><span id="extractFISTags-178"><a href="#extractFISTags-178"><span class="linenos">178</span></a>    <span class="n">dfAna</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;Machine Name&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Actual Value&#39;</span><span class="p">)</span><span class="c1">#.dropna()</span>
-</span><span id="extractFISTags-179"><a href="#extractFISTags-179"><span class="linenos">179</span></a>    <span class="k">if</span> <span class="n">strip</span><span class="p">:</span>
-</span><span id="extractFISTags-180"><a href="#extractFISTags-180"><span class="linenos">180</span></a>        <span class="n">dfAna</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:: : &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; -&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dfAna</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-</span><span id="extractFISTags-181"><a href="#extractFISTags-181"><span class="linenos">181</span></a>
-</span><span id="extractFISTags-182"><a href="#extractFISTags-182"><span class="linenos">182</span></a>    <span class="c1"># Now get the units</span>
-</span><span id="extractFISTags-183"><a href="#extractFISTags-183"><span class="linenos">183</span></a>    <span class="n">dfUnits</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;Machine Name&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Units&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="extractFISTags-184"><a href="#extractFISTags-184"><span class="linenos">184</span></a>    <span class="n">dfUnits</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Units&#39;</span>
-</span><span id="extractFISTags-185"><a href="#extractFISTags-185"><span class="linenos">185</span></a>
-</span><span id="extractFISTags-186"><a href="#extractFISTags-186"><span class="linenos">186</span></a>    <span class="k">return</span> <span class="n">dfAna</span><span class="p">,</span> <span class="n">dfUnits</span>
+    <a class="headerlink" href="#compare_lists"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="compare_lists-108"><a href="#compare_lists-108"><span class="linenos">108</span></a><span class="k">def</span> <span class="nf">compare_lists</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+</span><span id="compare_lists-109"><a href="#compare_lists-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="compare_lists-110"><a href="#compare_lists-110"><span class="linenos">110</span></a><span class="sd">    IN DEVELOPMENT</span>
+</span><span id="compare_lists-111"><a href="#compare_lists-111"><span class="linenos">111</span></a><span class="sd">    I orifinally used this in Agg Data fro ABI to get all the valid cols from a list in a df. it&#39;s easier to just show the code:  </span>
+</span><span id="compare_lists-112"><a href="#compare_lists-112"><span class="linenos">112</span></a><span class="sd">    `sumCols = [col for col in df.columns if compareList(list(col), sumCols)]`  </span>
+</span><span id="compare_lists-113"><a href="#compare_lists-113"><span class="linenos">113</span></a>
+</span><span id="compare_lists-114"><a href="#compare_lists-114"><span class="linenos">114</span></a><span class="sd">    I think this would have ustility in matching a combo of strings against a series, but I didn&#39;t use it that way. </span>
+</span><span id="compare_lists-115"><a href="#compare_lists-115"><span class="linenos">115</span></a>
+</span><span id="compare_lists-116"><a href="#compare_lists-116"><span class="linenos">116</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="compare_lists-117"><a href="#compare_lists-117"><span class="linenos">117</span></a><span class="sd">    &gt; **boolean**  </span>
+</span><span id="compare_lists-118"><a href="#compare_lists-118"><span class="linenos">118</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="compare_lists-119"><a href="#compare_lists-119"><span class="linenos">119</span></a>    <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+</span><span id="compare_lists-120"><a href="#compare_lists-120"><span class="linenos">120</span></a>        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+</span><span id="compare_lists-121"><a href="#compare_lists-121"><span class="linenos">121</span></a>            <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+</span><span id="compare_lists-122"><a href="#compare_lists-122"><span class="linenos">122</span></a>                <span class="k">return</span> <span class="kc">True</span>
+</span><span id="compare_lists-123"><a href="#compare_lists-123"><span class="linenos">123</span></a>    <span class="k">return</span> <span class="kc">False</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Take a raw FIS data stream from a df and pivot it to a table. Outputs 2 dfs: the data and the units.  </p>
+            <div class="docstring"><p>IN DEVELOPMENT
+I orifinally used this in Agg Data fro ABI to get all the valid cols from a list in a df. it's easier to just show the code: <br />
+<code>sumCols = [col for col in df.columns if compareList(list(col), sumCols)]</code>  </p>
+
+<p>I think this would have ustility in matching a combo of strings against a series, but I didn't use it that way. </p>
+
+<p><strong>Returns:</strong>  </p>
+
+<blockquote>
+  <p><strong>boolean</strong></p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="find_strs">
+                            <input id="find_strs-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">find_strs</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">S</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="find_strs-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#find_strs"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="find_strs-125"><a href="#find_strs-125"><span class="linenos">125</span></a><span class="k">def</span> <span class="nf">find_strs</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+</span><span id="find_strs-126"><a href="#find_strs-126"><span class="linenos">126</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="find_strs-127"><a href="#find_strs-127"><span class="linenos">127</span></a><span class="sd">    Find all the unique strings in a series.  </span>
+</span><span id="find_strs-128"><a href="#find_strs-128"><span class="linenos">128</span></a><span class="sd">    Usefull for finding string errors in an otherwise numeric column</span>
+</span><span id="find_strs-129"><a href="#find_strs-129"><span class="linenos">129</span></a>
+</span><span id="find_strs-130"><a href="#find_strs-130"><span class="linenos">130</span></a><span class="sd">    Normally you would want to search all the string columns in a df. YOu can jsut loop over all the columns with the type `object`  </span>
+</span><span id="find_strs-131"><a href="#find_strs-131"><span class="linenos">131</span></a><span class="sd">    </span>
+</span><span id="find_strs-132"><a href="#find_strs-132"><span class="linenos">132</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="find_strs-133"><a href="#find_strs-133"><span class="linenos">133</span></a><span class="sd">    &gt; **S: *Series, Required***  </span>
+</span><span id="find_strs-134"><a href="#find_strs-134"><span class="linenos">134</span></a>
+</span><span id="find_strs-135"><a href="#find_strs-135"><span class="linenos">135</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="find_strs-136"><a href="#find_strs-136"><span class="linenos">136</span></a><span class="sd">    &gt; **list**  </span>
+</span><span id="find_strs-137"><a href="#find_strs-137"><span class="linenos">137</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="find_strs-138"><a href="#find_strs-138"><span class="linenos">138</span></a>    <span class="n">num_mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+</span><span id="find_strs-139"><a href="#find_strs-139"><span class="linenos">139</span></a>    <span class="k">if</span> <span class="n">num_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="find_strs-140"><a href="#find_strs-140"><span class="linenos">140</span></a>        <span class="c1"># return num_mask.loc[num_mask == True]</span>
+</span><span id="find_strs-141"><a href="#find_strs-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">num_mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Find all the unique strings in a series. <br />
+Usefull for finding string errors in an otherwise numeric column</p>
+
+<p>Normally you would want to search all the string columns in a df. YOu can jsut loop over all the columns with the type <code>object</code>  </p>
 
 <p><strong>Parameters:</strong>  </p>
 
 <blockquote>
-  <p><strong>df: <em>DataFrame, Required</em></strong>  </p>
-  
-  <blockquote>
-    <p>Should be the raw, concatenated datastream from the raw files. </p>
-  </blockquote>
+  <p><strong>S: <em>Series, Required</em></strong>  </p>
 </blockquote>
 
 <p><strong>Returns:</strong>  </p>
 
 <blockquote>
-  <p><strong>dfAna</strong>   </p>
-  
-  <blockquote>
-    <p>Should be the raw, concatenated datastream from the raw files.   </p>
-  </blockquote>
+  <p><strong>list</strong></p>
 </blockquote>
+</div>
 
-<blockquote>
-  <p><strong>dfUnits</strong></p>
-  
-  <blockquote>
-    <p>A df with just the units of the columns in dfAna</p>
-  </blockquote>
-</blockquote>
+
+                </section>
+                <section id="two_letter_month_to_number">
+                            <input id="two_letter_month_to_number-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">two_letter_month_to_number</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">date</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="two_letter_month_to_number-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#two_letter_month_to_number"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="two_letter_month_to_number-143"><a href="#two_letter_month_to_number-143"><span class="linenos">143</span></a><span class="k">def</span> <span class="nf">two_letter_month_to_number</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+</span><span id="two_letter_month_to_number-144"><a href="#two_letter_month_to_number-144"><span class="linenos">144</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Undocumented  </span>
+</span><span id="two_letter_month_to_number-145"><a href="#two_letter_month_to_number-145"><span class="linenos">145</span></a><span class="sd">    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb</span>
+</span><span id="two_letter_month_to_number-146"><a href="#two_letter_month_to_number-146"><span class="linenos">146</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="two_letter_month_to_number-147"><a href="#two_letter_month_to_number-147"><span class="linenos">147</span></a>    <span class="n">month_mappings</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="two_letter_month_to_number-148"><a href="#two_letter_month_to_number-148"><span class="linenos">148</span></a>        <span class="s2">&quot;JA&quot;</span><span class="p">:</span><span class="s2">&quot;01&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-149"><a href="#two_letter_month_to_number-149"><span class="linenos">149</span></a>        <span class="s2">&quot;FE&quot;</span><span class="p">:</span><span class="s2">&quot;02&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-150"><a href="#two_letter_month_to_number-150"><span class="linenos">150</span></a>        <span class="s2">&quot;MR&quot;</span><span class="p">:</span><span class="s2">&quot;03&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-151"><a href="#two_letter_month_to_number-151"><span class="linenos">151</span></a>        <span class="s2">&quot;AL&quot;</span><span class="p">:</span><span class="s2">&quot;04&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-152"><a href="#two_letter_month_to_number-152"><span class="linenos">152</span></a>        <span class="s2">&quot;MA&quot;</span><span class="p">:</span><span class="s2">&quot;05&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-153"><a href="#two_letter_month_to_number-153"><span class="linenos">153</span></a>        <span class="s2">&quot;JN&quot;</span><span class="p">:</span><span class="s2">&quot;06&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-154"><a href="#two_letter_month_to_number-154"><span class="linenos">154</span></a>        <span class="s2">&quot;JL&quot;</span><span class="p">:</span><span class="s2">&quot;07&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-155"><a href="#two_letter_month_to_number-155"><span class="linenos">155</span></a>        <span class="s2">&quot;AU&quot;</span><span class="p">:</span><span class="s2">&quot;08&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-156"><a href="#two_letter_month_to_number-156"><span class="linenos">156</span></a>        <span class="s2">&quot;SE&quot;</span><span class="p">:</span><span class="s2">&quot;09&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-157"><a href="#two_letter_month_to_number-157"><span class="linenos">157</span></a>        <span class="s2">&quot;OC&quot;</span><span class="p">:</span><span class="s2">&quot;10&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-158"><a href="#two_letter_month_to_number-158"><span class="linenos">158</span></a>        <span class="s2">&quot;NO&quot;</span><span class="p">:</span><span class="s2">&quot;11&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-159"><a href="#two_letter_month_to_number-159"><span class="linenos">159</span></a>        <span class="s2">&quot;DE&quot;</span><span class="p">:</span><span class="s2">&quot;12&quot;</span><span class="p">,</span>
+</span><span id="two_letter_month_to_number-160"><a href="#two_letter_month_to_number-160"><span class="linenos">160</span></a>    <span class="p">}</span>
+</span><span id="two_letter_month_to_number-161"><a href="#two_letter_month_to_number-161"><span class="linenos">161</span></a>    
+</span><span id="two_letter_month_to_number-162"><a href="#two_letter_month_to_number-162"><span class="linenos">162</span></a>    <span class="k">for</span> <span class="n">month</span><span class="p">,</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">month_mappings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="two_letter_month_to_number-163"><a href="#two_letter_month_to_number-163"><span class="linenos">163</span></a>        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+</span><span id="two_letter_month_to_number-164"><a href="#two_letter_month_to_number-164"><span class="linenos">164</span></a>    <span class="k">return</span> <span class="n">date</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Undocumented <br />
+Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb</p>
 </div>
 
 

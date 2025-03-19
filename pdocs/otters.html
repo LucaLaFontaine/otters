@@ -38,6 +38,9 @@
             <li>
                     <a class="function" href="#str2dt">str2dt</a>
             </li>
+            <li>
+                    <a class="function" href="#formatData">formatData</a>
+            </li>
     </ul>
 
 
@@ -61,9 +64,9 @@ otters    </h1>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="c1"># Ok so if you import a module into __init__.py you can then use &quot;import *&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a><span class="c1">#   so we&#39;ll import all the like basic commodities in here even though PEP something doesn&#39;t like this</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a><span class="kn">from</span> <span class="nn">.wrangle.file_loader</span> <span class="kn">import</span> <span class="n">import_config</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a><span class="kn">from</span> <span class="nn">.wrangle.file_loader</span> <span class="kn">import</span> <span class="n">import_config</span><span class="p">,</span> <span class="n">formatData</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="kn">from</span> <span class="nn">.wrangle.time_tools</span> <span class="kn">import</span> <span class="n">str2dt</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;drive&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;vis&quot;</span><span class="p">,</span> <span class="s2">&quot;import_config&quot;</span><span class="p">,</span> <span class="s1">&#39;str2dt&#39;</span><span class="p">,</span> <span class="s1">&#39;wrangle&#39;</span><span class="p">]</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;drive&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;vis&quot;</span><span class="p">,</span> <span class="s1">&#39;wrangle&#39;</span><span class="p">,</span> <span class="s2">&quot;import_config&quot;</span><span class="p">,</span> <span class="s1">&#39;str2dt&#39;</span><span class="p">,</span> <span class="s1">&#39;formatData&#39;</span><span class="p">]</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a><span class="n">__pdoc__</span> <span class="o">=</span> <span class="p">{}</span>
 </span></pre></div>
@@ -81,63 +84,67 @@ otters    </h1>
 
     </div>
     <a class="headerlink" href="#import_config"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="import_config-17"><a href="#import_config-17"><span class="linenos">17</span></a><span class="k">def</span> <span class="nf">import_config</span><span class="p">(</span><span class="n">configFolder</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-</span><span id="import_config-18"><a href="#import_config-18"><span class="linenos">18</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="import_config-19"><a href="#import_config-19"><span class="linenos">19</span></a><span class="sd">    Import all config files from the supplied folder. Defaults to the root folder  </span>
-</span><span id="import_config-20"><a href="#import_config-20"><span class="linenos">20</span></a><span class="sd">    Any files ending in &#39;config.yaml&#39; or &#39;config.xlsx&#39; will be treated. So you could have a formatting config called &#39;format.config.yaml&#39;  </span>
-</span><span id="import_config-21"><a href="#import_config-21"><span class="linenos">21</span></a><span class="sd">    </span>
-</span><span id="import_config-22"><a href="#import_config-22"><span class="linenos">22</span></a><span class="sd">    **Parameters:**</span>
-</span><span id="import_config-23"><a href="#import_config-23"><span class="linenos">23</span></a><span class="sd">    &gt; **configFolder:** *string, default: empty*  </span>
-</span><span id="import_config-24"><a href="#import_config-24"><span class="linenos">24</span></a><span class="sd">    &gt;&gt; The relative path to the config folder. </span>
-</span><span id="import_config-25"><a href="#import_config-25"><span class="linenos">25</span></a>
-</span><span id="import_config-26"><a href="#import_config-26"><span class="linenos">26</span></a><span class="sd">    &gt; **recursive:** *boolean, default: `True`* </span>
-</span><span id="import_config-27"><a href="#import_config-27"><span class="linenos">27</span></a><span class="sd">    &gt;&gt; Returns all files in dir and sub-dirs if `True`. Only files in root dir if `False`.</span>
-</span><span id="import_config-28"><a href="#import_config-28"><span class="linenos">28</span></a>
-</span><span id="import_config-29"><a href="#import_config-29"><span class="linenos">29</span></a><span class="sd">    **Returns:**  </span>
-</span><span id="import_config-30"><a href="#import_config-30"><span class="linenos">30</span></a><span class="sd">    &gt; **dict*</span>
-</span><span id="import_config-31"><a href="#import_config-31"><span class="linenos">31</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="import_config-32"><a href="#import_config-32"><span class="linenos">32</span></a>
-</span><span id="import_config-33"><a href="#import_config-33"><span class="linenos">33</span></a>    <span class="c1"># Load any config files</span>
-</span><span id="import_config-34"><a href="#import_config-34"><span class="linenos">34</span></a>    <span class="k">if</span> <span class="n">recursive</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="import_config-35"><a href="#import_config-35"><span class="linenos">35</span></a>        <span class="n">yamlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/**/*config.yaml&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="import_config-36"><a href="#import_config-36"><span class="linenos">36</span></a>        <span class="n">xlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/**/*config.xlsx&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="import_config-37"><a href="#import_config-37"><span class="linenos">37</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="import_config-38"><a href="#import_config-38"><span class="linenos">38</span></a>        <span class="n">yamlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/./*config.yaml&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="import_config-39"><a href="#import_config-39"><span class="linenos">39</span></a>        <span class="n">xlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/./*config.xlsx&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="import_config-40"><a href="#import_config-40"><span class="linenos">40</span></a>
-</span><span id="import_config-41"><a href="#import_config-41"><span class="linenos">41</span></a>    <span class="n">yamlFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">yamlFiles</span><span class="p">]</span>
-</span><span id="import_config-42"><a href="#import_config-42"><span class="linenos">42</span></a>    <span class="n">xlFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xlFiles</span><span class="p">]</span>
-</span><span id="import_config-43"><a href="#import_config-43"><span class="linenos">43</span></a>    <span class="n">xlFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xlFiles</span> <span class="k">if</span> <span class="s1">&#39;~&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
-</span><span id="import_config-44"><a href="#import_config-44"><span class="linenos">44</span></a>
-</span><span id="import_config-45"><a href="#import_config-45"><span class="linenos">45</span></a>    <span class="k">if</span> <span class="n">yamlFiles</span> <span class="ow">or</span> <span class="n">xlFiles</span><span class="p">:</span>
-</span><span id="import_config-46"><a href="#import_config-46"><span class="linenos">46</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading config files: </span><span class="si">{</span><span class="n">yamlFiles</span><span class="o">+</span><span class="n">xlFiles</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span id="import_config-47"><a href="#import_config-47"><span class="linenos">47</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="import_config-48"><a href="#import_config-48"><span class="linenos">48</span></a>        <span class="n">configFile</span> <span class="o">=</span> <span class="s1">&#39;config.yaml&#39;</span>
-</span><span id="import_config-49"><a href="#import_config-49"><span class="linenos">49</span></a>        <span class="n">func_dir_path</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">import_config</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="import_config-50"><a href="#import_config-50"><span class="linenos">50</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;There doesn&#39;t appear to be a config file in the supplied folder. No config was imported&quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="import_config-51"><a href="#import_config-51"><span class="linenos">51</span></a>
-</span><span id="import_config-52"><a href="#import_config-52"><span class="linenos">52</span></a>    <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="import_config-53"><a href="#import_config-53"><span class="linenos">53</span></a>    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">yamlFiles</span><span class="p">:</span>
-</span><span id="import_config-54"><a href="#import_config-54"><span class="linenos">54</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file: </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="import_config-55"><a href="#import_config-55"><span class="linenos">55</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="import_config-56"><a href="#import_config-56"><span class="linenos">56</span></a>            <span class="k">try</span><span class="p">:</span>
-</span><span id="import_config-57"><a href="#import_config-57"><span class="linenos">57</span></a>                <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">))</span>
-</span><span id="import_config-58"><a href="#import_config-58"><span class="linenos">58</span></a>            <span class="k">except</span><span class="p">:</span>
-</span><span id="import_config-59"><a href="#import_config-59"><span class="linenos">59</span></a>                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;That didn&#39;t work, the bug shown above is likely a bug in your config file&quot;</span><span class="p">)</span>
-</span><span id="import_config-60"><a href="#import_config-60"><span class="linenos">60</span></a>            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="import_config-61"><a href="#import_config-61"><span class="linenos">61</span></a>
-</span><span id="import_config-62"><a href="#import_config-62"><span class="linenos">62</span></a>    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xlFiles</span><span class="p">:</span>
-</span><span id="import_config-63"><a href="#import_config-63"><span class="linenos">63</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-</span><span id="import_config-64"><a href="#import_config-64"><span class="linenos">64</span></a>        <span class="n">dictName</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="import_config-65"><a href="#import_config-65"><span class="linenos">65</span></a>        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span> <span class="p">,:]</span>
-</span><span id="import_config-66"><a href="#import_config-66"><span class="linenos">66</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">,:]</span>
-</span><span id="import_config-67"><a href="#import_config-67"><span class="linenos">67</span></a>        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">dictName</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()})</span>
-</span><span id="import_config-68"><a href="#import_config-68"><span class="linenos">68</span></a>
-</span><span id="import_config-69"><a href="#import_config-69"><span class="linenos">69</span></a>    <span class="k">return</span> <span class="n">config</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="import_config-34"><a href="#import_config-34"><span class="linenos">34</span></a><span class="k">def</span> <span class="nf">import_config</span><span class="p">(</span><span class="n">configFolder</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+</span><span id="import_config-35"><a href="#import_config-35"><span class="linenos">35</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="import_config-36"><a href="#import_config-36"><span class="linenos">36</span></a><span class="sd">    MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK</span>
+</span><span id="import_config-37"><a href="#import_config-37"><span class="linenos">37</span></a><span class="sd">    Import all config files from the supplied folder. Defaults to the root folder  </span>
+</span><span id="import_config-38"><a href="#import_config-38"><span class="linenos">38</span></a><span class="sd">    Any files ending in &#39;config.yaml&#39; or &#39;config.xlsx&#39; will be treated. So you could have a formatting config called &#39;format.config.yaml&#39;  </span>
+</span><span id="import_config-39"><a href="#import_config-39"><span class="linenos">39</span></a><span class="sd">    </span>
+</span><span id="import_config-40"><a href="#import_config-40"><span class="linenos">40</span></a><span class="sd">    **Parameters:**</span>
+</span><span id="import_config-41"><a href="#import_config-41"><span class="linenos">41</span></a><span class="sd">    &gt; **configFolder:** *string, default: empty*  </span>
+</span><span id="import_config-42"><a href="#import_config-42"><span class="linenos">42</span></a><span class="sd">    &gt;&gt; The relative path to the config folder. </span>
+</span><span id="import_config-43"><a href="#import_config-43"><span class="linenos">43</span></a>
+</span><span id="import_config-44"><a href="#import_config-44"><span class="linenos">44</span></a><span class="sd">    &gt; **recursive:** *boolean, default: `True`* </span>
+</span><span id="import_config-45"><a href="#import_config-45"><span class="linenos">45</span></a><span class="sd">    &gt;&gt; Returns all files in dir and sub-dirs if `True`. Only files in root dir if `False`.</span>
+</span><span id="import_config-46"><a href="#import_config-46"><span class="linenos">46</span></a>
+</span><span id="import_config-47"><a href="#import_config-47"><span class="linenos">47</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="import_config-48"><a href="#import_config-48"><span class="linenos">48</span></a><span class="sd">    &gt; **dict*</span>
+</span><span id="import_config-49"><a href="#import_config-49"><span class="linenos">49</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="import_config-50"><a href="#import_config-50"><span class="linenos">50</span></a>
+</span><span id="import_config-51"><a href="#import_config-51"><span class="linenos">51</span></a>    <span class="c1"># Load any config files</span>
+</span><span id="import_config-52"><a href="#import_config-52"><span class="linenos">52</span></a>    <span class="k">if</span> <span class="n">recursive</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="import_config-53"><a href="#import_config-53"><span class="linenos">53</span></a>        <span class="n">yamlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/**/*config.yaml&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="import_config-54"><a href="#import_config-54"><span class="linenos">54</span></a>        <span class="n">xlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/**/*config.xlsx&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="import_config-55"><a href="#import_config-55"><span class="linenos">55</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="import_config-56"><a href="#import_config-56"><span class="linenos">56</span></a>        <span class="n">yamlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/./*config.yaml&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="import_config-57"><a href="#import_config-57"><span class="linenos">57</span></a>        <span class="n">xlFiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="n">configFolder</span><span class="o">+</span><span class="s1">&#39;/./*config.xlsx&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="import_config-58"><a href="#import_config-58"><span class="linenos">58</span></a>
+</span><span id="import_config-59"><a href="#import_config-59"><span class="linenos">59</span></a>    <span class="n">yamlFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">yamlFiles</span><span class="p">]</span>
+</span><span id="import_config-60"><a href="#import_config-60"><span class="linenos">60</span></a>    <span class="n">xlFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xlFiles</span><span class="p">]</span>
+</span><span id="import_config-61"><a href="#import_config-61"><span class="linenos">61</span></a>    <span class="n">xlFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xlFiles</span> <span class="k">if</span> <span class="s1">&#39;~&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
+</span><span id="import_config-62"><a href="#import_config-62"><span class="linenos">62</span></a>
+</span><span id="import_config-63"><a href="#import_config-63"><span class="linenos">63</span></a>    <span class="k">if</span> <span class="n">yamlFiles</span> <span class="ow">or</span> <span class="n">xlFiles</span><span class="p">:</span>
+</span><span id="import_config-64"><a href="#import_config-64"><span class="linenos">64</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading config files: </span><span class="si">{</span><span class="n">yamlFiles</span><span class="o">+</span><span class="n">xlFiles</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="import_config-65"><a href="#import_config-65"><span class="linenos">65</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="import_config-66"><a href="#import_config-66"><span class="linenos">66</span></a>        <span class="n">configFile</span> <span class="o">=</span> <span class="s1">&#39;config.yaml&#39;</span>
+</span><span id="import_config-67"><a href="#import_config-67"><span class="linenos">67</span></a>        <span class="n">func_dir_path</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">import_config</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="import_config-68"><a href="#import_config-68"><span class="linenos">68</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;There doesn&#39;t appear to be a config file in the supplied folder. No config was imported&quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="import_config-69"><a href="#import_config-69"><span class="linenos">69</span></a>
+</span><span id="import_config-70"><a href="#import_config-70"><span class="linenos">70</span></a>    <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="import_config-71"><a href="#import_config-71"><span class="linenos">71</span></a>    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">yamlFiles</span><span class="p">:</span>
+</span><span id="import_config-72"><a href="#import_config-72"><span class="linenos">72</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file: </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="import_config-73"><a href="#import_config-73"><span class="linenos">73</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="import_config-74"><a href="#import_config-74"><span class="linenos">74</span></a>            <span class="k">try</span><span class="p">:</span>
+</span><span id="import_config-75"><a href="#import_config-75"><span class="linenos">75</span></a>                <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">))</span>
+</span><span id="import_config-76"><a href="#import_config-76"><span class="linenos">76</span></a>            <span class="k">except</span><span class="p">:</span>
+</span><span id="import_config-77"><a href="#import_config-77"><span class="linenos">77</span></a>                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;That didn&#39;t work, the bug shown above is likely a bug in your config file&quot;</span><span class="p">)</span>
+</span><span id="import_config-78"><a href="#import_config-78"><span class="linenos">78</span></a>            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="import_config-79"><a href="#import_config-79"><span class="linenos">79</span></a>
+</span><span id="import_config-80"><a href="#import_config-80"><span class="linenos">80</span></a>    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xlFiles</span><span class="p">:</span>
+</span><span id="import_config-81"><a href="#import_config-81"><span class="linenos">81</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span id="import_config-82"><a href="#import_config-82"><span class="linenos">82</span></a>        <span class="n">dictName</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="import_config-83"><a href="#import_config-83"><span class="linenos">83</span></a>        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span> <span class="p">,:]</span>
+</span><span id="import_config-84"><a href="#import_config-84"><span class="linenos">84</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">,:]</span>
+</span><span id="import_config-85"><a href="#import_config-85"><span class="linenos">85</span></a>        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">dictName</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()})</span>
+</span><span id="import_config-86"><a href="#import_config-86"><span class="linenos">86</span></a>
+</span><span id="import_config-87"><a href="#import_config-87"><span class="linenos">87</span></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">replace_backslashes_in_dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</span><span id="import_config-88"><a href="#import_config-88"><span class="linenos">88</span></a>
+</span><span id="import_config-89"><a href="#import_config-89"><span class="linenos">89</span></a>    <span class="k">return</span> <span class="n">config</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Import all config files from the supplied folder. Defaults to the root folder <br />
+            <div class="docstring"><p>MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK
+Import all config files from the supplied folder. Defaults to the root folder <br />
 Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'  </p>
 
 <p><strong>Parameters:</strong></p>
@@ -220,6 +227,85 @@ df: DataFrame, required
 timeCol: string, Default: empty</p>
 
 <p>Returns: DataFrame</p>
+</div>
+
+
+                </section>
+                <section id="formatData">
+                            <input id="formatData-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">formatData</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">wb_name</span>, </span><span class="param"><span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="formatData-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#formatData"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="formatData-147"><a href="#formatData-147"><span class="linenos">147</span></a><span class="k">def</span> <span class="nf">formatData</span><span class="p">(</span><span class="n">wb_name</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">):</span>
+</span><span id="formatData-148"><a href="#formatData-148"><span class="linenos">148</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="formatData-149"><a href="#formatData-149"><span class="linenos">149</span></a><span class="sd">    This will format an outputted excel file so it doesn&#39;t make your eyes bleed.  </span>
+</span><span id="formatData-150"><a href="#formatData-150"><span class="linenos">150</span></a><span class="sd">    Most useful for outputting DataFrames to Excel.  </span>
+</span><span id="formatData-151"><a href="#formatData-151"><span class="linenos">151</span></a><span class="sd">    Stole it from StackOverflow. It&#39;s not super optimal but it&#39;s concise which I like.</span>
+</span><span id="formatData-152"><a href="#formatData-152"><span class="linenos">152</span></a>
+</span><span id="formatData-153"><a href="#formatData-153"><span class="linenos">153</span></a><span class="sd">    **Parameters:**  </span>
+</span><span id="formatData-154"><a href="#formatData-154"><span class="linenos">154</span></a><span class="sd">    &gt; **wb_name: *str, Required***  </span>
+</span><span id="formatData-155"><a href="#formatData-155"><span class="linenos">155</span></a><span class="sd">    &gt;&gt; The name of the file. Can be relative and prolly absolute</span>
+</span><span id="formatData-156"><a href="#formatData-156"><span class="linenos">156</span></a>
+</span><span id="formatData-157"><a href="#formatData-157"><span class="linenos">157</span></a><span class="sd">    &gt; **sheet: *string, default: &quot;Sheet1&quot;*** </span>
+</span><span id="formatData-158"><a href="#formatData-158"><span class="linenos">158</span></a><span class="sd">    &gt;&gt; The name of the sheet. Leave blank if you didn&#39;t rename the sheet and it&#39;s the first/only one in the workbook.</span>
+</span><span id="formatData-159"><a href="#formatData-159"><span class="linenos">159</span></a>
+</span><span id="formatData-160"><a href="#formatData-160"><span class="linenos">160</span></a><span class="sd">    **Returns:**  </span>
+</span><span id="formatData-161"><a href="#formatData-161"><span class="linenos">161</span></a><span class="sd">    &gt; **None**</span>
+</span><span id="formatData-162"><a href="#formatData-162"><span class="linenos">162</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="formatData-163"><a href="#formatData-163"><span class="linenos">163</span></a>    <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="n">wb_name</span><span class="p">)</span>
+</span><span id="formatData-164"><a href="#formatData-164"><span class="linenos">164</span></a>    <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet</span><span class="p">]</span>
+</span><span id="formatData-165"><a href="#formatData-165"><span class="linenos">165</span></a>    
+</span><span id="formatData-166"><a href="#formatData-166"><span class="linenos">166</span></a>    <span class="n">dim_holder</span> <span class="o">=</span> <span class="n">DimensionHolder</span><span class="p">(</span><span class="n">worksheet</span><span class="o">=</span><span class="n">ws</span><span class="p">)</span>
+</span><span id="formatData-167"><a href="#formatData-167"><span class="linenos">167</span></a>    
+</span><span id="formatData-168"><a href="#formatData-168"><span class="linenos">168</span></a>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ws</span><span class="o">.</span><span class="n">min_column</span><span class="p">,</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="formatData-169"><a href="#formatData-169"><span class="linenos">169</span></a>        <span class="n">dim_holder</span><span class="p">[</span><span class="n">get_column_letter</span><span class="p">(</span><span class="n">col</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ColumnDimension</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">19</span><span class="p">)</span>
+</span><span id="formatData-170"><a href="#formatData-170"><span class="linenos">170</span></a>    
+</span><span id="formatData-171"><a href="#formatData-171"><span class="linenos">171</span></a>    <span class="n">ws</span><span class="o">.</span><span class="n">column_dimensions</span> <span class="o">=</span> <span class="n">dim_holder</span>
+</span><span id="formatData-172"><a href="#formatData-172"><span class="linenos">172</span></a>
+</span><span id="formatData-173"><a href="#formatData-173"><span class="linenos">173</span></a>    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ws</span><span class="o">.</span><span class="n">iter_rows</span><span class="p">():</span>
+</span><span id="formatData-174"><a href="#formatData-174"><span class="linenos">174</span></a>        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>      
+</span><span id="formatData-175"><a href="#formatData-175"><span class="linenos">175</span></a>            <span class="n">cell</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span>  <span class="n">cell</span><span class="o">.</span><span class="n">alignment</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">wrapText</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="formatData-176"><a href="#formatData-176"><span class="linenos">176</span></a>        <span class="k">break</span> <span class="c1"># Oof lol, a break in production. Somebody bonk this guy</span>
+</span><span id="formatData-177"><a href="#formatData-177"><span class="linenos">177</span></a>
+</span><span id="formatData-178"><a href="#formatData-178"><span class="linenos">178</span></a>    <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">wb_name</span><span class="p">)</span>
+</span><span id="formatData-179"><a href="#formatData-179"><span class="linenos">179</span></a>    <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="formatData-180"><a href="#formatData-180"><span class="linenos">180</span></a>    <span class="k">return</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>This will format an outputted excel file so it doesn't make your eyes bleed. <br />
+Most useful for outputting DataFrames to Excel. <br />
+Stole it from StackOverflow. It's not super optimal but it's concise which I like.</p>
+
+<p><strong>Parameters:</strong>  </p>
+
+<blockquote>
+  <p><strong>wb_name: <em>str, Required</em></strong>  </p>
+  
+  <blockquote>
+    <p>The name of the file. Can be relative and prolly absolute</p>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <p><strong>sheet: <em>string, default: "Sheet1"</em></strong> </p>
+  
+  <blockquote>
+    <p>The name of the sheet. Leave blank if you didn't rename the sheet and it's the first/only one in the workbook.</p>
+  </blockquote>
+</blockquote>
+
+<p><strong>Returns:</strong>  </p>
+
+<blockquote>
+  <p><strong>None</strong></p>
+</blockquote>
 </div>
 
 
