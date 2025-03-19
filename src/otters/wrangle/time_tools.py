@@ -4,7 +4,7 @@ from math import ceil
 from datetime import datetime, timedelta, date, time
 from dateutil.relativedelta import relativedelta, MO
 
-def str2dt(df, timeCol='', drop=True, **datetime_args):
+def str2dt(df, timeCol='', drop=True, index_name="Timestamp", **datetime_args):
     """
 Finds the timestamp in a dataframe, translates it to_datetime, renames it "Timestamp", and sets it as the index
 Bumps the index to the first column if it isn't a timestamp
@@ -18,22 +18,21 @@ Returns: DataFrame
     df = df.copy()
     gc.collect()
 
-    commonNames = ['timestamp', 'Timestamp', 'Date/Time', 'Date']
+    commonNames = ['timestamp', 'Date/Time', 'Date', 'Time']
     names = [timeCol] if timeCol else commonNames
-    defaultName = 'Timestamp' # Rename cols to this
     df.reset_index(inplace=True, drop=drop)
     
     # Get matches with names in the df
-    matches = list(set(df.columns) & set(names))
+    matches = [col for col in set(df.columns) if col.lower() in (name.lower() for name in names)]
 
     if not matches:
         raise Exception(f"No timestamp columns found.")
     elif len(matches) > 1:
         raise Exception(f"There are multiple possible timestamps in your df, shown here:\n{matches}")
     else:
-        df[defaultName] = pd.to_datetime(df[matches[0]], **datetime_args)
-        df.set_index(df[defaultName], drop=True, inplace=True)
-        df.drop([defaultName, matches[0]], axis=1, inplace=True, errors='ignore')
+        df[index_name] = pd.to_datetime(df[matches[0]], **datetime_args)
+        df.set_index(df[index_name], drop=True, inplace=True)
+        df.drop([index_name, matches[0]], axis=1, inplace=True, errors='ignore')
     return df
 
 def time2timedelta(s, format='%H%M'):
