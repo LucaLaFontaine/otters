@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -121,6 +122,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -192,6 +206,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -277,7 +304,7 @@
 <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="kn">import</span> <span class="n">relativedelta</span><span class="p">,</span> <span class="n">MO</span>
 
 <div class="viewcode-block" id="str2dt">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.str2dt">[docs]</a>
+<a class="viewcode-back" href="../../../important_functions.html#otters.wrangle.time_tools.str2dt">[docs]</a>
 <span class="k">def</span> <span class="nf">str2dt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">timeCol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">datetime_args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Finds the timestamp in a dataframe, translates it to_datetime, renames it &quot;Timestamp&quot;, and sets it as the index</span>
@@ -312,7 +339,7 @@
 
 
 <div class="viewcode-block" id="time2timedelta">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.time2timedelta">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.time_tools.time2timedelta.html#otters.wrangle.time_tools.time2timedelta">[docs]</a>
 <span class="k">def</span> <span class="nf">time2timedelta</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%H%M&#39;</span><span class="p">):</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
@@ -323,7 +350,7 @@
 
 
 <div class="viewcode-block" id="getLastNWeeks">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.getLastNWeeks">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.time_tools.getLastNWeeks.html#otters.wrangle.time_tools.getLastNWeeks">[docs]</a>
 <span class="k">def</span> <span class="nf">getLastNWeeks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weekday</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Get the last n weeks of data starting this past &#39;weekday&#39; where (0=Monday, 6=Sunday)</span>
@@ -350,7 +377,7 @@
 
 
 <div class="viewcode-block" id="overlayPast">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.overlayPast">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.time_tools.overlayPast.html#otters.wrangle.time_tools.overlayPast">[docs]</a>
 <span class="k">def</span> <span class="nf">overlayPast</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nDays</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run if you want to overlay last year&#39;s consumption on the graph. Controlled in the config.</span>
@@ -366,7 +393,7 @@
 
 
 <div class="viewcode-block" id="selectiveResample">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.selectiveResample">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.time_tools.selectiveResample.html#otters.wrangle.time_tools.selectiveResample">[docs]</a>
 <span class="k">def</span> <span class="nf">selectiveResample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">meanCols</span><span class="p">,</span> <span class="n">sumCols</span><span class="p">,</span> <span class="n">colOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>

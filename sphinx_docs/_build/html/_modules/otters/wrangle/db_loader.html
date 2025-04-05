@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -121,6 +122,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -192,6 +206,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -279,7 +306,7 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
 <div class="viewcode-block" id="create_db">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.create_db">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.create_db.html#otters.wrangle.db_loader.create_db">[docs]</a>
 <span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="n">db_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an SQLite database if none exists.  </span>
@@ -305,7 +332,7 @@
 
 
 <div class="viewcode-block" id="create_conn">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.create_conn">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.create_conn.html#otters.wrangle.db_loader.create_conn">[docs]</a>
 <span class="k">def</span> <span class="nf">create_conn</span><span class="p">(</span><span class="n">db_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a connection (conn) to a SQLite database.  </span>
@@ -367,7 +394,7 @@
 <span class="c1">########</span>
 
 <div class="viewcode-block" id="upsert">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.upsert">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.upsert.html#otters.wrangle.db_loader.upsert">[docs]</a>
 <span class="k">def</span> <span class="nf">upsert</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">primary_key</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">PK_type</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Uploads data into a new or existing SQL table.  </span>
@@ -465,7 +492,7 @@
 
 
 <div class="viewcode-block" id="load">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.load">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.load.html#otters.wrangle.db_loader.load">[docs]</a>
 <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dumly loads a DataFrame into a new or existing table.  </span>
@@ -502,7 +529,7 @@
 
         
 <div class="viewcode-block" id="dedupe">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.dedupe">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.dedupe.html#otters.wrangle.db_loader.dedupe">[docs]</a>
 <span class="k">def</span> <span class="nf">dedupe</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">dedupe_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Do not use.</span>
@@ -528,7 +555,7 @@
 
     
 <div class="viewcode-block" id="ts2str">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.ts2str">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.ts2str.html#otters.wrangle.db_loader.ts2str">[docs]</a>
 <span class="k">def</span> <span class="nf">ts2str</span><span class="p">(</span><span class="n">col</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Turn a pd.datetime(I&#39;m pretty sure) into a SQLite-readable string.  </span>
@@ -546,7 +573,7 @@
 
 
 <div class="viewcode-block" id="getNasaWeather">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.getNasaWeather">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.db_loader.getNasaWeather.html#otters.wrangle.db_loader.getNasaWeather">[docs]</a>
 <span class="k">def</span> <span class="nf">getNasaWeather</span><span class="p">(</span><span class="n">plant</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">-</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()],</span> 
                    <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T2M&#39;</span><span class="p">,</span> <span class="s1">&#39;RH2M&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> 
                    <span class="n">db_loc</span><span class="o">=</span><span class="s2">&quot;Z:\Data Governance\Databases\leidos_meta.db&quot;</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>

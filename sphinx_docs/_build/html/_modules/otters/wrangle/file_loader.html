@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -121,6 +122,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -192,6 +206,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -285,7 +312,7 @@
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;XLWINGS_LICENSE_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;noncommercial&quot;</span>
 
 <div class="viewcode-block" id="replace_backslashes_in_dict">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.replace_backslashes_in_dict">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.replace_backslashes_in_dict.html#otters.wrangle.file_loader.replace_backslashes_in_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">replace_backslashes_in_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -298,7 +325,7 @@
 
 
 <div class="viewcode-block" id="import_config">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.import_config">[docs]</a>
+<a class="viewcode-back" href="../../../important_functions.html#otters.wrangle.file_loader.import_config">[docs]</a>
 <span class="k">def</span> <span class="nf">import_config</span><span class="p">(</span><span class="n">configFolder</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK</span>
@@ -358,7 +385,7 @@
 
 
 <div class="viewcode-block" id="getFiles">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.getFiles">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.getFiles.html#otters.wrangle.file_loader.getFiles">[docs]</a>
 <span class="k">def</span> <span class="nf">getFiles</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fileTypes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get list of all files in a supplied path. Can pass file types  </span>
@@ -386,7 +413,7 @@
 
 
 <div class="viewcode-block" id="getExcelDFs">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.getExcelDFs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.getExcelDFs.html#otters.wrangle.file_loader.getExcelDFs">[docs]</a>
 <span class="k">def</span> <span class="nf">getExcelDFs</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Import all Excel files from a path into a list of DataFrames  </span>
@@ -420,7 +447,7 @@
 
 
 <div class="viewcode-block" id="getCSVDFs">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.getCSVDFs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.getCSVDFs.html#otters.wrangle.file_loader.getCSVDFs">[docs]</a>
 <span class="k">def</span> <span class="nf">getCSVDFs</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Import all CSV files from a path into a list of DataFrames  </span>
@@ -454,7 +481,7 @@
 
 
 <div class="viewcode-block" id="formatData">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.formatData">[docs]</a>
+<a class="viewcode-back" href="../../../important_functions.html#otters.wrangle.file_loader.formatData">[docs]</a>
 <span class="k">def</span> <span class="nf">formatData</span><span class="p">(</span><span class="n">wb_name</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This will format an outputted excel file so it doesn&#39;t make your eyes bleed.  </span>
@@ -492,7 +519,7 @@
 
 
 <div class="viewcode-block" id="save2xl">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.save2xl">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.save2xl.html#otters.wrangle.file_loader.save2xl">[docs]</a>
 <span class="k">def</span> <span class="nf">save2xl</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="n">startCell</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">table</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">xlwings</span> <span class="k">as</span> <span class="nn">xw</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
