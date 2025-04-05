@@ -21,7 +21,6 @@ ExPS
                 
                     ~ExPS.__init__
                     ~ExPS.createPPT
-                    ~ExPS.getCSV
                     ~ExPS.getExcel
                     ~ExPS.getSQL
                     ~ExPS.savePPT

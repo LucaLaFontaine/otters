@@ -233,7 +233,7 @@ def standardize_num_format(df):
                 # print(f"{symbol} {col}")
                 # print(df[col].str.contains(symbol, regex=True))
                 df.loc[:, col] = df[col].str.replace(symbol, '', regex=True)
-                new_col = col+f" {symbol.strip('\\')}"
+                new_col = col+" {}".format(symbol.replace(r'\\', ''))
                 df.rename(columns={col:new_col}, inplace=True)
                 col = new_col
                 # print(col)

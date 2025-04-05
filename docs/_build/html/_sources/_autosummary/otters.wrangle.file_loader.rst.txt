@@ -20,12 +20,14 @@ file\_loader
                 :template: autosummary/base.rst
                 
                     formatData
-                    getCSVDFs
                     getExcelDFs
                     getFiles
+                    get_table_gaz
+                    get_table_tarif_M
                     import_config
                     replace_backslashes_in_dict
                     save2xl
+                    standardize_num_format
         
     
 

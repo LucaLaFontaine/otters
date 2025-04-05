@@ -1,0 +1,4 @@
+/* You have to delete the _build and rebuild it if you want this to take effect */
+html[data-theme=dark] {
+    --pst-color-target:#424242;
+}

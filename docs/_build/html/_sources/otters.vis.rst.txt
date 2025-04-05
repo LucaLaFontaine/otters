@@ -1,30 +1,14 @@
-otters.vis package
+Visualization (Vis)
 ==================
 
-Submodules
-----------
+Anything that visualizes data. Pretty simple
 
-otters.vis.graph module
------------------------
-
-.. automodule:: otters.vis.graph
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: otters.vis
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-
-Vis or something 
-----------------
+Classes
+-----------------
+.. currentmodule:: otters.vis
 
 .. autosummary::
-   :toctree: otters.vis/
+   :toctree: _autosummary
+   :recursive:
 
    graph

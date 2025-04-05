@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
@@ -300,23 +300,31 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The file_loader module provides functions used to load data from files (excel, csv, pdf, etc) or into files.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">glob</span><span class="w"> </span><span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-<span class="kn">import</span> <span class="nn">openpyxl</span>
-<span class="kn">from</span> <span class="nn">openpyxl.worksheet.dimensions</span> <span class="kn">import</span> <span class="n">ColumnDimension</span><span class="p">,</span> <span class="n">DimensionHolder</span>
-<span class="kn">from</span> <span class="nn">openpyxl.utils</span> <span class="kn">import</span> <span class="n">get_column_letter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.wrangler</span><span class="w"> </span><span class="kn">import</span> <span class="n">two_letter_month_to_number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.time_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectiveResample</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pymupdf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tabula</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openpyxl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.worksheet.dimensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnDimension</span><span class="p">,</span> <span class="n">DimensionHolder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_column_letter</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;XLWINGS_LICENSE_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;noncommercial&quot;</span>
 
 <div class="viewcode-block" id="replace_backslashes_in_dict">
 <a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.replace_backslashes_in_dict.html#otters.wrangle.file_loader.replace_backslashes_in_dict">[docs]</a>
-<span class="k">def</span> <span class="nf">replace_backslashes_in_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">replace_backslashes_in_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">replace_backslashes_in_dict</span><span class="p">(</span><span class="n">val</span><span class="p">)})</span>
+            <span class="c1"># dictionary.update({key: replace_backslashes_in_dict(val)})</span>
+            <span class="n">dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">term</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]})</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">replace_backslashes_in_dict</span><span class="p">(</span><span class="n">val</span><span class="p">)})</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -326,7 +334,7 @@
 
 <div class="viewcode-block" id="import_config">
 <a class="viewcode-back" href="../../../important_functions.html#otters.wrangle.file_loader.import_config">[docs]</a>
-<span class="k">def</span> <span class="nf">import_config</span><span class="p">(</span><span class="n">configFolder</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">import_config</span><span class="p">(</span><span class="n">configFolder</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK</span>
 <span class="sd">    Import all config files from the supplied folder. Defaults to the root folder  </span>
@@ -386,7 +394,7 @@
 
 <div class="viewcode-block" id="getFiles">
 <a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.getFiles.html#otters.wrangle.file_loader.getFiles">[docs]</a>
-<span class="k">def</span> <span class="nf">getFiles</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fileTypes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">getFiles</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fileTypes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get list of all files in a supplied path. Can pass file types  </span>
 
@@ -414,12 +422,12 @@
 
 <div class="viewcode-block" id="getExcelDFs">
 <a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.getExcelDFs.html#otters.wrangle.file_loader.getExcelDFs">[docs]</a>
-<span class="k">def</span> <span class="nf">getExcelDFs</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">getExcelDFs</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Import all Excel files from a path into a list of DataFrames  </span>
 
 <span class="sd">    **Parameters:**</span>
-<span class="sd">    &gt; **path: *string, default: &quot;\*&quot;***  </span>
+<span class="sd">    &gt; **path: *string, default: &quot;/*&quot;***  </span>
 <span class="sd">    &gt;&gt; Pass a relative or absolute path</span>
 
 <span class="sd">    &gt; **recursive: *bool, default: False***  </span>
@@ -446,43 +454,9 @@
     <span class="k">return</span> <span class="n">dfList</span></div>
 
 
-<div class="viewcode-block" id="getCSVDFs">
-<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.getCSVDFs.html#otters.wrangle.file_loader.getCSVDFs">[docs]</a>
-<span class="k">def</span> <span class="nf">getCSVDFs</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Import all CSV files from a path into a list of DataFrames  </span>
-
-<span class="sd">    **Parameters:**</span>
-<span class="sd">    &gt; **path: *string, default: &quot;\*&quot;***  </span>
-<span class="sd">    &gt;&gt; Pass a relative or absolute path</span>
-
-<span class="sd">    &gt; **recursive: *bool, default: False***  </span>
-<span class="sd">    &gt;&gt; If True search recursively, meaning it will search the folder supplied and any subfolders.</span>
-
-<span class="sd">    &gt; **verbose: *bool, default: False***  </span>
-<span class="sd">    &gt;&gt; If True prints each file as it&#39;s being imported.</span>
-
-<span class="sd">    **Returns:**  </span>
-<span class="sd">    &gt; **list of DataFrames**  </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fileTypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.csv&#39;</span><span class="p">,]</span>
-    <span class="n">files</span> <span class="o">=</span> <span class="n">getFiles</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="n">recursive</span><span class="p">,</span> <span class="n">fileTypes</span><span class="o">=</span><span class="n">fileTypes</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File list:</span><span class="se">\n</span><span class="si">{</span><span class="n">files</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="n">dfList</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Importing file: </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">chunk</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,)</span>
-        <span class="n">dfList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dfList</span></div>
-
-
 <div class="viewcode-block" id="formatData">
 <a class="viewcode-back" href="../../../important_functions.html#otters.wrangle.file_loader.formatData">[docs]</a>
-<span class="k">def</span> <span class="nf">formatData</span><span class="p">(</span><span class="n">wb_name</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">formatData</span><span class="p">(</span><span class="n">wb_name</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This will format an outputted excel file so it doesn&#39;t make your eyes bleed.  </span>
 <span class="sd">    Most useful for outputting DataFrames to Excel.  </span>
@@ -520,8 +494,8 @@
 
 <div class="viewcode-block" id="save2xl">
 <a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.save2xl.html#otters.wrangle.file_loader.save2xl">[docs]</a>
-<span class="k">def</span> <span class="nf">save2xl</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="n">startCell</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">table</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">xlwings</span> <span class="k">as</span> <span class="nn">xw</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save2xl</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="n">startCell</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">table</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">xlwings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xw</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    IN DEVELOPMENT, PROBABLY WILL NOT WORK  </span>
 
@@ -556,6 +530,237 @@
     <span class="n">sht</span> <span class="o">=</span> <span class="n">xw</span><span class="o">.</span><span class="n">Book</span><span class="p">(</span><span class="n">fileOut</span><span class="p">)</span><span class="o">.</span><span class="n">sheets</span><span class="p">[</span><span class="s1">&#39;Data&#39;</span><span class="p">]</span>
     <span class="c1"># Put an if here being like: If it&#39;s a timestamp then format it nicely as a timeseries</span>
     <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="standardize_num_format">
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.standardize_num_format.html#otters.wrangle.file_loader.standardize_num_format">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">standardize_num_format</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Undocumented</span>
+<span class="sd">    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb</span>
+<span class="sd">    THis is used internally and just for the invoice reading (energir) functions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print(df.dtypes)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="nb">object</span><span class="p">]:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Réelle&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\$&quot;</span><span class="p">,</span> <span class="s1">&#39;¢&#39;</span><span class="p">,</span> <span class="s2">&quot;°C&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="c1"># print(f&quot;{symbol} {col}&quot;)</span>
+                <span class="c1"># print(df[col].str.contains(symbol, regex=True))</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">new_col</span> <span class="o">=</span> <span class="n">col</span><span class="o">+</span><span class="s2">&quot; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">new_col</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">col</span> <span class="o">=</span> <span class="n">new_col</span>
+                <span class="c1"># print(col)</span>
+        <span class="c1"># print(df.columns)</span>
+        <span class="c1"># print(df[col])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="get_table_gaz">
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.get_table_gaz.html#otters.wrangle.file_loader.get_table_gaz">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_table_gaz</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Undocumented</span>
+<span class="sd">    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb</span>
+<span class="sd">    Untested in this environment. Want to se if having it here will make development faster</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">pymupdf</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">number_pages</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">page_count</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_pages</span><span class="p">):</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1">## Find METER NUMBER</span>
+        <span class="n">meter_locations</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Numéro de compte&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meter_locations</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1">## Take only the first meter </span>
+            <span class="n">meter_location</span> <span class="o">=</span> <span class="n">meter_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">top</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">40</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">20</span>
+            <span class="n">meter_number_list</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
+            <span class="n">meter_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">meter_number_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No meter was found for the file:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{file_name}</span><span class="se">\n</span><span class="s2">Continuing with meter number: 0&quot;</span><span class="p">)</span>
+            <span class="n">meter_number</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1">## Find Invoice number so that the invoices can be sorted</span>
+        <span class="n">invoice_locations</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Facture n°&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invoice_locations</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1">## Take only the first invoice number location</span>
+            <span class="n">invoice_location</span> <span class="o">=</span> <span class="n">invoice_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">5</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">25</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">5</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">100</span>
+            <span class="n">invoice_number_list</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
+            <span class="n">invoice_number_df</span> <span class="o">=</span> <span class="n">invoice_number_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">invoice_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">invoice_number_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="c1"># We&#39;re taking the second header name... i don&#39;t love this</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No invoice number was found for the file:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{file_name}</span><span class="se">\n</span><span class="s2">Continuing with invoice number: 0&quot;</span><span class="p">)</span>
+            <span class="n">invoice_number</span> <span class="o">=</span> <span class="mi">0</span>
+    
+        <span class="n">tables_historique</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Historique de consommation&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables_historique</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">tables_historique</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Consommations antérieures&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables_historique</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">table_historique</span> <span class="o">=</span> <span class="n">tables_historique</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1">## SHift the box down to get the headers of the actual table</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">20</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">20</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">30</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">95</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
+
+            <span class="n">header</span> <span class="o">=</span> <span class="n">headers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">header</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]))</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Unnamed: 0&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">columns</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">bottom</span><span class="o">-</span><span class="mi">10</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">bottom</span><span class="o">+</span><span class="mi">120</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">header</span>
+
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Début&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Période du&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;unicode&#39;</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Début&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;Début&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">two_letter_month_to_number</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> %m %Y&#39;</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Fin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;au&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;unicode&#39;</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Fin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;Fin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">two_letter_month_to_number</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> %m %Y&#39;</span><span class="p">)</span>
+
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Volume (m3)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Volume (m3)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[A-Z\s]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">standardize_num_format</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Période du&#39;</span><span class="p">,</span> <span class="s2">&quot;au&quot;</span><span class="p">,</span> <span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Début&#39;</span><span class="p">]</span>
+            
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;Fin&quot;</span><span class="p">,</span> <span class="s2">&quot;Volume (m3)&quot;</span><span class="p">,</span> <span class="s2">&quot;Montant* ($)&quot;</span><span class="p">]]</span> 
+
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;invoice_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">invoice_number</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;meter_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meter_number</span>
+        
+            <span class="k">if</span> <span class="n">resample</span><span class="p">:</span>
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">tableResampled</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Début&#39;</span><span class="p">),</span> <span class="n">tableResampled</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Fin&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;Début&quot;</span><span class="p">,</span> <span class="s2">&quot;Fin&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">tableResampled</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+                <span class="n">tableResampled</span><span class="p">[</span><span class="s1">&#39;Jours&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">selectiveResample</span><span class="p">(</span><span class="n">tableResampled</span><span class="p">,</span> <span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="n">tableResampled</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Jours&quot;</span><span class="p">),</span> <span class="s2">&quot;Jours&quot;</span><span class="p">)</span> 
+
+                <span class="k">return</span> <span class="n">tableResampled</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">table</span></div>
+
+        
+<div class="viewcode-block" id="get_table_tarif_M">
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.get_table_tarif_M.html#otters.wrangle.file_loader.get_table_tarif_M">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_table_tarif_M</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Undocumented</span>
+<span class="sd">    Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb</span>
+<span class="sd">    Untested in this environment. Want to se if having it here will make development faster</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">pymupdf</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">number_pages</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">page_count</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_pages</span><span class="p">):</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1">## Find METER NUMBER</span>
+        <span class="n">meter_locations</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Numéro de compte&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meter_locations</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1">## Take only the first meter number location</span>
+            <span class="n">meter_location</span> <span class="o">=</span> <span class="n">meter_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">top</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">25</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">meter_location</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">33</span>
+            <span class="n">meter_number_list</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
+            <span class="n">meter_number_df</span> <span class="o">=</span> <span class="n">meter_number_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">meter_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">meter_number_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No meter was found for the file:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{file_name}</span><span class="se">\n</span><span class="s2">Continuing with meter number: 0&quot;</span><span class="p">)</span>
+            <span class="n">meter_number</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1">## Find Invoice number so that the invoices can be sorted</span>
+        <span class="n">invoice_locations</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Numéro de facture&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invoice_locations</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1">## Take only the first invoice number location</span>
+            <span class="n">invoice_location</span> <span class="o">=</span> <span class="n">invoice_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">top</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">25</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">invoice_location</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">33</span>
+            <span class="n">invoice_number_list</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
+            <span class="n">invoice_number_df</span> <span class="o">=</span> <span class="n">invoice_number_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">invoice_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">invoice_number_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No invoice number was found for the file:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{file_name}</span><span class="se">\n</span><span class="s2">Continuing with invoice number: 0&quot;</span><span class="p">)</span>
+            <span class="n">invoice_number</span> <span class="o">=</span> <span class="mi">0</span>
+    
+        <span class="n">tables_historique</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;HISTORIQUE DE LA CONSOMMATION D’ÉLECTRICITÉ&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables_historique</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">tables_historique</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">search_for</span><span class="p">(</span><span class="s2">&quot;Consommations antérieures&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables_historique</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">table_historique</span> <span class="o">=</span> <span class="n">tables_historique</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1">## SHift the box down to get the headers of the actual table</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">10</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">20</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">30</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">table_historique</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">150</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
+
+            <span class="n">header</span> <span class="o">=</span> <span class="n">headers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">header</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]))</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;Unnamed: .+? &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">columns</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">bottom</span><span class="o">-</span><span class="mi">20</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">bottom</span><span class="o">+</span><span class="mi">105</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">tabula</span><span class="o">.</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">pages</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">area</span><span class="o">=</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">header</span>
+
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Début&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Du&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;unicode&#39;</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Fin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Au&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;unicode&#39;</span><span class="p">)</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">standardize_num_format</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="p">)</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Début&#39;</span><span class="p">]</span>
+            
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span>
+                <span class="s2">&quot;Fin&quot;</span><span class="p">,</span> <span class="s1">&#39;kWh&#39;</span><span class="p">,</span> <span class="s1">&#39;Moyenne (kWh/j)&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Puissance facturée (kW)&#39;</span><span class="p">,</span> <span class="s1">&#39;Temp. ext. moyenne °C&#39;</span><span class="p">,</span><span class="s1">&#39;Montant (taxes comprises) $&#39;</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;invoice_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">invoice_number</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;meter_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meter_number</span>
+
+            <span class="k">if</span> <span class="n">resample</span><span class="p">:</span>
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">tableResampled</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Début&#39;</span><span class="p">),</span> <span class="n">tableResampled</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Fin&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;Début&quot;</span><span class="p">,</span> <span class="s2">&quot;Fin&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">tableResampled</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">tableResampled</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">tableResampled</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Timestamp&#39;</span>
+
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">tableResampled</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+                <span class="n">tableResampled</span><span class="p">[</span><span class="s1">&#39;Jours&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">tableResampled</span> <span class="o">=</span> <span class="n">selectiveResample</span><span class="p">(</span><span class="n">tableResampled</span><span class="p">,</span> <span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="n">tableResampled</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Jours&quot;</span><span class="p">),</span> <span class="s2">&quot;Jours&quot;</span><span class="p">)</span> 
+
+                <span class="k">return</span> <span class="n">tableResampled</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">table</span></div>
 
 </pre></div>
 
@@ -607,7 +812,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>
