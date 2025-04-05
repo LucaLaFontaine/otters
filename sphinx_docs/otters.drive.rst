@@ -1,21 +1,13 @@
 otters.drive 
 ====================
 
-Submodules
-----------
+Classes
+-----------------
+.. currentmodule:: otters.drive
 
-otters.drive.ExPS module
-------------------------
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
 
-.. automodule:: otters.drive.ExPS
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-otters.drive.ppt\_gen module
-----------------------------
-
-.. automodule:: otters.drive.ppt_gen
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   ExPS
+   ppt_gen

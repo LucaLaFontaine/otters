@@ -1,4 +1,4 @@
-otters.model package
+otters.model
 ====================
 
 
@@ -6,7 +6,6 @@ otters.model package
 Classes
 -----------------
 .. currentmodule:: otters.model
-.. automodule:: otters.model
 
 
 
