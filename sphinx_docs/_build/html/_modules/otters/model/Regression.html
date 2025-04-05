@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -310,7 +311,7 @@
 <span class="kn">from</span> <span class="nn">..vis.graph</span> <span class="kn">import</span> <span class="n">Graph</span>
 
 <div class="viewcode-block" id="LinearRegression">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.LinearRegression">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.LinearRegression.html#otters.model.Regression.LinearRegression">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearRegression</span><span class="p">(</span><span class="n">LinearRegression</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    LinearRegression class after sklearn&#39;s, but calculate t-statistics</span>
@@ -322,6 +323,8 @@
 <span class="sd">    in X.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="LinearRegression.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.LinearRegression.__init__.html#otters.model.Regression.LinearRegression.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_X</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span> <span class="o">=</span> <span class="n">fit_intercept</span>
@@ -329,10 +332,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
         <span class="c1"># if not &quot;fit_intercept&quot; in kwargs:</span>
         <span class="c1">#     kwargs[&#39;fit_intercept&#39;] = False</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">LinearRegression</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LinearRegression</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="LinearRegression.fit">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.LinearRegression.fit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.LinearRegression.fit.html#otters.model.Regression.LinearRegression.fit">[docs]</a>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">LinearRegression</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
 
@@ -349,13 +353,16 @@
 
 
 <div class="viewcode-block" id="Models">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Models">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Models.html#otters.model.Regression.Models">[docs]</a>
 <span class="k">class</span> <span class="nc">Models</span><span class="p">():</span>
+<div class="viewcode-block" id="Models.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Models.__init__.html#otters.model.Regression.Models.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">return</span>
+        <span class="k">return</span></div>
+
 <div class="viewcode-block" id="Models.regression">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Models.regression">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Models.regression.html#otters.model.Regression.Models.regression">[docs]</a>
     <span class="k">def</span> <span class="nf">regression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Regress</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -365,7 +372,7 @@
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="Models.tabulateModels">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Models.tabulateModels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Models.tabulateModels.html#otters.model.Regression.Models.tabulateModels">[docs]</a>
     <span class="k">def</span> <span class="nf">tabulateModels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">modelTable</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -394,11 +401,13 @@
 
 
 <div class="viewcode-block" id="Model">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Model">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Model.html#otters.model.Regression.Model">[docs]</a>
 <span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The generic model object. Gets associate to a list of models and parents specific models such as the Regression object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Model.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Model.__init__.html#otters.model.Regression.Model.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
@@ -425,11 +434,14 @@
         <span class="c1"># self.y = self.y.loc[(self.y.index &gt;= self.start) &amp; (self.y.index &lt;= self.end), :]</span>
 
         <span class="k">return</span></div>
+</div>
 
 
 <div class="viewcode-block" id="Regression">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.html#otters.model.Regression.Regression">[docs]</a>
 <span class="k">class</span> <span class="nc">Regression</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Regression.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.__init__.html#otters.model.Regression.Regression.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -438,10 +450,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">getR2</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">getCV</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">getCVRMSE</span><span class="p">()</span>
-        <span class="k">return</span> 
+        <span class="k">return</span> </div>
+
     
 <div class="viewcode-block" id="Regression.regress">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.regress">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.regress.html#otters.model.Regression.Regression.regress">[docs]</a>
     <span class="k">def</span> <span class="nf">regress</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">:</span>
@@ -458,14 +471,14 @@
 
     
 <div class="viewcode-block" id="Regression.getR2">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.getR2">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.getR2.html#otters.model.Regression.Regression.getR2">[docs]</a>
     <span class="k">def</span> <span class="nf">getR2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
         <span class="k">return</span></div>
 
     
 <div class="viewcode-block" id="Regression.getCVRMSE">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.getCVRMSE">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.getCVRMSE.html#otters.model.Regression.Regression.getCVRMSE">[docs]</a>
     <span class="k">def</span> <span class="nf">getCVRMSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">just_baseline</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Take the coefficient of variation of the residual.  </span>
@@ -494,7 +507,7 @@
 
     
 <div class="viewcode-block" id="Regression.stats">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.stats">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.stats.html#otters.model.Regression.Regression.stats">[docs]</a>
     <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        R2: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="si">}</span>
@@ -507,7 +520,7 @@
 
     
 <div class="viewcode-block" id="Regression.getCV">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.getCV">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.getCV.html#otters.model.Regression.Regression.getCV">[docs]</a>
     <span class="k">def</span> <span class="nf">getCV</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
@@ -518,7 +531,7 @@
 
     
 <div class="viewcode-block" id="Regression.to_frame">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.to_frame">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.to_frame.html#otters.model.Regression.Regression.to_frame">[docs]</a>
     <span class="k">def</span> <span class="nf">to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">just_baseline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">just_baseline</span><span class="p">:</span>
             <span class="n">just_baseline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">just_baseline</span>
@@ -555,7 +568,7 @@
     <span class="c1">#     return </span>
     
 <div class="viewcode-block" id="Regression.model_component_graph">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.model_component_graph">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.model_component_graph.html#otters.model.Regression.Regression.model_component_graph">[docs]</a>
     <span class="k">def</span> <span class="nf">model_component_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Model Component Graph&#39;</span><span class="p">,</span> <span class="n">just_baseline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">mapping</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mapping exists&quot;</span><span class="p">)</span>
@@ -586,7 +599,7 @@
 
     
 <div class="viewcode-block" id="Regression.getRegEquation">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.Regression.Regression.getRegEquation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.Regression.Regression.getRegEquation.html#otters.model.Regression.Regression.getRegEquation">[docs]</a>
     <span class="k">def</span> <span class="nf">getRegEquation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">mapping</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span>

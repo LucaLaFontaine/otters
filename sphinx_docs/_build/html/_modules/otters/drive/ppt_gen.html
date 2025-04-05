@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -121,6 +122,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -192,6 +206,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -274,8 +301,10 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
 <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="kn">import</span> <span class="n">relativedelta</span><span class="p">,</span> <span class="n">MO</span><span class="p">,</span> <span class="n">SU</span>
 <div class="viewcode-block" id="PPTGen">
-<a class="viewcode-back" href="../../../otters.drive.html#otters.drive.ppt_gen.PPTGen">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.drive.ppt_gen.PPTGen.html#otters.drive.ppt_gen.PPTGen">[docs]</a>
 <span class="k">class</span> <span class="nc">PPTGen</span><span class="p">():</span>
+<div class="viewcode-block" id="PPTGen.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.drive.ppt_gen.PPTGen.__init__.html#otters.drive.ppt_gen.PPTGen.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="n">pptApp</span> <span class="o">=</span> <span class="n">win32</span><span class="o">.</span><span class="n">gencache</span><span class="o">.</span><span class="n">EnsureDispatch</span><span class="p">(</span><span class="s1">&#39;PowerPoint.Application&#39;</span><span class="p">)</span>
@@ -284,10 +313,11 @@
         
 
         <span class="c1"># Slides should be a class</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">slideCtr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slideCtr</span> <span class="o">=</span> <span class="mi">0</span></div>
+
 
 <div class="viewcode-block" id="PPTGen.addSlide">
-<a class="viewcode-back" href="../../../otters.drive.html#otters.drive.ppt_gen.PPTGen.addSlide">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.drive.ppt_gen.PPTGen.addSlide.html#otters.drive.ppt_gen.PPTGen.addSlide">[docs]</a>
     <span class="k">def</span> <span class="nf">addSlide</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">slideCtr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slideCtr</span> <span class="o">+</span> <span class="mi">1</span>
@@ -296,7 +326,7 @@
 
     
 <div class="viewcode-block" id="PPTGen.savePPT">
-<a class="viewcode-back" href="../../../otters.drive.html#otters.drive.ppt_gen.PPTGen.savePPT">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.drive.ppt_gen.PPTGen.savePPT.html#otters.drive.ppt_gen.PPTGen.savePPT">[docs]</a>
     <span class="k">def</span> <span class="nf">savePPT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pptTitle</span><span class="p">):</span>
 
         <span class="c1"># Microsoft doesn&#39;t support forwards slashes lol</span>
@@ -306,7 +336,7 @@
 
     
 <div class="viewcode-block" id="PPTGen.ExPSStyleName">
-<a class="viewcode-back" href="../../../otters.drive.html#otters.drive.ppt_gen.PPTGen.ExPSStyleName">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.drive.ppt_gen.PPTGen.ExPSStyleName.html#otters.drive.ppt_gen.PPTGen.ExPSStyleName">[docs]</a>
     <span class="k">def</span> <span class="nf">ExPSStyleName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">folderPath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">reportFolder</span>
         <span class="n">twoSundaysAgo</span> <span class="o">=</span> <span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">weekday</span><span class="o">=</span><span class="n">SU</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>

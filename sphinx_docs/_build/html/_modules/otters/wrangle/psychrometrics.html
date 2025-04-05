@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -121,6 +122,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -192,6 +206,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -406,7 +433,7 @@
 
 <span class="c1"># Unit system to use.</span>
 <div class="viewcode-block" id="UnitSystem">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.UnitSystem">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.UnitSystem.html#otters.wrangle.psychrometrics.UnitSystem">[docs]</a>
 <span class="k">class</span> <span class="nc">UnitSystem</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Private class not exposed used to set automatic enumeration values.</span>
@@ -424,7 +451,7 @@
 <span class="c1"># Tolerance of temperature calculations</span>
 
 <div class="viewcode-block" id="SetUnitSystem">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.SetUnitSystem">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.SetUnitSystem.html#otters.wrangle.psychrometrics.SetUnitSystem">[docs]</a>
 <span class="k">def</span> <span class="nf">SetUnitSystem</span><span class="p">(</span><span class="n">Units</span><span class="p">:</span> <span class="n">UnitSystem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set the system of units to use (SI or IP).</span>
@@ -460,7 +487,7 @@
 
 
 <div class="viewcode-block" id="GetUnitSystem">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetUnitSystem">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetUnitSystem.html#otters.wrangle.psychrometrics.GetUnitSystem">[docs]</a>
 <span class="k">def</span> <span class="nf">GetUnitSystem</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitSystem</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return system of units in use.</span>
@@ -470,7 +497,7 @@
 
 
 <div class="viewcode-block" id="isIP">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.isIP">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.isIP.html#otters.wrangle.psychrometrics.isIP">[docs]</a>
 <span class="k">def</span> <span class="nf">isIP</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check whether the system in use is IP or SI.</span>
@@ -490,7 +517,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetTRankineFromTFahrenheit">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTRankineFromTFahrenheit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTRankineFromTFahrenheit.html#otters.wrangle.psychrometrics.GetTRankineFromTFahrenheit">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTRankineFromTFahrenheit</span><span class="p">(</span><span class="n">TFahrenheit</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to convert temperature to degree Rankine (°R)</span>
@@ -514,7 +541,7 @@
 
 
 <div class="viewcode-block" id="GetTFahrenheitFromTRankine">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTFahrenheitFromTRankine">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTFahrenheitFromTRankine.html#otters.wrangle.psychrometrics.GetTFahrenheitFromTRankine">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTFahrenheitFromTRankine</span><span class="p">(</span><span class="n">TRankine</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to convert temperature to degree Fahrenheit (°F)</span>
@@ -537,7 +564,7 @@
 
 
 <div class="viewcode-block" id="GetTKelvinFromTCelsius">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTKelvinFromTCelsius">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTKelvinFromTCelsius.html#otters.wrangle.psychrometrics.GetTKelvinFromTCelsius">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTKelvinFromTCelsius</span><span class="p">(</span><span class="n">TCelsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to convert temperature to Kelvin (K)</span>
@@ -561,7 +588,7 @@
 
 
 <div class="viewcode-block" id="GetTCelsiusFromTKelvin">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTCelsiusFromTKelvin">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTCelsiusFromTKelvin.html#otters.wrangle.psychrometrics.GetTCelsiusFromTKelvin">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTCelsiusFromTKelvin</span><span class="p">(</span><span class="n">TKelvin</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to convert temperature to degree Celsius (°C)</span>
@@ -589,7 +616,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetTWetBulbFromTDewPoint">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTWetBulbFromTDewPoint">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTWetBulbFromTDewPoint.html#otters.wrangle.psychrometrics.GetTWetBulbFromTDewPoint">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTWetBulbFromTDewPoint</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TDewPoint</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return wet-bulb temperature given dry-bulb temperature, dew-point temperature, and pressure.</span>
@@ -615,7 +642,7 @@
 
 
 <div class="viewcode-block" id="GetTWetBulbFromRelHum">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTWetBulbFromRelHum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTWetBulbFromRelHum.html#otters.wrangle.psychrometrics.GetTWetBulbFromRelHum">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTWetBulbFromRelHum</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">RelHum</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return wet-bulb temperature given dry-bulb temperature, relative humidity, and pressure.</span>
@@ -641,7 +668,7 @@
 
 
 <div class="viewcode-block" id="GetRelHumFromTDewPoint">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetRelHumFromTDewPoint">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetRelHumFromTDewPoint.html#otters.wrangle.psychrometrics.GetRelHumFromTDewPoint">[docs]</a>
 <span class="k">def</span> <span class="nf">GetRelHumFromTDewPoint</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TDewPoint</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return relative humidity given dry-bulb temperature and dew-point temperature.</span>
@@ -667,7 +694,7 @@
 
 
 <div class="viewcode-block" id="GetRelHumFromTWetBulb">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetRelHumFromTWetBulb">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetRelHumFromTWetBulb.html#otters.wrangle.psychrometrics.GetRelHumFromTWetBulb">[docs]</a>
 <span class="k">def</span> <span class="nf">GetRelHumFromTWetBulb</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TWetBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return relative humidity given dry-bulb temperature, wet bulb temperature and pressure.</span>
@@ -693,7 +720,7 @@
 
 
 <div class="viewcode-block" id="GetTDewPointFromRelHum">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTDewPointFromRelHum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTDewPointFromRelHum.html#otters.wrangle.psychrometrics.GetTDewPointFromRelHum">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTDewPointFromRelHum</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">RelHum</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dew-point temperature given dry-bulb temperature and relative humidity.</span>
@@ -718,7 +745,7 @@
 
 
 <div class="viewcode-block" id="GetTDewPointFromTWetBulb">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTDewPointFromTWetBulb">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTDewPointFromTWetBulb.html#otters.wrangle.psychrometrics.GetTDewPointFromTWetBulb">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTDewPointFromTWetBulb</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TWetBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dew-point temperature given dry-bulb temperature, wet-bulb temperature, and pressure.</span>
@@ -749,7 +776,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetVapPresFromRelHum">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetVapPresFromRelHum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetVapPresFromRelHum.html#otters.wrangle.psychrometrics.GetVapPresFromRelHum">[docs]</a>
 <span class="k">def</span> <span class="nf">GetVapPresFromRelHum</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">RelHum</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return partial pressure of water vapor as a function of relative humidity and temperature.</span>
@@ -773,7 +800,7 @@
 
 
 <div class="viewcode-block" id="GetRelHumFromVapPres">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetRelHumFromVapPres">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetRelHumFromVapPres.html#otters.wrangle.psychrometrics.GetRelHumFromVapPres">[docs]</a>
 <span class="k">def</span> <span class="nf">GetRelHumFromVapPres</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">VapPres</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return relative humidity given dry-bulb temperature and vapor pressure.</span>
@@ -797,7 +824,7 @@
 
 
 <div class="viewcode-block" id="dLnPws_">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.dLnPws_">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.dLnPws_.html#otters.wrangle.psychrometrics.dLnPws_">[docs]</a>
 <span class="k">def</span> <span class="nf">dLnPws_</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function returning the derivative of the natural log of the saturation vapor pressure </span>
@@ -834,7 +861,7 @@
 
 
 <div class="viewcode-block" id="GetTDewPointFromVapPres">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTDewPointFromVapPres">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTDewPointFromVapPres.html#otters.wrangle.psychrometrics.GetTDewPointFromVapPres">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTDewPointFromVapPres</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">VapPres</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dew-point temperature given dry-bulb temperature and vapor pressure.</span>
@@ -901,7 +928,7 @@
 
 
 <div class="viewcode-block" id="GetVapPresFromTDewPoint">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetVapPresFromTDewPoint">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetVapPresFromTDewPoint.html#otters.wrangle.psychrometrics.GetVapPresFromTDewPoint">[docs]</a>
 <span class="k">def</span> <span class="nf">GetVapPresFromTDewPoint</span><span class="p">(</span><span class="n">TDewPoint</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return vapor pressure given dew point temperature.</span>
@@ -926,7 +953,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetTWetBulbFromHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTWetBulbFromHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTWetBulbFromHumRatio.html#otters.wrangle.psychrometrics.GetTWetBulbFromHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTWetBulbFromHumRatio</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return wet-bulb temperature given dry-bulb temperature, humidity ratio, and pressure.</span>
@@ -978,7 +1005,7 @@
 
 
 <div class="viewcode-block" id="GetHumRatioFromTWetBulb">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetHumRatioFromTWetBulb">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetHumRatioFromTWetBulb.html#otters.wrangle.psychrometrics.GetHumRatioFromTWetBulb">[docs]</a>
 <span class="k">def</span> <span class="nf">GetHumRatioFromTWetBulb</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TWetBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return humidity ratio given dry-bulb temperature, wet-bulb temperature, and pressure.</span>
@@ -1019,7 +1046,7 @@
 
 
 <div class="viewcode-block" id="GetHumRatioFromRelHum">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetHumRatioFromRelHum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetHumRatioFromRelHum.html#otters.wrangle.psychrometrics.GetHumRatioFromRelHum">[docs]</a>
 <span class="k">def</span> <span class="nf">GetHumRatioFromRelHum</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">RelHum</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return humidity ratio given dry-bulb temperature, relative humidity, and pressure.</span>
@@ -1045,7 +1072,7 @@
 
 
 <div class="viewcode-block" id="GetRelHumFromHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetRelHumFromHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetRelHumFromHumRatio.html#otters.wrangle.psychrometrics.GetRelHumFromHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetRelHumFromHumRatio</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return relative humidity given dry-bulb temperature, humidity ratio, and pressure.</span>
@@ -1071,7 +1098,7 @@
 
 
 <div class="viewcode-block" id="GetHumRatioFromTDewPoint">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetHumRatioFromTDewPoint">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetHumRatioFromTDewPoint.html#otters.wrangle.psychrometrics.GetHumRatioFromTDewPoint">[docs]</a>
 <span class="k">def</span> <span class="nf">GetHumRatioFromTDewPoint</span><span class="p">(</span><span class="n">TDewPoint</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return humidity ratio given dew-point temperature and pressure.</span>
@@ -1093,7 +1120,7 @@
 
 
 <div class="viewcode-block" id="GetTDewPointFromHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTDewPointFromHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTDewPointFromHumRatio.html#otters.wrangle.psychrometrics.GetTDewPointFromHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTDewPointFromHumRatio</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dew-point temperature given dry-bulb temperature, humidity ratio, and pressure.</span>
@@ -1124,7 +1151,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetHumRatioFromVapPres">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetHumRatioFromVapPres">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetHumRatioFromVapPres.html#otters.wrangle.psychrometrics.GetHumRatioFromVapPres">[docs]</a>
 <span class="k">def</span> <span class="nf">GetHumRatioFromVapPres</span><span class="p">(</span><span class="n">VapPres</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return humidity ratio given water vapor pressure and atmospheric pressure.</span>
@@ -1150,7 +1177,7 @@
 
 
 <div class="viewcode-block" id="GetVapPresFromHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetVapPresFromHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetVapPresFromHumRatio.html#otters.wrangle.psychrometrics.GetVapPresFromHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetVapPresFromHumRatio</span><span class="p">(</span><span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return vapor pressure given humidity ratio and pressure.</span>
@@ -1180,7 +1207,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetSpecificHumFromHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetSpecificHumFromHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetSpecificHumFromHumRatio.html#otters.wrangle.psychrometrics.GetSpecificHumFromHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetSpecificHumFromHumRatio</span><span class="p">(</span><span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the specific humidity from humidity ratio (aka mixing ratio).</span>
@@ -1204,7 +1231,7 @@
 
 
 <div class="viewcode-block" id="GetHumRatioFromSpecificHum">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetHumRatioFromSpecificHum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetHumRatioFromSpecificHum.html#otters.wrangle.psychrometrics.GetHumRatioFromSpecificHum">[docs]</a>
 <span class="k">def</span> <span class="nf">GetHumRatioFromSpecificHum</span><span class="p">(</span><span class="n">SpecificHum</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the humidity ratio (aka mixing ratio) from specific humidity.</span>
@@ -1234,7 +1261,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetDryAirEnthalpy">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetDryAirEnthalpy">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetDryAirEnthalpy.html#otters.wrangle.psychrometrics.GetDryAirEnthalpy">[docs]</a>
 <span class="k">def</span> <span class="nf">GetDryAirEnthalpy</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dry-air enthalpy given dry-bulb temperature.</span>
@@ -1257,7 +1284,7 @@
 
 
 <div class="viewcode-block" id="GetDryAirDensity">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetDryAirDensity">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetDryAirDensity.html#otters.wrangle.psychrometrics.GetDryAirDensity">[docs]</a>
 <span class="k">def</span> <span class="nf">GetDryAirDensity</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dry-air density given dry-bulb temperature and pressure.</span>
@@ -1286,7 +1313,7 @@
 
 
 <div class="viewcode-block" id="GetDryAirVolume">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetDryAirVolume">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetDryAirVolume.html#otters.wrangle.psychrometrics.GetDryAirVolume">[docs]</a>
 <span class="k">def</span> <span class="nf">GetDryAirVolume</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dry-air volume given dry-bulb temperature and pressure.</span>
@@ -1316,7 +1343,7 @@
 
 
 <div class="viewcode-block" id="GetTDryBulbFromEnthalpyAndHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTDryBulbFromEnthalpyAndHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTDryBulbFromEnthalpyAndHumRatio.html#otters.wrangle.psychrometrics.GetTDryBulbFromEnthalpyAndHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTDryBulbFromEnthalpyAndHumRatio</span><span class="p">(</span><span class="n">MoistAirEnthalpy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dry bulb temperature from enthalpy and humidity ratio.</span>
@@ -1348,7 +1375,7 @@
 
 
 <div class="viewcode-block" id="GetHumRatioFromEnthalpyAndTDryBulb">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetHumRatioFromEnthalpyAndTDryBulb">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetHumRatioFromEnthalpyAndTDryBulb.html#otters.wrangle.psychrometrics.GetHumRatioFromEnthalpyAndTDryBulb">[docs]</a>
 <span class="k">def</span> <span class="nf">GetHumRatioFromEnthalpyAndTDryBulb</span><span class="p">(</span><span class="n">MoistAirEnthalpy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return humidity ratio from enthalpy and dry-bulb temperature.</span>
@@ -1383,7 +1410,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetSatVapPres">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetSatVapPres">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetSatVapPres.html#otters.wrangle.psychrometrics.GetSatVapPres">[docs]</a>
 <span class="k">def</span> <span class="nf">GetSatVapPres</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return saturation vapor pressure given dry-bulb temperature.</span>
@@ -1434,7 +1461,7 @@
 
 
 <div class="viewcode-block" id="GetSatHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetSatHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetSatHumRatio.html#otters.wrangle.psychrometrics.GetSatHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetSatHumRatio</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return humidity ratio of saturated air given dry-bulb temperature and pressure.</span>
@@ -1458,7 +1485,7 @@
 
 
 <div class="viewcode-block" id="GetSatAirEnthalpy">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetSatAirEnthalpy">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetSatAirEnthalpy.html#otters.wrangle.psychrometrics.GetSatAirEnthalpy">[docs]</a>
 <span class="k">def</span> <span class="nf">GetSatAirEnthalpy</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return saturated air enthalpy given dry-bulb temperature and pressure.</span>
@@ -1485,7 +1512,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetVaporPressureDeficit">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetVaporPressureDeficit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetVaporPressureDeficit.html#otters.wrangle.psychrometrics.GetVaporPressureDeficit">[docs]</a>
 <span class="k">def</span> <span class="nf">GetVaporPressureDeficit</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return Vapor pressure deficit given dry-bulb temperature, humidity ratio, and pressure.</span>
@@ -1511,7 +1538,7 @@
 
 
 <div class="viewcode-block" id="GetDegreeOfSaturation">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetDegreeOfSaturation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetDegreeOfSaturation.html#otters.wrangle.psychrometrics.GetDegreeOfSaturation">[docs]</a>
 <span class="k">def</span> <span class="nf">GetDegreeOfSaturation</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the degree of saturation (i.e humidity ratio of the air / humidity ratio of the air at saturation</span>
@@ -1542,7 +1569,7 @@
 
 
 <div class="viewcode-block" id="GetMoistAirEnthalpy">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetMoistAirEnthalpy">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetMoistAirEnthalpy.html#otters.wrangle.psychrometrics.GetMoistAirEnthalpy">[docs]</a>
 <span class="k">def</span> <span class="nf">GetMoistAirEnthalpy</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return moist air enthalpy given dry-bulb temperature and humidity ratio.</span>
@@ -1570,7 +1597,7 @@
 
 
 <div class="viewcode-block" id="GetMoistAirVolume">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetMoistAirVolume">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetMoistAirVolume.html#otters.wrangle.psychrometrics.GetMoistAirVolume">[docs]</a>
 <span class="k">def</span> <span class="nf">GetMoistAirVolume</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return moist air specific volume given dry-bulb temperature, humidity ratio, and pressure.</span>
@@ -1603,7 +1630,7 @@
 
 
 <div class="viewcode-block" id="GetTDryBulbFromMoistAirVolumeAndHumRatio">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetTDryBulbFromMoistAirVolumeAndHumRatio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetTDryBulbFromMoistAirVolumeAndHumRatio.html#otters.wrangle.psychrometrics.GetTDryBulbFromMoistAirVolumeAndHumRatio">[docs]</a>
 <span class="k">def</span> <span class="nf">GetTDryBulbFromMoistAirVolumeAndHumRatio</span><span class="p">(</span><span class="n">MoistAirVolume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dry-bulb temperature given moist air specific volume, humidity ratio, and pressure.</span>
@@ -1639,7 +1666,7 @@
 
 
 <div class="viewcode-block" id="GetMoistAirDensity">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetMoistAirDensity">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetMoistAirDensity.html#otters.wrangle.psychrometrics.GetMoistAirDensity">[docs]</a>
 <span class="k">def</span> <span class="nf">GetMoistAirDensity</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">HumRatio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return moist air density given humidity ratio, dry bulb temperature, and pressure.</span>
@@ -1671,7 +1698,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="GetStandardAtmPressure">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetStandardAtmPressure">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetStandardAtmPressure.html#otters.wrangle.psychrometrics.GetStandardAtmPressure">[docs]</a>
 <span class="k">def</span> <span class="nf">GetStandardAtmPressure</span><span class="p">(</span><span class="n">Altitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return standard atmosphere barometric pressure, given the elevation (altitude).</span>
@@ -1695,7 +1722,7 @@
 
 
 <div class="viewcode-block" id="GetStandardAtmTemperature">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetStandardAtmTemperature">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetStandardAtmTemperature.html#otters.wrangle.psychrometrics.GetStandardAtmTemperature">[docs]</a>
 <span class="k">def</span> <span class="nf">GetStandardAtmTemperature</span><span class="p">(</span><span class="n">Altitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return standard atmosphere temperature, given the elevation (altitude).</span>
@@ -1718,7 +1745,7 @@
 
 
 <div class="viewcode-block" id="GetSeaLevelPressure">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetSeaLevelPressure">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetSeaLevelPressure.html#otters.wrangle.psychrometrics.GetSeaLevelPressure">[docs]</a>
 <span class="k">def</span> <span class="nf">GetSeaLevelPressure</span><span class="p">(</span><span class="n">StationPressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Altitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1763,7 +1790,7 @@
 
 
 <div class="viewcode-block" id="GetStationPressure">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.GetStationPressure">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.GetStationPressure.html#otters.wrangle.psychrometrics.GetStationPressure">[docs]</a>
 <span class="k">def</span> <span class="nf">GetStationPressure</span><span class="p">(</span><span class="n">SeaLevelPressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Altitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return station pressure from sea level pressure.</span>
@@ -1793,7 +1820,7 @@
 <span class="c1">#######################################################################################################</span>
 
 <div class="viewcode-block" id="CalcPsychrometricsFromTWetBulb">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.CalcPsychrometricsFromTWetBulb">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.CalcPsychrometricsFromTWetBulb.html#otters.wrangle.psychrometrics.CalcPsychrometricsFromTWetBulb">[docs]</a>
 <span class="k">def</span> <span class="nf">CalcPsychrometricsFromTWetBulb</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TWetBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to calculate humidity ratio, dew-point temperature, relative humidity,</span>
@@ -1826,7 +1853,7 @@
 
 
 <div class="viewcode-block" id="CalcPsychrometricsFromTDewPoint">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.CalcPsychrometricsFromTDewPoint">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.CalcPsychrometricsFromTDewPoint.html#otters.wrangle.psychrometrics.CalcPsychrometricsFromTDewPoint">[docs]</a>
 <span class="k">def</span> <span class="nf">CalcPsychrometricsFromTDewPoint</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TDewPoint</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to calculate humidity ratio, wet-bulb temperature, relative humidity,</span>
@@ -1859,7 +1886,7 @@
 
 
 <div class="viewcode-block" id="CalcPsychrometricsFromRelHum">
-<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.psychrometrics.CalcPsychrometricsFromRelHum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.psychrometrics.CalcPsychrometricsFromRelHum.html#otters.wrangle.psychrometrics.CalcPsychrometricsFromRelHum">[docs]</a>
 <span class="k">def</span> <span class="nf">CalcPsychrometricsFromRelHum</span><span class="p">(</span><span class="n">TDryBulb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">RelHum</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to calculate humidity ratio, wet-bulb temperature, dew-point temperature,</span>

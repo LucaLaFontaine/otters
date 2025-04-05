@@ -30,6 +30,7 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -121,6 +122,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -192,6 +206,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../otters.html">
+    Modules
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -277,12 +304,15 @@
 <span class="kn">import</span> <span class="nn">re</span> 
 
 <div class="viewcode-block" id="VirtualMeter">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.VirtualMeter.VirtualMeter">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.VirtualMeter.html#otters.model.VirtualMeter.VirtualMeter">[docs]</a>
 <span class="k">class</span> <span class="nc">VirtualMeter</span><span class="p">():</span>
+<div class="viewcode-block" id="VirtualMeter.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.VirtualMeter.__init__.html#otters.model.VirtualMeter.VirtualMeter.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">AHUs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">return</span>
+        <span class="k">return</span></div>
+
     
     <span class="c1"># def cleanColNamesEMS(self, filterWords=[&#39;Feedback &#39;, &#39; Digital&#39;, &#39;Percentage &#39;,], verbose=False):</span>
     <span class="c1">#     colNames = self.df.columns</span>
@@ -311,7 +341,7 @@
     <span class="c1">#     return</span>
     
 <div class="viewcode-block" id="VirtualMeter.cleanColNamesEMS">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS.html#otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS">[docs]</a>
     <span class="k">def</span> <span class="nf">cleanColNamesEMS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filterWords</span><span class="o">=</span><span class="p">[],</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39; - &#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">colNames</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
@@ -348,7 +378,7 @@
 
 
 <div class="viewcode-block" id="VirtualMeter.splitEntities">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.VirtualMeter.VirtualMeter.splitEntities">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.VirtualMeter.splitEntities.html#otters.model.VirtualMeter.VirtualMeter.splitEntities">[docs]</a>
     <span class="k">def</span> <span class="nf">splitEntities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifiers</span><span class="p">,</span> <span class="n">paddingDigits</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Splits a df into seperate entities (i.e AHUs, chillers, etc) based on a common identifier.  </span>
@@ -393,7 +423,7 @@
 
     
 <div class="viewcode-block" id="VirtualMeter.createAHU">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.VirtualMeter.VirtualMeter.createAHU">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.VirtualMeter.createAHU.html#otters.model.VirtualMeter.VirtualMeter.createAHU">[docs]</a>
     <span class="k">def</span> <span class="nf">createAHU</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="n">ahu</span> <span class="o">=</span> <span class="n">AHU</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">AHUs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span><span class="n">ahu</span><span class="p">})</span>
@@ -403,13 +433,16 @@
 
 
 <div class="viewcode-block" id="AHU">
-<a class="viewcode-back" href="../../../otters.model.html#otters.model.VirtualMeter.AHU">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.AHU.html#otters.model.VirtualMeter.AHU">[docs]</a>
 <span class="k">class</span> <span class="nc">AHU</span><span class="p">():</span>
+<div class="viewcode-block" id="AHU.__init__">
+<a class="viewcode-back" href="../../../_autosummary/otters.model.VirtualMeter.AHU.__init__.html#otters.model.VirtualMeter.AHU.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="k">return</span></div>
+</div>
 
 </pre></div>
 
