@@ -1,8 +1,10 @@
-otters.wrangle 
+Wrangle
 ======================
 
+Wrangle is shorthand for Data Analysis.  
+This is where we get, modify, and load data
 
-Classes
+Sub-modules
 -----------------
 .. currentmodule:: otters.wrangle
 
