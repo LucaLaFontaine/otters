@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>otters.wrangle.db_loader &#8212; Otters 0.1.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/otters/wrangle/db_loader';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Otters 0.1.3 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">otters.wrangle.db_loader</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for otters.wrangle.db_loader</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">from</span> <span class="nn">sqlite3</span> <span class="kn">import</span> <span class="n">Error</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<div class="viewcode-block" id="create_db">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.create_db">[docs]</a>
+<span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="n">db_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an SQLite database if none exists.  </span>
+<span class="sd">    Does not open a connection.</span>
+<span class="sd">    </span>
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    &gt; **db_file:** *string, required*  </span>
+<span class="sd">    &gt;&gt; The path to where the db will be created. Can be relative or absolute path. </span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **None**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="n">conn</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="create_conn">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.create_conn">[docs]</a>
+<span class="k">def</span> <span class="nf">create_conn</span><span class="p">(</span><span class="n">db_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a connection (conn) to a SQLite database.  </span>
+<span class="sd">    </span>
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    &gt; **db_file:** *string, required*  </span>
+<span class="sd">    &gt;&gt; The path to the db. Can be relative or absolute path. </span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **SQLite Connection**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">conn</span>
+    <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">conn</span></div>
+
+
+
+<span class="c1">##### TEST WHETHERVcreate_table IS DEPRECATED AFTER upsert</span>
+
+<span class="c1"># def create_table(conn, table_name, df):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Create a table in a SQLite database if none exists.  </span>
+    
+<span class="c1">#     **Parameters:**</span>
+<span class="c1">#     &gt; **db_file:** *string, required*  </span>
+<span class="c1">#     &gt;&gt; The path to where the db will be created. Can be relative or absolute path. </span>
+
+<span class="c1">#     **Returns:**  </span>
+<span class="c1">#     &gt; **None**</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     df = df.copy()</span>
+<span class="c1">#     df.reset_index(inplace=True)</span>
+<span class="c1">#     queryStr = f&quot;CREATE TABLE IF NOT EXISTS {table_name} (`index` integer primary key,&quot;</span>
+<span class="c1">#     for col in df.columns:</span>
+<span class="c1">#         colName = &quot;_&quot;.join(col.split(&quot; &quot;))</span>
+<span class="c1">#         dtype = df[col].dtype</span>
+
+<span class="c1">#         if dtype == &quot;object&quot;:</span>
+<span class="c1">#             queryStr = queryStr + f&quot;{colName} text not null,&quot;</span>
+<span class="c1">#         elif dtype == &quot;datetime64[ns]&quot;:</span>
+<span class="c1">#             queryStr = queryStr + f&quot;{colName} text not null,&quot;</span>
+<span class="c1">#         elif dtype == &quot;float64&quot;:</span>
+<span class="c1">#             queryStr = queryStr + f&quot;{colName} float not null,&quot;</span>
+<span class="c1">#         elif dtype == &quot;float64&quot;:</span>
+<span class="c1">#             queryStr = queryStr + f&quot;{colName} float not null,&quot;</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             raise Exception(f&quot;There is no case for dtype {dtype}, please add one&quot;)</span>
+<span class="c1">#     queryStr = queryStr.removesuffix(&quot;,&quot;) + &quot;);&quot;</span>
+
+<span class="c1">#     sql_create_features_table = queryStr</span>
+<span class="c1">#     try:</span>
+<span class="c1">#         conn.execute(sql_create_features_table)</span>
+<span class="c1">#     except Error as e:</span>
+<span class="c1">#         print(e)</span>
+<span class="c1">########</span>
+
+<div class="viewcode-block" id="upsert">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.upsert">[docs]</a>
+<span class="k">def</span> <span class="nf">upsert</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">primary_key</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">PK_type</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uploads data into a new or existing SQL table.  </span>
+<span class="sd">    If data exists it won&#39;t replace it, and if data doesn&#39;t exist it will inject it in.  </span>
+<span class="sd">    Can create new columns, but not new Foreign or Primary Keys</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    &gt; **conn:** *SQLite Connection, required*  </span>
+<span class="sd">    &gt;&gt; The connection to the SQLite db  </span>
+
+<span class="sd">    &gt; **table_name:** *string, required*  </span>
+<span class="sd">    &gt;&gt; Name of the new/existing table. </span>
+
+<span class="sd">    &gt; **df:** *DataFrame, required*</span>
+<span class="sd">    &gt;&gt; pd.DataFrame containing all data to be loaded. Must contain the primary key somewhere, idk if it has to be in the beginning </span>
+
+<span class="sd">    &gt; **primary_key:** *String, default: `&#39;id&#39;`*</span>
+<span class="sd">    &gt;&gt; primary key of the SQL table. pretty sure this is required cause the funcion will break otherwise. </span>
+<span class="sd">    Not sure if this should be changed.</span>
+
+<span class="sd">    &gt; **PK_type:** *String or List, default: `&#39;INTEGER&#39;`*</span>
+<span class="sd">    &gt;&gt; Pass in the primary key(s), which can be a string or multi-column list</span>
+
+<span class="sd">    **Returns:** </span>
+<span class="sd">    &gt; **None**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The primary key needs to be either a string OR a list, so we have to force it to a list here.</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">primary_key</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">PKs</span> <span class="o">=</span> <span class="p">[</span><span class="n">primary_key</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">PKs</span> <span class="o">=</span> <span class="n">primary_key</span>
+    <span class="c1"># PKs = [f&#39;&quot;{key}&quot;&#39; for key in PKs]</span>
+
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">pragma</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PRAGMA table_info(</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pragma:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pragma</span><span class="p">)</span>
+    
+    <span class="c1"># Create the table with to_sql if it doesn&#39;t exist</span>
+    <span class="k">if</span> <span class="n">pragma</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">primary_key</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There was no table named </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1">. One was created&#39;</span><span class="p">)</span>
+        <span class="n">pragma</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PRAGMA table_info(</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+    
+    <span class="c1"># Create the temp transfer table</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DROP TABLE IF EXISTS transfer_tbl;&quot;</span><span class="p">)</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;transfer_tbl&#39;</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">primary_key</span><span class="p">)</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;transfer_tbl&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">transfer_pragma</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PRAGMA table_info(transfer_tbl)&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;transfer pragma:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">transfer_pragma</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Add new columns if they don&#39;t exist</span>
+    <span class="c1"># keep in mind you can&#39;t add new primary key columns! Use add_primary_key()</span>
+    <span class="n">new_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">transfer_pragma</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pragma</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">())]</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">new_cols</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            ALTER TABLE </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span>
+<span class="s2">            ADD &quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">transfer_pragma</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">transfer_pragma</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">row_dict</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="c1"># Cols and vals are set in different places, it make sense to separate them</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">row_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">row_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1"># Need to add the double quotes back to the columns to keep them separate in sql queries</span>
+    <span class="n">PKs</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">PKs</span><span class="p">]</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        INSERT INTO </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">columns</span><span class="p">])</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">        SELECT </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">columns</span><span class="p">])</span><span class="si">}</span>
+<span class="s2">        FROM transfer_tbl</span>
+<span class="s2">        WHERE true</span>
+<span class="s2">        ON CONFLICT(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PKs</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">        DO UPDATE SET</span>
+<span class="s2">        </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&quot;=excluded.&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">columns</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+    <span class="c1"># Drop the transfer table once we&#39;re done with it</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DROP TABLE IF EXISTS transfer_tbl;&quot;</span><span class="p">)</span>
+    <span class="c1"># I&#39;m like pretty sure you can commit all this at the end. There were no issues in testing. I&#39;m guessing it&#39;s also faster.</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.load">[docs]</a>
+<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dumly loads a DataFrame into a new or existing table.  </span>
+<span class="sd">    If it loads into an existing table it will append to the table.  </span>
+<span class="sd">    If a datetime column is found in the DataFrame it will turn tha into a SQL-readable timestamp and make it the index</span>
+<span class="sd">    Never mind the fact that SQL has a time format and I just didn&#39;t know that when I wrote this </span>
+<span class="sd">    This func is definitely useful because upsert takes a long time</span>
+<span class="sd">    This func is definitely useful because upsert takes a long time</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    &gt; **conn:** *SQLite Connection, required*  </span>
+<span class="sd">    &gt;&gt; The connection to the SQLite db  </span>
+
+<span class="sd">    &gt; **table_name:** *string, required*  </span>
+<span class="sd">    &gt;&gt; Name of the new/existing table  </span>
+
+<span class="sd">    &gt; **df:** *DataFrame, required*</span>
+<span class="sd">    &gt;&gt; Pandas DataFrame containing all data to be loaded. Must contain the primary key somewhere, idk if it has to be in the beginning  </span>
+
+<span class="sd">    **Returns:** </span>
+<span class="sd">    &gt; **None**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+              
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts2str</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+        <span class="c1"># elif df[col].dtype == &#39;floa</span>
+        
+    <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+        
+<div class="viewcode-block" id="dedupe">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.dedupe">[docs]</a>
+<span class="k">def</span> <span class="nf">dedupe</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">dedupe_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Do not use.</span>
+<span class="sd">    This function de-duplicates rows in a SQLite database but I&#39;m pretty sure it has a bug somewhere and idk where it is.  </span>
+<span class="sd">    Download the entire db and deduplicate it with pandas.  </span>
+
+<span class="sd">    At some point Luca will change this to a funcion that takes your entire table into pandas chunks and dedupes the from there but he hasn&#39;t figure that out.  </span>
+<span class="sd">    If you need this functionality with chunking (your db would have to be like 10+ GB), then let Luca know. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dedupe_sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    DELETE FROM </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span>
+<span class="s2">    WHERE ROWID NOT IN (</span>
+<span class="s2">        SELECT  min(ROWID)</span>
+<span class="s2">        FROM    </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span>
+<span class="s2">        GROUP BY</span>
+<span class="s2">            </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dedupe_cols</span><span class="p">)</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">    )&quot;&quot;&quot;</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">dedupe_sql</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="ts2str">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.ts2str">[docs]</a>
+<span class="k">def</span> <span class="nf">ts2str</span><span class="p">(</span><span class="n">col</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turn a pd.datetime(I&#39;m pretty sure) into a SQLite-readable string.  </span>
+<span class="sd">    Most SQL flvaours have timestamps data types but sqlite3 does not.  </span>
+<span class="sd">    </span>
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    &gt; **col:** *pd.Series, required*  </span>
+<span class="sd">    &gt;&gt; The column object to be changed into a string. Pretty sure you can send a Series or DataFrame</span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **pd.Series**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H-%M&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">col</span></div>
+
+
+<div class="viewcode-block" id="getNasaWeather">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.db_loader.getNasaWeather">[docs]</a>
+<span class="k">def</span> <span class="nf">getNasaWeather</span><span class="p">(</span><span class="n">plant</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">-</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()],</span> 
+                   <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T2M&#39;</span><span class="p">,</span> <span class="s1">&#39;RH2M&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> 
+                   <span class="n">db_loc</span><span class="o">=</span><span class="s2">&quot;Z:\Data Governance\Databases\leidos_meta.db&quot;</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the weather at a given plant from Nasa.  </span>
+<span class="sd">    Assumes said plant is in the db.  </span>
+
+<span class="sd">    &lt;a href=&quot;https://power.larc.nasa.gov/#resources&quot;&gt;Parameters can be found here&lt;/a&gt;  </span>
+<span class="sd">    Check the Resources &gt; Parameter Dictionary dropdown  </span>
+
+<span class="sd">    **Parameters:**  </span>
+<span class="sd">    &gt; **plant:** *str, required*  </span>
+<span class="sd">    &gt;&gt; The name of the plant in the database  </span>
+
+<span class="sd">    &gt; **dates:** *list of dates, default: `[today-timedelta(days=365), today()]`*  </span>
+<span class="sd">    &gt;&gt; Follows format: [start_date, end_date]. Pretty sure it can be a python date, a pd date, but not a string  </span>
+
+<span class="sd">    &gt; **params:** *list of strs, default: `[&#39;T2M&#39;, &#39;RH2M&#39;]`*  </span>
+<span class="sd">    &gt;&gt; The type of data you want to receive from NASA. These can be found in the resources section of the Power LARC website.</span>
+<span class="sd">    default: [temperature_at_2_meters, relative_humidity_at_2_meters]  </span>
+
+<span class="sd">    &gt; **type:** *String, default: `&#39;Daily&#39;`*  </span>
+<span class="sd">    &gt;&gt; The frequency of the data. Pretty sure the options are `Daily` and `Hourly`</span>
+
+<span class="sd">    &gt; **units:** *String, default: `&#39;C&#39;`*  </span>
+<span class="sd">    &gt;&gt; The units for temperatures. Only works for T2M right now. Can be `&#39;C&#39;` or `&#39;F&#39;`  </span>
+
+<span class="sd">    &gt; **db_loc:** *String, default: `&quot;Z:\Data Governance\Databases\leidos_meta.db&quot;`*  </span>
+<span class="sd">    &gt;&gt; Path to the database with plant coordinates</span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **pd.DataFrame**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT plant, latitude, longitude</span>
+<span class="s2">    FROM plants;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">coords</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">create_conn</span><span class="p">(</span><span class="n">db_loc</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;plant&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">plant</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;plant&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">plant</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">long</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">plant</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">long</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">requestURL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    https://power.larc.nasa.gov/api/temporal/</span><span class="si">{</span><span class="nb">type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/point?</span>
+<span class="s2">    parameters=</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2">&amp;community=RE&amp;</span>
+<span class="s2">    longitude=</span><span class="si">{</span><span class="n">long</span><span class="si">}</span><span class="s2">&amp;latitude=</span><span class="si">{</span><span class="n">lat</span><span class="si">}</span>
+<span class="s2">    &amp;start=</span><span class="si">{</span><span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">    &amp;end=</span><span class="si">{</span><span class="n">dates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&amp;format=JSON</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">requestURL</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">30.00</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;404 error, the passed url was prolly not valid&quot;</span><span class="p">)</span>
+    <span class="c1"># return response</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+
+    <span class="n">dfWeather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;parameter&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;daily&#39;</span><span class="p">:</span>
+        <span class="n">dfWeather</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dfWeather</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;hourly&#39;</span><span class="p">:</span>
+        <span class="n">dfWeather</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dfWeather</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H&quot;</span><span class="p">)</span>
+
+    <span class="n">dfWeather</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Timestamp&#39;</span>
+
+    <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span><span class="s1">&#39;f&#39;</span><span class="p">:</span>
+        <span class="n">dfWeather</span><span class="p">[</span><span class="s1">&#39;Temp (F)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfWeather</span><span class="p">[</span><span class="s1">&#39;T2M&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">9</span><span class="o">/</span><span class="mi">5</span><span class="o">+</span><span class="mi">32</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dfWeather</span><span class="p">[</span><span class="s1">&#39;Temp (C)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfWeather</span><span class="p">[</span><span class="s1">&#39;T2M&#39;</span><span class="p">]</span>
+
+    <span class="n">dfWeather</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;T2M&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">dfWeather</span><span class="p">[</span><span class="n">dfWeather</span> <span class="o">==</span> <span class="o">-</span><span class="mi">999</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">dfWeather</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Luca LaFontaine.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

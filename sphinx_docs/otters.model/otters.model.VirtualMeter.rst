@@ -1,0 +1,13 @@
+otters.model.VirtualMeter
+=========================
+
+.. automodule:: otters.model.VirtualMeter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AHU
+      VirtualMeter
+   

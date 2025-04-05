@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>VirtualMeter &#8212; Otters 0.1.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=360bc84d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/otters.model.VirtualMeter.VirtualMeter';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="__init__" href="otters.model.VirtualMeter.VirtualMeter.__init__.html" />
+    <link rel="prev" title="__init__" href="otters.model.VirtualMeter.AHU.__init__.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Otters 0.1.3 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../otters.html">
+    Modules
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../important_functions.html">
+    Important Functions
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../otters.html">
+    Modules
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../otters.drive.html">otters.drive</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.drive.ExPS.html">ExPS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.drive.ExPS.DowntimeEvent.html">DowntimeEvent</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.DowntimeEvent.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.DowntimeEvent.setAvgNonProd.html">setAvgNonProd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.DowntimeEvent.setTargets.html">setTargets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.drive.ExPS.ExPS.html">ExPS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.ExPS.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.ExPS.createPPT.html">createPPT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.ExPS.getCSV.html">getCSV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.ExPS.getExcel.html">getExcel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.ExPS.getSQL.html">getSQL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.ExPS.savePPT.html">savePPT</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.drive.ExPS.Graph.html">Graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.getNRowAvg.html">getNRowAvg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.setAvgProd.html">setAvgProd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.setDf.html">setDf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.setDowntimeEvents.html">setDowntimeEvents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.setLowAchieved.html">setLowAchieved</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.setLowPercentage.html">setLowPercentage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Graph.show.html">show</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.drive.ExPS.Plot.html">Plot</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addAreaLines.html">addAreaLines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addAvgProdLine.html">addAvgProdLine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addLegendLabels.html">addLegendLabels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addLines.html">addLines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addLowAchievedLine.html">addLowAchievedLine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addScatter.html">addScatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.addWTAPSchedule.html">addWTAPSchedule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.boundYAxis.html">boundYAxis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.createDTEventLabel.html">createDTEventLabel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.createPlot.html">createPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.createTimeline.html">createTimeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.formatXAxis.html">formatXAxis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.formatYAxis.html">formatYAxis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.formatYAxisUnits.html">formatYAxisUnits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.full_setup.html">full_setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.granulizeData.html">granulizeData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.scaleDTick.html">scaleDTick</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.setYAxisRange.html">setYAxisRange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.show.html">show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.showLastWeek.html">showLastWeek</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.showLastYear.html">showLastYear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.sparklines.html">sparklines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.drive.ExPS.Plot.timeFormatXAxis.html">timeFormatXAxis</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../otters.model.html">otters.model</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.model.Regression.html">Regression</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.model.Regression.LinearRegression.html">LinearRegression</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.fit.html">fit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.get_metadata_routing.html">get_metadata_routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.get_params.html">get_params</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.predict.html">predict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.score.html">score</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.set_fit_request.html">set_fit_request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.set_params.html">set_params</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.LinearRegression.set_score_request.html">set_score_request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.model.Regression.Model.html">Model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Model.__init__.html">__init__</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.model.Regression.Models.html">Models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Models.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Models.regression.html">regression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Models.tabulateModels.html">tabulateModels</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.model.Regression.Regression.html">Regression</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.getCV.html">getCV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.getCVRMSE.html">getCVRMSE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.getR2.html">getR2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.getRegEquation.html">getRegEquation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.model_component_graph.html">model_component_graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.regress.html">regress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.stats.html">stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.Regression.Regression.to_frame.html">to_frame</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="otters.model.VirtualMeter.html">VirtualMeter</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="otters.model.VirtualMeter.AHU.html">AHU</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.VirtualMeter.AHU.__init__.html">__init__</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">VirtualMeter</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS.html">cleanColNamesEMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.createAHU.html">createAHU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.splitEntities.html">splitEntities</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../otters.vis.html">otters.vis package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../otters.vis/otters.vis.graph.html">graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../otters.vis/otters.vis.graph.Graph.html">Graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Graph.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Graph.show.html">show</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.html">Plot</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.__init__.html">__init__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.addAreaLines.html">addAreaLines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.addLines.html">addLines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.addScatter.html">addScatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.boundYAxis.html">boundYAxis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.createPlot.html">createPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.createTimeline.html">createTimeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.formatXAxis.html">formatXAxis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.formatYAxis.html">formatYAxis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.full_setup.html">full_setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.scaleDTick.html">scaleDTick</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.setYAxisRange.html">setYAxisRange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.show.html">show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.sparklines.html">sparklines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../otters.vis/otters.vis.graph.Plot.timeFormatXAxis.html">timeFormatXAxis</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../otters.wrangle.html">otters.wrangle</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.db_loader.html">db_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.create_conn.html">create_conn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.create_db.html">create_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.dedupe.html">dedupe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.getNasaWeather.html">getNasaWeather</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.load.html">load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.ts2str.html">ts2str</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.upsert.html">upsert</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.file_loader.html">file_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.formatData.html">formatData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getCSVDFs.html">getCSVDFs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getExcelDFs.html">getExcelDFs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getFiles.html">getFiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.import_config.html">import_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.replace_backslashes_in_dict.html">replace_backslashes_in_dict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.save2xl.html">save2xl</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.psychrometrics.html">psychrometrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.ZERO_FAHRENHEIT_AS_RANKINE.html">ZERO_FAHRENHEIT_AS_RANKINE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.ZERO_CELSIUS_AS_KELVIN.html">ZERO_CELSIUS_AS_KELVIN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.R_DA_IP.html">R_DA_IP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.R_DA_SI.html">R_DA_SI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.MAX_ITER_COUNT.html">MAX_ITER_COUNT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.MIN_HUM_RATIO.html">MIN_HUM_RATIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.FREEZING_POINT_WATER_IP.html">FREEZING_POINT_WATER_IP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.FREEZING_POINT_WATER_SI.html">FREEZING_POINT_WATER_SI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.TRIPLE_POINT_WATER_IP.html">TRIPLE_POINT_WATER_IP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.TRIPLE_POINT_WATER_SI.html">TRIPLE_POINT_WATER_SI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.CalcPsychrometricsFromRelHum.html">CalcPsychrometricsFromRelHum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.CalcPsychrometricsFromTDewPoint.html">CalcPsychrometricsFromTDewPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.CalcPsychrometricsFromTWetBulb.html">CalcPsychrometricsFromTWetBulb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetDegreeOfSaturation.html">GetDegreeOfSaturation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetDryAirDensity.html">GetDryAirDensity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetDryAirEnthalpy.html">GetDryAirEnthalpy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetDryAirVolume.html">GetDryAirVolume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetHumRatioFromEnthalpyAndTDryBulb.html">GetHumRatioFromEnthalpyAndTDryBulb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetHumRatioFromRelHum.html">GetHumRatioFromRelHum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetHumRatioFromSpecificHum.html">GetHumRatioFromSpecificHum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetHumRatioFromTDewPoint.html">GetHumRatioFromTDewPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetHumRatioFromTWetBulb.html">GetHumRatioFromTWetBulb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetHumRatioFromVapPres.html">GetHumRatioFromVapPres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetMoistAirDensity.html">GetMoistAirDensity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetMoistAirEnthalpy.html">GetMoistAirEnthalpy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetMoistAirVolume.html">GetMoistAirVolume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetRelHumFromHumRatio.html">GetRelHumFromHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetRelHumFromTDewPoint.html">GetRelHumFromTDewPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetRelHumFromTWetBulb.html">GetRelHumFromTWetBulb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetRelHumFromVapPres.html">GetRelHumFromVapPres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetSatAirEnthalpy.html">GetSatAirEnthalpy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetSatHumRatio.html">GetSatHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetSatVapPres.html">GetSatVapPres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetSeaLevelPressure.html">GetSeaLevelPressure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetSpecificHumFromHumRatio.html">GetSpecificHumFromHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetStandardAtmPressure.html">GetStandardAtmPressure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetStandardAtmTemperature.html">GetStandardAtmTemperature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetStationPressure.html">GetStationPressure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTCelsiusFromTKelvin.html">GetTCelsiusFromTKelvin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTDewPointFromHumRatio.html">GetTDewPointFromHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTDewPointFromRelHum.html">GetTDewPointFromRelHum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTDewPointFromTWetBulb.html">GetTDewPointFromTWetBulb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTDewPointFromVapPres.html">GetTDewPointFromVapPres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTDryBulbFromEnthalpyAndHumRatio.html">GetTDryBulbFromEnthalpyAndHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTDryBulbFromMoistAirVolumeAndHumRatio.html">GetTDryBulbFromMoistAirVolumeAndHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTFahrenheitFromTRankine.html">GetTFahrenheitFromTRankine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTKelvinFromTCelsius.html">GetTKelvinFromTCelsius</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTRankineFromTFahrenheit.html">GetTRankineFromTFahrenheit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTWetBulbFromHumRatio.html">GetTWetBulbFromHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTWetBulbFromRelHum.html">GetTWetBulbFromRelHum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetTWetBulbFromTDewPoint.html">GetTWetBulbFromTDewPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetUnitSystem.html">GetUnitSystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetVapPresFromHumRatio.html">GetVapPresFromHumRatio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetVapPresFromRelHum.html">GetVapPresFromRelHum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetVapPresFromTDewPoint.html">GetVapPresFromTDewPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.GetVaporPressureDeficit.html">GetVaporPressureDeficit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.SetUnitSystem.html">SetUnitSystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.dLnPws_.html">dLnPws_</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.isIP.html">isIP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.psychrometrics.UnitSystem.html">UnitSystem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.time_tools.html">time_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.getLastNWeeks.html">getLastNWeeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.overlayPast.html">overlayPast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.selectiveResample.html">selectiveResample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.str2dt.html">str2dt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.time2timedelta.html">time2timedelta</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.wrangler.html">wrangler</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.wrangler.compare_lists.html">compare_lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.wrangler.find_strs.html">find_strs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.wrangler.gapAndIsland.html">gapAndIsland</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.wrangler.mergeCloseEvents.html">mergeCloseEvents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.wrangler.merge_df_cols.html">merge_df_cols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.wrangler.merge_dfs.html">merge_dfs</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../otters.html" class="nav-link">Modules</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../otters.model.html" class="nav-link">otters.model</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="otters.model.VirtualMeter.html" class="nav-link">VirtualMeter</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">VirtualMeter</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="virtualmeter">
+<h1>VirtualMeter<a class="headerlink" href="#virtualmeter" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="otters.model.VirtualMeter.VirtualMeter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">otters.model.VirtualMeter.</span></span><span class="sig-name descname"><span class="pre">VirtualMeter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/otters/model/VirtualMeter.html#VirtualMeter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#otters.model.VirtualMeter.VirtualMeter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<blockquote>
+<div><p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.__init__.html#otters.model.VirtualMeter.VirtualMeter.__init__" title="otters.model.VirtualMeter.VirtualMeter.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS.html#otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS" title="otters.model.VirtualMeter.VirtualMeter.cleanColNamesEMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cleanColNamesEMS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.createAHU.html#otters.model.VirtualMeter.VirtualMeter.createAHU" title="otters.model.VirtualMeter.VirtualMeter.createAHU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createAHU</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.model.VirtualMeter.VirtualMeter.splitEntities.html#otters.model.VirtualMeter.VirtualMeter.splitEntities" title="otters.model.VirtualMeter.VirtualMeter.splitEntities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splitEntities</span></code></a></p></td>
+<td><p>Splits a df into seperate entities (i.e AHUs, chillers, etc) based on a common identifier.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="otters.model.VirtualMeter.VirtualMeter.splitEntities">
+<span class="sig-name descname"><span class="pre">splitEntities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifiers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paddingDigits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/otters/model/VirtualMeter.html#VirtualMeter.splitEntities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#otters.model.VirtualMeter.VirtualMeter.splitEntities" title="Link to this definition">#</a></dt>
+<dd><p>Splits a df into seperate entities (i.e AHUs, chillers, etc) based on a common identifier.</p>
+<p>Example: if you have a list of tags from AHUs 1-15, all with the prefix ‘BIW AHU {number}’ you can separate them by ahu number.</p>
+<p>The func takes the id with ‘*’ as a wildcard and tries each number from 1 - maxNum to get the tags associated to that number. 
+There should be a trailing space on the identifier as that’s the complete term.</p>
+<p>There can be missing tag numbers, it’ll ignore empty tags.</p>
+<p><strong>Parameters:</strong>  
+&gt;**identifiers:** <em>list of dictionaries, Required</em></p>
+<p>&gt;**paddingDigits:** <em>bool, default:</em> <cite>False</cite>  
+&gt;&gt;Defines whether the numbers in the tags have 0-padding. Eg: 01, 02, etc.</p>
+<p><strong>Returns:</strong>  
+&gt;**list of DataFrames**</p>
+<p>Example:
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+identifiers = [</p>
+<blockquote>
+<div><p>{‘id’:’Biw Ahu * ‘, ‘maxNum’:17}</p>
+</div></blockquote>
+<section id="id3">
+<h2>]<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="otters.model.VirtualMeter.AHU.__init__.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">__init__</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="otters.model.VirtualMeter.VirtualMeter.__init__.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">__init__</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#otters.model.VirtualMeter.VirtualMeter"><code class="docutils literal notranslate"><span class="pre">VirtualMeter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#otters.model.VirtualMeter.VirtualMeter.splitEntities"><code class="docutils literal notranslate"><span class="pre">VirtualMeter.splitEntities()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_autosummary/otters.model.VirtualMeter.VirtualMeter.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Luca LaFontaine.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

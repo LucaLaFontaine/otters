@@ -1,0 +1,15 @@
+otters.model.Regression
+=======================
+
+.. automodule:: otters.model.Regression
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearRegression
+      Model
+      Models
+      Regression
+   
