@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>otters.wrangle.wrangler &#8212; Otters 0.1.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/otters/wrangle/wrangler';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Otters 0.1.3 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">otters.wrangle.wrangler</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for otters.wrangle.wrangler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="gapAndIsland">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.wrangler.gapAndIsland">[docs]</a>
+<span class="k">def</span> <span class="nf">gapAndIsland</span><span class="p">(</span><span class="n">dfCol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes an np.series data type (ie. a df single column)</span>
+<span class="sd">    returns the entire column broken up into sections where all the numbers are the same. </span>
+<span class="sd">    Good for iterating on an events column or tracking flags. </span>
+
+<span class="sd">    new: dfCol can be df with one column or series</span>
+
+<span class="sd">    **Parameters:**  </span>
+<span class="sd">    &gt; **dfCol: *a single df column or series, Required***  </span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **Series**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dfCol</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mergeCloseEvents">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.wrangler.mergeCloseEvents">[docs]</a>
+<span class="k">def</span> <span class="nf">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">mergeWithinHours</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merges events that are close so we don&#39;t get bunches of events. Not entirely necessary but it makes it cleaner. </span>
+<span class="sd">    Recursive function, so it takes each event and calculates if it&#39;s within &quot;mergeWithinHours&quot; (in hours) of the last event. </span>
+<span class="sd">    If so it adds this event to the last event and deletes this event.</span>
+<span class="sd">    returns the new list of events</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">events</span>
+    
+    <span class="n">eventStart</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">eventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">lastEventEnd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">((</span><span class="n">eventStart</span><span class="o">-</span><span class="n">lastEventEnd</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">mergeWithinHours</span><span class="p">:</span>
+        <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">)</span>
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mergeCloseEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">events</span></div>
+
+
+<div class="viewcode-block" id="merge_dfs">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.wrangler.merge_dfs">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_dfs</span><span class="p">(</span><span class="n">dfs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge 2 or more dfs where you have some overlapping data.  </span>
+<span class="sd">    Keeps the values randomly as far as I can tell, though it drops nan values</span>
+
+<span class="sd">    **Parameters:**  </span>
+<span class="sd">    &gt; **dfs: *list of DataFrames/Series, Required***  </span>
+<span class="sd">    &gt;&gt; It will take any number of dfs</span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **Merged DataFrame**  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create the set of all columns in the list of dataframes</span>
+    <span class="n">allCols</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">allCols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">]</span>
+    <span class="n">allCols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">allCols</span><span class="p">))</span>
+
+    <span class="c1"># dfMerged = pd.DataFrame()</span>
+    <span class="n">mergedCols</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)</span>
+    <span class="c1"># then keep the first index. This will leave out the nans that sink to the bottom.</span>
+    <span class="c1"># append each column to a list to concat into a def later </span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">allCols</span><span class="p">:</span>
+        <span class="n">mergedCol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+        <span class="n">mergedCols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mergedCol</span><span class="p">[</span><span class="o">~</span><span class="n">mergedCol</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)])</span>
+
+    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mergedCols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dfMerged</span></div>
+
+    
+
+<div class="viewcode-block" id="merge_df_cols">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.wrangler.merge_df_cols">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_df_cols</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="c1"># Takes the df and lines up all the same column one of top of each other. </span>
+    <span class="c1"># makes a second index with the count of like which instance of the column it is. </span>
+        <span class="c1"># is this the first instance of the column? the second? etc.</span>
+        <span class="c1"># This means the index is now technically unique</span>
+    <span class="n">dfStack</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
+            <span class="p">]),</span> 
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># You&#39;d think we could just sort index and drop the dupes but this will cause us to lose data. </span>
+        <span class="c1"># The columns aren&#39;t eindividually sorted with nulls first or last</span>
+    <span class="c1"># So here we split the df by instance number. we can then update one instance into another in the next step. </span>
+    <span class="n">dfInstances</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">dfInstances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dfStack</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfStack</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># combine_first essentially updates a df with another df, keeping actual values in favour of nulls</span>
+    <span class="c1"># So here we just repeatedly update the new df (dfMerged) with each successive instance, keeping values in place of nulls. </span>
+    <span class="c1"># Keep in mind that this will keep later instances over newer ones. I think this is a good approach</span>
+        <span class="c1"># This can be reversed by updating the instance wityh the merged instead. </span>
+    <span class="c1"># This will probably treat 0s as real values and not replace them which I don&#39;t love. </span>
+    <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">dfInstance</span> <span class="ow">in</span> <span class="n">dfInstances</span><span class="p">:</span>
+        <span class="n">dfMerged</span> <span class="o">=</span> <span class="n">dfMerged</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">dfInstance</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dfMerged</span></div>
+
+
+<div class="viewcode-block" id="compare_lists">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.wrangler.compare_lists">[docs]</a>
+<span class="k">def</span> <span class="nf">compare_lists</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    IN DEVELOPMENT</span>
+<span class="sd">    I orifinally used this in Agg Data fro ABI to get all the valid cols from a list in a df. it&#39;s easier to just show the code:  </span>
+<span class="sd">    `sumCols = [col for col in df.columns if compareList(list(col), sumCols)]`  </span>
+
+<span class="sd">    I think this would have ustility in matching a combo of strings against a series, but I didn&#39;t use it that way. </span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **boolean**  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span> </div>
+
+
+
+
+<div class="viewcode-block" id="find_strs">
+<a class="viewcode-back" href="../../../otters.wrangle.html#otters.wrangle.wrangler.find_strs">[docs]</a>
+<span class="k">def</span> <span class="nf">find_strs</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find all the unique strings in a series.  </span>
+<span class="sd">    Usefull for finding string errors in an otherwise numeric column</span>
+
+<span class="sd">    Normally you would want to search all the string columns in a df. YOu can jsut loop over all the columns with the type `object`  </span>
+<span class="sd">    </span>
+<span class="sd">    **Parameters:**  </span>
+<span class="sd">    &gt; **S: *Series, Required***  </span>
+
+<span class="sd">    **Returns:**  </span>
+<span class="sd">    &gt; **list**  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">num_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># return num_mask.loc[num_mask == True]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">num_mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Luca LaFontaine.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

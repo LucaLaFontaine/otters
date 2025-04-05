@@ -4,11 +4,11 @@ from datetime import timedelta
 import gc
 import re 
 
-class VirtualMeter():
+class VirtualMeter:
     def __init__(self, df):
         self.df = df
         self.AHUs = {}
-        return
+        
     
     # def cleanColNamesEMS(self, filterWords=['Feedback ', ' Digital', 'Percentage ',], verbose=False):
     #     colNames = self.df.columns
@@ -119,6 +119,9 @@ class VirtualMeter():
         return
 
 class AHU():
+    """
+    Urmom
+    """
     def __init__(self, parent, df, name):
         self.parent = parent
         self.df = df

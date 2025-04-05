@@ -1,0 +1,8 @@
+# Welcome to the Otters Docs
+
+*Insert executive summary iof the docs*
+
+```{toctree}
+    :max_depth:2
+otters.rst
+```

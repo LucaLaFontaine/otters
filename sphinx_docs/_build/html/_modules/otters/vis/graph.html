@@ -1,0 +1,832 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>otters.vis.graph &#8212; Otters 0.1.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/otters/vis/graph';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Otters 0.1.3 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">otters.vis.graph</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for otters.vis.graph</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+
+<span class="c1"># within package/mymodule1.py, for example</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.subplots</span> <span class="kn">import</span> <span class="n">make_subplots</span>
+
+<span class="kn">from</span> <span class="nn">otters.wrangle.file_loader</span> <span class="kn">import</span> <span class="n">import_config</span>
+
+
+
+<div class="viewcode-block" id="Graph">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Graph">[docs]</a>
+<span class="k">class</span> <span class="nc">Graph</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="c1"># An apparently good way to load a static file in the tree of the package, not the caller. </span>
+            <span class="c1"># This is the default config for plots and is overwritten by everything</span>
+        <span class="n">default_conf_binary</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;conf.yaml&quot;</span><span class="p">)</span>
+        <span class="n">default_conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">default_conf_binary</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+        
+
+        <span class="c1"># correct a series to a df</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+
+        <span class="c1"># Default kwarg values, later updated with the passed kwargs</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;df&#39;</span> <span class="p">:</span> <span class="n">df</span><span class="p">,</span>
+            <span class="c1"># This will tank if the df is a series.</span>
+            <span class="s1">&#39;graphCols&#39;</span> <span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+            <span class="s1">&#39;xTitle&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;yTitle&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>     
+        <span class="p">}</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">default_conf</span><span class="p">)</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1"># unpack the arguments and assign them to self.{argName}</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">options</span><span class="p">[</span><span class="n">arg</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">return</span>
+    
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Graph(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&#39;, cols=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="si">}</span><span class="s2">)&quot;</span>
+    
+<div class="viewcode-block" id="Graph.show">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Graph.show">[docs]</a>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span></div>
+</div>
+
+
+<div class="viewcode-block" id="Plot">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot">[docs]</a>
+<span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">Graph</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">config</span>   
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">df</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xTitle</span>	<span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">xTitle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yTitle</span>	<span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">yTitle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;plotWidth&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;plotHeight&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;aspectRatio&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lineColours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;lineColours&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;margin&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_setup</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Plot(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&#39;, cols=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+<div class="viewcode-block" id="Plot.full_setup">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.full_setup">[docs]</a>
+    <span class="k">def</span> <span class="nf">full_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createPlot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setYAxisRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatYAxis</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">inferred_type</span> <span class="o">==</span> <span class="s2">&quot;datetime64&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeFormatXAxis</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatXAxis</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Plot.createPlot">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.createPlot">[docs]</a>
+    <span class="k">def</span> <span class="nf">createPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a plot in the EPS style. Most of this crap is formatting</span>
+<span class="sd">        We add here the trendline(s), the legend, x/y axes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fig</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">fig</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">make_subplots</span><span class="p">(</span><span class="n">specs</span><span class="o">=</span><span class="p">[[{</span><span class="s2">&quot;secondary_y&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}]])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">colorway</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lineColours</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+            <span class="n">margin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span>
+            <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> 
+            <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+            <span class="n">title_text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> 
+            <span class="n">title_x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_legends</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+            <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span>
+            <span class="n">yanchor</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> 
+            <span class="n">xanchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> 
+            <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;container&#39;</span><span class="p">,</span> 
+            <span class="c1"># Changing this to &#39;paper&#39; squeezes the graphto the side for some reason</span>
+            <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;container&#39;</span><span class="p">,</span>
+ 
+            <span class="n">y</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.5</span>
+        <span class="p">)</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Plot.addLines">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.addLines">[docs]</a>
+    <span class="k">def</span> <span class="nf">addLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[],</span> <span class="n">level</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">cols</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="c1"># Allows us to decide how many and which levels of the column name we want to keep and then make sure it&#39;s a string for the legend</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">col</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+                <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatYAxis</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Plot.addAreaLines">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.addAreaLines">[docs]</a>
+    <span class="k">def</span> <span class="nf">addAreaLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[],</span> <span class="n">stack_group</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No columns passed&quot;</span><span class="p">)</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">cols</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="c1"># Allows us to decide how many and which levels of the column name we want to keep and then make sure it&#39;s a string for the legend</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">col</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+                <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                    <span class="c1"># name=&quot;_&quot;.join(df[col].squeeze().name),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+
+                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+                    <span class="n">stackgroup</span><span class="o">=</span><span class="n">stack_group</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatYAxis</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Plot.addScatter">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.addScatter">[docs]</a>
+    <span class="k">def</span> <span class="nf">addScatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        You&#39;re gonna need to add an x and y. You should be able to add 2 Ys, and so those are a list. With the Xs idk suck a lemon.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># df = self.df.loc[:, y.append(x)]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+                <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">],</span>
+                    <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">var</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatYAxis</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Plot.formatXAxis">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.formatXAxis">[docs]</a>
+    <span class="k">def</span> <span class="nf">formatXAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span>
+        <span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+        <span class="n">linecolor</span><span class="o">=</span><span class="s1">&#39;#262626&#39;</span><span class="p">,</span> 
+        <span class="n">showgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+        <span class="n">gridwidth</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> 
+        <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgba(235, 235, 235, 1)&#39;</span><span class="p">,</span> 
+        <span class="n">title_text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xTitle</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Plot.timeFormatXAxis">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.timeFormatXAxis">[docs]</a>
+    <span class="k">def</span> <span class="nf">timeFormatXAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaleTimestamps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatXAxis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tickFormat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;tickFormat&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xTickAngle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xTickAngle&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xMaxTicks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xMaxTicks&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dTick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;dTick&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tick0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;tick0&#39;</span><span class="p">]</span>
+
+        <span class="c1"># This is only really for ExPS. This should arguably be replaced by just passing an **args thing into update_xaxes</span>
+        <span class="k">if</span> <span class="n">scaleTimestamps</span><span class="p">:</span>
+            <span class="n">scaleDTick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaleDTick</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scaleDTick</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span>
+            <span class="n">tickformat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tickFormat</span><span class="p">,</span>
+            <span class="n">tickangle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xTickAngle</span><span class="p">,</span>
+            <span class="n">tick0</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tick0</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick0</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick0</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick0</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick0</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]),</span>
+            <span class="n">dtick</span><span class="o">=</span><span class="n">scaleDTick</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Plot.formatYAxis">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.formatYAxis">[docs]</a>
+    <span class="k">def</span> <span class="nf">formatYAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">numeric_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int16&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># if the data is a series even before it get&#39;s squozen down we have to reset it to a df</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+
+        <span class="c1"># need to handle both series 1-d and 2-d arrays</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">numeric_types</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">max_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">numeric_types</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">numeric_types</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">max_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">numeric_types</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Please pass a DataFrame or Series&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">yAxisRange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_value</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">yAxisRange</span><span class="p">[</span><span class="mi">1</span><span class="p">]]),</span>
+            <span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+            <span class="n">linecolor</span><span class="o">=</span><span class="s1">&#39;#262626&#39;</span><span class="p">,</span> 
+            <span class="n">showgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+            <span class="n">gridwidth</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> 
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgba(235, 235, 235, 1)&#39;</span><span class="p">,</span> 
+            <span class="n">title_text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">yTitle</span><span class="p">,</span>
+            <span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Remove some stuff off the secondary axis by default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis2&#39;</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis2&#39;</span><span class="p">][</span><span class="s1">&#39;showgrid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+        
+<div class="viewcode-block" id="Plot.boundYAxis">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.boundYAxis">[docs]</a>
+    <span class="k">def</span> <span class="nf">boundYAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        **Should be replaced by the folloifing:**</span>
+<span class="sd">        self.fig.update_yaxes(autorange=&quot;max&quot;, autorangeoptions_include=0)  </span>
+
+<span class="sd">        Bounds the range of each y axis to the traces currently present on the plot</span>
+<span class="sd">        This is way too complicated, but I need to move on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get all the y_maxes on the plot and their y axis</span>
+        <span class="n">y_maxes</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;yaxis&#39;</span><span class="p">:</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;yaxis&#39;</span><span class="p">],</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()}</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+
+        <span class="c1"># Create a dict of the y_maxes sorted by max. Then update another dict with the highest max for that axis, creating a &quot;set&quot; of the axes with the highest max</span>
+        <span class="n">y_maxes_set</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">y_maxes_dict</span> <span class="o">=</span> <span class="p">[{</span><span class="n">ymax</span><span class="p">[</span><span class="s1">&#39;yaxis&#39;</span><span class="p">]</span> <span class="p">:</span> <span class="n">ymax</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]}</span> <span class="k">for</span> <span class="n">ymax</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">y_maxes</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">])]</span>
+        <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">y_maxes_dict</span><span class="p">:</span>
+            <span class="n">y_maxes_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+
+        <span class="c1"># the primary axis is &#39;null&#39; so that&#39;s how I&#39;m checking for a secondary axis. </span>
+            <span class="c1"># Notice this will only work with 2 axes, but who cares</span>
+        <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">y_maxes_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">sec_y</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sec_y</span><span class="o">=</span><span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">secondary_y</span><span class="o">=</span><span class="n">sec_y</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Plot.scaleDTick">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.scaleDTick">[docs]</a>
+    <span class="k">def</span> <span class="nf">scaleDTick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dateDifference</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">days</span>
+        <span class="k">if</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="mf">86400000.0</span><span class="o">/</span><span class="mi">24</span>
+        <span class="k">elif</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="mf">86400000.0</span><span class="o">*</span><span class="mf">0.25</span>
+        <span class="k">elif</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="mf">86400000.0</span><span class="o">*</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">14</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="mf">86400000.0</span><span class="o">*</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="s1">&#39;D1&#39;</span>
+        <span class="k">elif</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="mf">86400000.0</span><span class="o">*</span><span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">dateDifference</span> <span class="o">&lt;</span> <span class="mi">168</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="mf">86400000.0</span><span class="o">*</span><span class="mi">7</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dTick</span><span class="o">=</span><span class="s1">&#39;M1&#39;</span>
+        <span class="k">return</span> <span class="n">dTick</span></div>
+
+    
+<div class="viewcode-block" id="Plot.setYAxisRange">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.setYAxisRange">[docs]</a>
+    <span class="k">def</span> <span class="nf">setYAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yAxisRange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;yAxisRange&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yAxisRange</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yAxisRange</span> <span class="o">=</span> <span class="p">[</span><span class="nb">eval</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">yAxisRange</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="Plot.createTimeline">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.createTimeline">[docs]</a>
+    <span class="k">def</span> <span class="nf">createTimeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a standalone timeline from a supplied events DataFrame  </span>
+
+<span class="sd">        Paramaters:</span>
+<span class="sd">        df: DataFrame, Required</span>
+<span class="sd">        &gt; Should be format: [&#39;Timsetamp&#39;, &#39;Name&#39;].  </span>
+<span class="sd">        It only takes the first 2 columns so you can put like a description or whatever after. Eventually a description will be rolled into hover text</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ZeroCol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Add just the time series</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()],</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="n">padding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="n">padding</span><span class="p">],</span>
+            <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ticklabelposition</span> <span class="o">=</span> <span class="s1">&#39;outside right&#39;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;If anyone knows how to style a timeline email me at luka@aol.com&#39;</span><span class="p">,</span>
+            <span class="c1"># title</span>
+            <span class="c1"># gridcolor=&#39;#000&#39;</span>
+        <span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span><span class="p">,</span> <span class="n">uniform</span>
+        <span class="kn">import</span> <span class="nn">textwrap</span>
+
+        <span class="n">colours</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;rgba(8, 84, 158,1)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgba(255, 136, 62,1)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgba(146, 92, 59,1)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgba(204, 158, 115,1)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgba(223, 197, 79,1)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgba(148, 0, 28,1)&#39;</span><span class="p">,</span>            
+        <span class="p">]</span>
+
+        <span class="n">yPos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+
+
+        <span class="n">i</span><span class="o">=</span><span class="mi">0</span> <span class="c1"># don&#39;t leave this implementation this way with the i</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">colour</span> <span class="o">=</span> <span class="s1">&#39;rgba(8, 84, 158,1)&#39;</span>
+            <span class="n">colour2</span> <span class="o">=</span> <span class="s1">&#39;rgba(255, 136, 62,1)&#39;</span>
+            
+            <span class="n">ran</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_vline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">yPos</span><span class="p">[</span><span class="n">i</span><span class="o">%</span><span class="mi">4</span><span class="p">]),</span>
+                            <span class="n">x</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&lt;b&gt;&quot;</span><span class="o">+</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;:&lt;br&gt;&quot;</span><span class="o">+</span><span class="s2">&quot;&lt;br&gt;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">width</span> <span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">break_long_words</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;&lt;/b&gt;&quot;</span><span class="p">,</span>
+                            <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="c1"># yshift=20, </span>
+                            <span class="n">xshift</span><span class="o">=-</span><span class="mf">2.5</span><span class="p">,</span>
+                            <span class="n">xanchor</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+                            <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span> <span class="o">=</span> <span class="n">colour</span><span class="p">),</span>
+                            <span class="c1"># xref=&quot;paper&quot;,</span>
+                            <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+                            <span class="n">bgcolor</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;rgba(255, 255, 255, 1)&#39;</span><span class="p">,</span>
+                            <span class="n">bordercolor</span><span class="o">=</span><span class="n">colour2</span><span class="p">,</span>
+                            <span class="n">borderwidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                            <span class="n">borderpad</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                            <span class="p">)</span>
+            
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span>
+            <span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            
+        <span class="p">)</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Plot.sparklines">
+<a class="viewcode-back" href="../../../otters.vis.html#otters.vis.graph.Plot.sparklines">[docs]</a>
+    <span class="k">def</span> <span class="nf">sparklines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colWidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">yTitles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="c1"># for col in cols:</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">yTitles</span><span class="p">:</span>
+            <span class="n">yTitles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">yTitles</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">yTitles</span> <span class="o">=</span> <span class="p">[</span><span class="n">yTitles</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
+
+        <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+        <span class="n">numRows</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span><span class="o">/</span><span class="n">colWidth</span><span class="p">)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">make_subplots</span><span class="p">(</span>
+            <span class="n">rows</span><span class="o">=</span><span class="n">numRows</span><span class="p">,</span> 
+            <span class="n">cols</span><span class="o">=</span><span class="n">colWidth</span><span class="p">,</span>
+            <span class="n">subplot_titles</span><span class="o">=</span><span class="n">cols</span>
+        <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_setup</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="n">ctr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">numRows</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="n">row</span><span class="o">*</span><span class="n">colWidth</span><span class="o">-</span><span class="n">colWidth</span><span class="p">:</span><span class="n">row</span><span class="o">*</span><span class="n">colWidth</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+                    <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                        <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> 
+                        <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">col</span>
+                    <span class="p">),</span>
+                    <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> 
+                    <span class="n">col</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="n">yTitles</span><span class="p">[</span><span class="n">ctr</span><span class="p">],</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># Simple and dirty, but also readable lol</span>
+                    <span class="n">ctr</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;It&#39;s likely that you passed a list of the wrong length for your &#39;yTitles&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">numRows</span><span class="o">*</span><span class="mi">400</span><span class="p">,</span> 
+            <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;plotWidth&#39;</span><span class="p">],</span>
+            <span class="n">title_text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">autorange</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">autorangeoptions_include</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span></div>
+</div>
+
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Luca LaFontaine.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
