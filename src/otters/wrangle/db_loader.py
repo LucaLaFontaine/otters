@@ -48,46 +48,6 @@ def create_conn(db_file: str) -> sqlite3.Connection:
 
     return conn
 
-
-##### TEST WHETHERVcreate_table IS DEPRECATED AFTER upsert
-
-# def create_table(conn, table_name, df):
-#     """
-#     Create a table in a SQLite database if none exists.  
-    
-#     **Parameters:**
-#     > **db_file:** *string, required*  
-#     >> The path to where the db will be created. Can be relative or absolute path. 
-
-#     **Returns:**  
-#     > **None**
-#     """
-#     df = df.copy()
-#     df.reset_index(inplace=True)
-#     queryStr = f"CREATE TABLE IF NOT EXISTS {table_name} (`index` integer primary key,"
-#     for col in df.columns:
-#         colName = "_".join(col.split(" "))
-#         dtype = df[col].dtype
-
-#         if dtype == "object":
-#             queryStr = queryStr + f"{colName} text not null,"
-#         elif dtype == "datetime64[ns]":
-#             queryStr = queryStr + f"{colName} text not null,"
-#         elif dtype == "float64":
-#             queryStr = queryStr + f"{colName} float not null,"
-#         elif dtype == "float64":
-#             queryStr = queryStr + f"{colName} float not null,"
-#         else:
-#             raise Exception(f"There is no case for dtype {dtype}, please add one")
-#     queryStr = queryStr.removesuffix(",") + ");"
-
-#     sql_create_features_table = queryStr
-#     try:
-#         conn.execute(sql_create_features_table)
-#     except Error as e:
-#         print(e)
-########
-
 def upsert(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame, primary_key: list | str='id', PK_type: str='INTEGER', verbose: bool = False) -> None:
     """
     Uploads data into a new or existing SQL table.  
@@ -190,7 +150,6 @@ def load(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame) -> None:
     If a datetime column is found in the DataFrame it will turn tha into a SQL-readable timestamp and make it the index
     Never mind the fact that SQL has a time format and I just didn't know that when I wrote this 
     This func is definitely useful because upsert takes a long time
-    This func is definitely useful because upsert takes a long time
 
     **Parameters:**
     > **conn:** *SQLite Connection, required*  
@@ -215,29 +174,6 @@ def load(conn: sqlite3.Connection, table_name: str, df: pd.DataFrame) -> None:
         
     df.reset_index(inplace=True)
     df.to_sql(table_name, conn, if_exists='append', index=True)
-    return
-        
-def dedupe(conn: sqlite3.Connection, dedupe_cols: list, table_name: str) -> None:
-    """
-    Do not use.
-    This function de-duplicates rows in a SQLite database but I'm pretty sure it has a bug somewhere and idk where it is.  
-    Download the entire db and deduplicate it with pandas.  
-
-    At some point Luca will change this to a funcion that takes your entire table into pandas chunks and dedupes the from there but he hasn't figure that out.  
-    If you need this functionality with chunking (your db would have to be like 10+ GB), then let Luca know. 
-    """
-
-    dedupe_sql = f"""
-    DELETE FROM {table_name}
-    WHERE ROWID NOT IN (
-        SELECT  min(ROWID)
-        FROM    {table_name}
-        GROUP BY
-            {', '.join(dedupe_cols).removesuffix(',')}
-    )"""
-    cur = conn.cursor()
-    cur.execute(dedupe_sql)
-    conn.commit()
     return
     
 def ts2str(col: pd.Series) -> pd.Series:

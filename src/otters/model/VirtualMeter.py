@@ -8,33 +8,6 @@ class VirtualMeter:
     def __init__(self, df):
         self.df = df
         self.AHUs = {}
-        
-    
-    # def cleanColNamesEMS(self, filterWords=['Feedback ', ' Digital', 'Percentage ',], verbose=False):
-    #     colNames = self.df.columns
-    #     # For each column name, split up the name by instance of '- ' and then take the last instance. 
-    #     colNames = [x.split(' - ')[-1] for x in colNames]
-
-    #     # Create a big string from the columns and treat them altogether
-    #     x="-".join(colNames)
-
-    #     # remove one word at a time
-    #     for word in filterWords:
-    #         x=x.replace(word,"")
-    #     x=x.replace('Temperature' , 'Temp')
-    #     x=x.replace('Outside Air Temp' , 'OAT')
-    #     x=x.replace('Running' , 'On')
-    #     x=x.replace('Gen Assy' , 'GA')
-
-    #     # split up the cols again
-    #     colNames =x.split("-")
-
-    #     self.df.columns = colNames
-
-    #     if verbose==True:
-    #         # Display columns
-    #         print(self.df.columns)
-    #     return
     
     def cleanColNamesEMS(self, filterWords=[], index=-1, identifier=' - ', verbose=False):
         df = self.df.copy()

@@ -12,5 +12,4 @@ Classes
    :toctree: _autosummary
    :recursive:
 
-   ExPS
    ppt_gen

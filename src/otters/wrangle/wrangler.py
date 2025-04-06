@@ -62,7 +62,7 @@ def merge_dfs(dfs):
 
     # for each column in allCols find the dfs with that columns and append them, sort the index (there are dupes)
     # then keep the first index. This will leave out the nans that sink to the bottom.
-    # append each column to a list to concat into a def later 
+    # append each column to a list to concat into a df 
     for col in allCols:
         mergedCol = pd.concat([df[col] for df in dfs if col in df.columns], ).sort_values()
         mergedCols.append(mergedCol[~mergedCol.index.duplicated(keep="first")])
@@ -71,6 +71,7 @@ def merge_dfs(dfs):
     return dfMerged   
 
 def merge_df_cols(df):
+    """I haven't had the opportunity to test it but I'm reasonably condifent tyhis is the one df version of `merge_dfs` and should just be integrated with that"""
     # Takes the df and lines up all the same column one of top of each other. 
     # makes a second index with the count of like which instance of the column it is. 
         # is this the first instance of the column? the second? etc.
