@@ -12,4 +12,5 @@ Classes
    :toctree: _autosummary
    :recursive:
 
+   connectors
    ppt_gen

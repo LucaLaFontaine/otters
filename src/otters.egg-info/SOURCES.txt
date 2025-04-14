@@ -1,4 +1,5 @@
 LICENSE.txt
+MANIFEST.in
 README.md
 pyproject.toml
 src/otters/__init__.py
@@ -7,18 +8,18 @@ src/otters.egg-info/SOURCES.txt
 src/otters.egg-info/dependency_links.txt
 src/otters.egg-info/requires.txt
 src/otters.egg-info/top_level.txt
-src/otters/drive/ExPS.py
 src/otters/drive/__init__.py
+src/otters/drive/connectors.py
 src/otters/drive/ppt_gen.py
 src/otters/model/Regression.py
 src/otters/model/VirtualMeter.py
 src/otters/model/__init__.py
 src/otters/vis/__init__.py
+src/otters/vis/conf.yaml
 src/otters/vis/graph.py
 src/otters/wrangle/__init__.py
 src/otters/wrangle/db_loader.py
 src/otters/wrangle/file_loader.py
-src/otters/wrangle/graphingFunctions.py
 src/otters/wrangle/psychrometrics.py
 src/otters/wrangle/time_tools.py
 src/otters/wrangle/wrangler.py
