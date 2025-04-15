@@ -28,6 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,6 +39,7 @@
     <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/otters/wrangle/time_tools';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -438,6 +440,41 @@ document.write(`
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">colOrder</span><span class="p">]</span> 
         
     <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="resample_irregular_monthly_events">
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.time_tools.resample_irregular_monthly_events.html#otters.wrangle.time_tools.resample_irregular_monthly_events">[docs]</a>
+<span class="k">def</span> <span class="nf">resample_irregular_monthly_events</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">start_col</span> <span class="o">=</span> <span class="s1">&#39;De&#39;</span><span class="p">,</span> <span class="n">end_col</span> <span class="o">=</span> <span class="s1">&#39;À&#39;</span><span class="p">,</span> <span class="n">day_col</span> <span class="o">=</span> <span class="s1">&#39;Days&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **UNTESTED** Resample a set of periods (usually bills) that have have a start and end date.  </span>
+
+<span class="sd">    Takes the entire period from the first start date to the last end date and resamples the data daily. Adds a date column. Resamples the data back to sum of monthly and counts the days as well, giving a final sum per month and a day count for that month.  </span>
+
+<span class="sd">    :param df: DataFrame with the data to be resctrutures. Will ignore any non-numerical columns</span>
+<span class="sd">    :type df: DataFrame, required </span>
+
+<span class="sd">    :param start_col: Column with the start date for the period,</span>
+<span class="sd">    :type start_col: str, default &quot;De&quot;</span>
+
+<span class="sd">    :param end_col: Column with the end date for the period</span>
+<span class="sd">    :type end_col: str, default &quot;À&quot;</span>
+
+<span class="sd">    :param day_col: Name of the day column that counts date occurences</span>
+<span class="sd">    :type day_col: str, default &quot;Days&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    :return:  DataFrame</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="n">dfR</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+    <span class="n">dfR</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfR</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">start_col</span><span class="p">),</span> <span class="n">dfR</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">end_col</span><span class="p">)])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="n">start_col</span><span class="p">,</span> <span class="n">end_col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dfR</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dfR</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">dfR</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">start_col</span>
+
+    <span class="n">dfR</span> <span class="o">=</span> <span class="n">dfR</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s2">&quot;number&quot;</span><span class="p">)</span>
+    <span class="n">dfR</span> <span class="o">=</span> <span class="n">dfR</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+    <span class="n">dfR</span><span class="p">[</span><span class="n">day_col</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">dfR</span> <span class="o">=</span> <span class="n">selectiveResample</span><span class="p">(</span><span class="n">dfR</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">,</span> <span class="n">dfR</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">day_col</span><span class="p">),</span> <span class="n">day_col</span><span class="p">)</span> </div>
 
 </pre></div>
 

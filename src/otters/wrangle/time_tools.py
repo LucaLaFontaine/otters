@@ -93,3 +93,35 @@ def selectiveResample(df, freq, meanCols, sumCols, colOrder=None):
         df = df[colOrder] 
         
     return df
+
+def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_col = 'Days'):
+    """
+    **UNTESTED** Resample a set of periods (usually bills) that have have a start and end date.  
+
+    Takes the entire period from the first start date to the last end date and resamples the data daily. Adds a date column. Resamples the data back to sum of monthly and counts the days as well, giving a final sum per month and a day count for that month.  
+
+    :param df: DataFrame with the data to be resctrutures. Will ignore any non-numerical columns
+    :type df: DataFrame, required 
+
+    :param start_col: Column with the start date for the period,
+    :type start_col: str, default "De"
+
+    :param end_col: Column with the end date for the period
+    :type end_col: str, default "À"
+
+    :param day_col: Name of the day column that counts date occurences
+    :type day_col: str, default "Days"
+    
+    :return:  DataFrame
+
+    """ 
+    dfR = df.reset_index()
+
+    dfR = pd.concat([dfR.set_index(start_col), dfR.set_index(end_col)]).drop([start_col, end_col], axis=1)
+    dfR.index = pd.to_datetime(dfR.index)
+    dfR.index.name = start_col
+
+    dfR = dfR.select_dtypes("number")
+    dfR = dfR.resample("D").mean().ffill()
+    dfR[day_col] = 1
+    dfR = selectiveResample(dfR, 'ME', dfR.columns.drop(day_col), day_col) 

@@ -436,3 +436,30 @@ def get_table_tarif_M(file_name, resample=False):
                 return tableResampled
             else:
                 return table
+            
+def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time_cols = ['De', 'À'], verbose=False):
+    """
+    Method to sort the bills that come out of JOOL (Tested on Kelvin, not Pub), set them to timestamps, and split the bills by fournisseur.
+
+    Puts this all back into the same file under new sheets for each fournisseur 
+    """
+    if verbose:
+        print(f"fixing time columns and splitting out bills by fournisseur then sorting for file:  \n{file}")
+    
+    df = pd.read_excel(file)
+    for col in time_cols:
+        df[col] = pd.to_datetime(df[col], format="%d/%m/%Y %H:%M:%S")
+
+    for bill_type in df[facture_type_col].unique():
+        df_bill = df.loc[df[facture_type_col] == bill_type, :]
+        df_bill = df_bill.sort_values(time_cols[0])
+   
+        with pd.ExcelWriter(file, mode='a', engine='openpyxl', if_sheet_exists='replace') as writer:
+            df_bill.to_excel(writer, sheet_name=bill_type)
+        
+        formatData(file, bill_type)
+
+    if verbose:
+        print('Done')
+    
+    return

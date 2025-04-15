@@ -11,6 +11,7 @@ I've replaced this with sphinx but i haven't actually configured anything
 4. Install with the following: `pip install git+https://github.com/LucaLaFontaine/otters.git`  
     4.1. requirements.txt > `otters @ git+https://github.com/LucaLaFontaine/otters.git`
 5. You can update normally with `pip install --force-reinstall --no-deps git+https://github.com/LucaLaFontaine/otters.git`  
+6. You can also install locallly with `pip install --force-reinstall --no-deps -e C:\Users\LucaLafontaine\Desktop\coding\otters`
 
 ### Reading PDFs
 If you use any of the functions that read PDFs you will need tabula (the package downloads itself), which runs on java. This means you also need [java](https://www.java.com/en/download/manual.jsp) on your computer which we cannot download for you easily.  

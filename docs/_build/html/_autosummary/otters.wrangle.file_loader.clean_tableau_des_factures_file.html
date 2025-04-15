@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>connectors &#8212; Otters 0.1.3 documentation</title>
+    <title>clean_tableau_des_factures_file &#8212; Otters 0.1.3 documentation</title>
   
   
   
@@ -41,11 +41,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/otters.drive.connectors';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/otters.wrangle.file_loader.clean_tableau_des_factures_file';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="create_code_challenge" href="otters.drive.connectors.create_code_challenge.html" />
-    <link rel="prev" title="otters.drive" href="../otters.drive.html" />
+    <link rel="next" title="formatData" href="otters.wrangle.file_loader.formatData.html" />
+    <link rel="prev" title="file_loader" href="otters.wrangle.file_loader.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -289,8 +289,8 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../otters.drive.html">otters.drive</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">connectors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../otters.drive.html">otters.drive</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="otters.drive.connectors.html">connectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="otters.drive.connectors.create_code_challenge.html">create_code_challenge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.drive.connectors.get_bearer_auth.html">get_bearer_auth</a></li>
 </ul>
@@ -390,7 +390,7 @@ document.write(`
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../otters.wrangle.html">Wrangle</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../otters.wrangle.html">Wrangle</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.db_loader.html">db_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.create_conn.html">create_conn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.create_db.html">create_db</a></li>
@@ -400,8 +400,8 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.db_loader.upsert.html">upsert</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.file_loader.html">file_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.clean_tableau_des_factures_file.html">clean_tableau_des_factures_file</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="otters.wrangle.file_loader.html">file_loader</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">clean_tableau_des_factures_file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.formatData.html">formatData</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getExcelDFs.html">getExcelDFs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getFiles.html">getFiles</a></li>
@@ -526,6 +526,8 @@ document.write(`
 
 
 
+
+
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -538,9 +540,12 @@ document.write(`
     <li class="breadcrumb-item"><a href="../otters.html" class="nav-link">Modules</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../otters.drive.html" class="nav-link">otters.drive</a></li>
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
     
-    <li class="breadcrumb-item active" aria-current="page">connectors</li>
+    
+    <li class="breadcrumb-item"><a href="otters.wrangle.file_loader.html" class="nav-link">file_loader</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">clean_tablea...</li>
   </ul>
 </nav>
 </div>
@@ -557,21 +562,15 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-otters.drive.connectors">
-<span id="connectors"></span><h1>connectors<a class="headerlink" href="#module-otters.drive.connectors" title="Link to this heading">#</a></h1>
-<p>Any code written to connect to data repositories like BMS, EMISs, and other websites</p>
-<p class="rubric">Functions</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.drive.connectors.create_code_challenge.html#otters.drive.connectors.create_code_challenge" title="otters.drive.connectors.create_code_challenge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_code_challenge</span></code></a></p></td>
-<td><p>Create a sha256 code challenge to send as an authentification method.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.drive.connectors.get_bearer_auth.html#otters.drive.connectors.get_bearer_auth" title="otters.drive.connectors.get_bearer_auth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bearer_auth</span></code></a></p></td>
-<td><p>Get a bearer authentication code from a website like JOOL</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+  <section id="clean-tableau-des-factures-file">
+<h1>clean_tableau_des_factures_file<a class="headerlink" href="#clean-tableau-des-factures-file" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="otters.wrangle.file_loader.clean_tableau_des_factures_file">
+<span class="sig-prename descclassname"><span class="pre">otters.wrangle.file_loader.</span></span><span class="sig-name descname"><span class="pre">clean_tableau_des_factures_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">facture_type_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Fournisseur'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['De',</span> <span class="pre">'À']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/otters/wrangle/file_loader.html#clean_tableau_des_factures_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#otters.wrangle.file_loader.clean_tableau_des_factures_file" title="Link to this definition">#</a></dt>
+<dd><p>Method to sort the bills that come out of JOOL (Tested on Kelvin, not Pub), set them to timestamps, and split the bills by fournisseur.</p>
+<p>Puts this all back into the same file under new sheets for each fournisseur</p>
+</dd></dl>
+
 </section>
 
 
@@ -585,20 +584,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../otters.drive.html"
+       href="otters.wrangle.file_loader.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">otters.drive</p>
+        <p class="prev-next-title">file_loader</p>
       </div>
     </a>
     <a class="right-next"
-       href="otters.drive.connectors.create_code_challenge.html"
+       href="otters.wrangle.file_loader.formatData.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">create_code_challenge</p>
+        <p class="prev-next-title">formatData</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -613,9 +612,21 @@ document.write(`
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#otters.wrangle.file_loader.clean_tableau_des_factures_file"><code class="docutils literal notranslate"><span class="pre">clean_tableau_des_factures_file()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/_autosummary/otters.drive.connectors.rst.txt">
+    <a href="../_sources/_autosummary/otters.wrangle.file_loader.clean_tableau_des_factures_file.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

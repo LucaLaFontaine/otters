@@ -28,6 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=45d0cae6" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,6 +39,7 @@
     <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/otters/wrangle/file_loader';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -793,6 +795,36 @@ document.write(`
                 <span class="k">return</span> <span class="n">tableResampled</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">table</span></div>
+
+            
+<div class="viewcode-block" id="clean_tableau_des_factures_file">
+<a class="viewcode-back" href="../../../_autosummary/otters.wrangle.file_loader.clean_tableau_des_factures_file.html#otters.wrangle.file_loader.clean_tableau_des_factures_file">[docs]</a>
+<span class="k">def</span> <span class="nf">clean_tableau_des_factures_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">facture_type_col</span> <span class="o">=</span> <span class="s1">&#39;Fournisseur&#39;</span><span class="p">,</span> <span class="n">time_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;De&#39;</span><span class="p">,</span> <span class="s1">&#39;À&#39;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to sort the bills that come out of JOOL (Tested on Kelvin, not Pub), set them to timestamps, and split the bills by fournisseur.</span>
+
+<span class="sd">    Puts this all back into the same file under new sheets for each fournisseur </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fixing time columns and splitting out bills by fournisseur then sorting for file:  </span><span class="se">\n</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">time_cols</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">bill_type</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">facture_type_col</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="n">df_bill</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">facture_type_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">bill_type</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">df_bill</span> <span class="o">=</span> <span class="n">df_bill</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">time_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+   
+        <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;openpyxl&#39;</span><span class="p">,</span> <span class="n">if_sheet_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="n">df_bill</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">bill_type</span><span class="p">)</span>
+        
+        <span class="n">formatData</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">bill_type</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span></div>
 
 </pre></div>
 

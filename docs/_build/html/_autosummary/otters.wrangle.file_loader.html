@@ -44,7 +44,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/otters.wrangle.file_loader';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="formatData" href="otters.wrangle.file_loader.formatData.html" />
+    <link rel="next" title="clean_tableau_des_factures_file" href="otters.wrangle.file_loader.clean_tableau_des_factures_file.html" />
     <link rel="prev" title="upsert" href="otters.wrangle.db_loader.upsert.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -401,6 +401,7 @@ document.write(`
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">file_loader</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.clean_tableau_des_factures_file.html">clean_tableau_des_factures_file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.formatData.html">formatData</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getExcelDFs.html">getExcelDFs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getFiles.html">getFiles</a></li>
@@ -478,6 +479,7 @@ document.write(`
 <li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.time_tools.html">time_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.getLastNWeeks.html">getLastNWeeks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.overlayPast.html">overlayPast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.resample_irregular_monthly_events.html">resample_irregular_monthly_events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.selectiveResample.html">selectiveResample</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.str2dt.html">str2dt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.time2timedelta.html">time2timedelta</a></li>
@@ -561,31 +563,34 @@ document.write(`
 <p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.formatData.html#otters.wrangle.file_loader.formatData" title="otters.wrangle.file_loader.formatData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">formatData</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.clean_tableau_des_factures_file.html#otters.wrangle.file_loader.clean_tableau_des_factures_file" title="otters.wrangle.file_loader.clean_tableau_des_factures_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_tableau_des_factures_file</span></code></a></p></td>
+<td><p>Method to sort the bills that come out of JOOL (Tested on Kelvin, not Pub), set them to timestamps, and split the bills by fournisseur.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.formatData.html#otters.wrangle.file_loader.formatData" title="otters.wrangle.file_loader.formatData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">formatData</span></code></a></p></td>
 <td><p>This will format an outputted excel file so it doesn't make your eyes bleed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.getExcelDFs.html#otters.wrangle.file_loader.getExcelDFs" title="otters.wrangle.file_loader.getExcelDFs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getExcelDFs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.getExcelDFs.html#otters.wrangle.file_loader.getExcelDFs" title="otters.wrangle.file_loader.getExcelDFs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getExcelDFs</span></code></a></p></td>
 <td><p>Import all Excel files from a path into a list of DataFrames</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.getFiles.html#otters.wrangle.file_loader.getFiles" title="otters.wrangle.file_loader.getFiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFiles</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.getFiles.html#otters.wrangle.file_loader.getFiles" title="otters.wrangle.file_loader.getFiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFiles</span></code></a></p></td>
 <td><p>Get list of all files in a supplied path.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.get_table_gaz.html#otters.wrangle.file_loader.get_table_gaz" title="otters.wrangle.file_loader.get_table_gaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_gaz</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.get_table_gaz.html#otters.wrangle.file_loader.get_table_gaz" title="otters.wrangle.file_loader.get_table_gaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_gaz</span></code></a></p></td>
 <td><p>Undocumented Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb Untested in this environment.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.get_table_tarif_M.html#otters.wrangle.file_loader.get_table_tarif_M" title="otters.wrangle.file_loader.get_table_tarif_M"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_tarif_M</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.get_table_tarif_M.html#otters.wrangle.file_loader.get_table_tarif_M" title="otters.wrangle.file_loader.get_table_tarif_M"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_tarif_M</span></code></a></p></td>
 <td><p>Undocumented Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb Untested in this environment.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.import_config.html#otters.wrangle.file_loader.import_config" title="otters.wrangle.file_loader.import_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_config</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.import_config.html#otters.wrangle.file_loader.import_config" title="otters.wrangle.file_loader.import_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_config</span></code></a></p></td>
 <td><p>MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK Import all config files from the supplied folder.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.replace_backslashes_in_dict.html#otters.wrangle.file_loader.replace_backslashes_in_dict" title="otters.wrangle.file_loader.replace_backslashes_in_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_backslashes_in_dict</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.replace_backslashes_in_dict.html#otters.wrangle.file_loader.replace_backslashes_in_dict" title="otters.wrangle.file_loader.replace_backslashes_in_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_backslashes_in_dict</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.save2xl.html#otters.wrangle.file_loader.save2xl" title="otters.wrangle.file_loader.save2xl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save2xl</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.save2xl.html#otters.wrangle.file_loader.save2xl" title="otters.wrangle.file_loader.save2xl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save2xl</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.wrangle.file_loader.standardize_num_format.html#otters.wrangle.file_loader.standardize_num_format" title="otters.wrangle.file_loader.standardize_num_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">standardize_num_format</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="otters.wrangle.file_loader.standardize_num_format.html#otters.wrangle.file_loader.standardize_num_format" title="otters.wrangle.file_loader.standardize_num_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">standardize_num_format</span></code></a></p></td>
 <td><p>Undocumented Source: C:/Users/LucaLafontaine/AKONOVIA/EMO - Documents/002-ALCOVI/22-673 VSL - Ajustement Lufa/1-Intrant/Factures/Énergir/read_JCI_data.ipynb THis is used internally and just for the invoice reading (energir) functions</p></td>
 </tr>
 </tbody>
@@ -613,11 +618,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="otters.wrangle.file_loader.formatData.html"
+       href="otters.wrangle.file_loader.clean_tableau_des_factures_file.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">formatData</p>
+        <p class="prev-next-title">clean_tableau_des_factures_file</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

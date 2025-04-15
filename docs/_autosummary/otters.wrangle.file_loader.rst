@@ -19,6 +19,7 @@ file\_loader
                 :nosignatures:
                 :template: autosummary/base.rst
                 
+                    clean_tableau_des_factures_file
                     formatData
                     getExcelDFs
                     getFiles

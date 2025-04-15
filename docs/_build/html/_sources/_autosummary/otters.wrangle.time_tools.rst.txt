@@ -21,6 +21,7 @@ time\_tools
                 
                     getLastNWeeks
                     overlayPast
+                    resample_irregular_monthly_events
                     selectiveResample
                     str2dt
                     time2timedelta

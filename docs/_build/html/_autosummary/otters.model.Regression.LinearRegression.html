@@ -402,6 +402,7 @@ document.write(`
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.file_loader.html">file_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.clean_tableau_des_factures_file.html">clean_tableau_des_factures_file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.formatData.html">formatData</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getExcelDFs.html">getExcelDFs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.file_loader.getFiles.html">getFiles</a></li>
@@ -479,6 +480,7 @@ document.write(`
 <li class="toctree-l2 has-children"><a class="reference internal" href="otters.wrangle.time_tools.html">time_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.getLastNWeeks.html">getLastNWeeks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.overlayPast.html">overlayPast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.resample_irregular_monthly_events.html">resample_irregular_monthly_events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.selectiveResample.html">selectiveResample</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.str2dt.html">str2dt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otters.wrangle.time_tools.time2timedelta.html">time2timedelta</a></li>
@@ -584,25 +586,25 @@ in X.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.fit.html#otters.model.Regression.LinearRegression.fit" title="otters.model.Regression.LinearRegression.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a></p></td>
 <td><p>Fit linear model.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.get_metadata_routing.html#otters.model.Regression.LinearRegression.get_metadata_routing" title="otters.model.Regression.LinearRegression.get_metadata_routing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata_routing</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.get_metadata_routing" title="otters.model.Regression.LinearRegression.get_metadata_routing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata_routing</span></code></a></p></td>
 <td><p>Get metadata routing of this object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.get_params.html#otters.model.Regression.LinearRegression.get_params" title="otters.model.Regression.LinearRegression.get_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.get_params" title="otters.model.Regression.LinearRegression.get_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code></a></p></td>
 <td><p>Get parameters for this estimator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.predict.html#otters.model.Regression.LinearRegression.predict" title="otters.model.Regression.LinearRegression.predict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.predict" title="otters.model.Regression.LinearRegression.predict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code></a></p></td>
 <td><p>Predict using the linear model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.score.html#otters.model.Regression.LinearRegression.score" title="otters.model.Regression.LinearRegression.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.score" title="otters.model.Regression.LinearRegression.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a></p></td>
 <td><p>Return the coefficient of determination of the prediction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.set_fit_request.html#otters.model.Regression.LinearRegression.set_fit_request" title="otters.model.Regression.LinearRegression.set_fit_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fit_request</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.set_fit_request" title="otters.model.Regression.LinearRegression.set_fit_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fit_request</span></code></a></p></td>
 <td><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.set_params.html#otters.model.Regression.LinearRegression.set_params" title="otters.model.Regression.LinearRegression.set_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.set_params" title="otters.model.Regression.LinearRegression.set_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code></a></p></td>
 <td><p>Set the parameters of this estimator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="otters.model.Regression.LinearRegression.set_score_request.html#otters.model.Regression.LinearRegression.set_score_request" title="otters.model.Regression.LinearRegression.set_score_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_score_request</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#otters.model.Regression.LinearRegression.set_score_request" title="otters.model.Regression.LinearRegression.set_score_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_score_request</span></code></a></p></td>
 <td><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p></td>
 </tr>
 </tbody>
