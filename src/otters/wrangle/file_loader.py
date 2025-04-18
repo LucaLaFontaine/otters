@@ -437,7 +437,7 @@ def get_table_tarif_M(file_name, resample=False):
             else:
                 return table
             
-def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time_cols = ['De', 'À'], verbose=False):
+def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time_cols = ['De', 'À'], format="%d/%m/%Y %H:%M:%S", verbose=False):
     """
     Method to sort the bills that come out of JOOL (Tested on Kelvin, not Pub), set them to timestamps, and split the bills by fournisseur.
 
@@ -448,7 +448,7 @@ def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time
     
     df = pd.read_excel(file)
     for col in time_cols:
-        df[col] = pd.to_datetime(df[col], format="%d/%m/%Y %H:%M:%S")
+        df[col] = pd.to_datetime(df[col], format=format)
 
     for bill_type in df[facture_type_col].unique():
         df_bill = df.loc[df[facture_type_col] == bill_type, :]
