@@ -118,12 +118,15 @@ def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_
     dfR = df.reset_index()
 
     dfR = pd.concat([dfR.set_index(start_col), dfR.set_index(end_col)]).drop([start_col, end_col], axis=1)
+    dfR = dfR[~dfR.index.duplicated(keep="first")]
     dfR.index = pd.to_datetime(dfR.index)
     dfR.index.name = start_col
 
     dfR = dfR.select_dtypes("number")
-    dfR = dfR.resample("D").mean().ffill()
+    dfR = dfR.resample("D").first()
+    dfR = dfR.ffill()
+
     dfR[day_col] = 1
-    dfR = selectiveResample(dfR, 'ME', dfR.columns.drop(day_col), day_col) 
+    dfR = selectiveResample(dfR, 'MS', dfR.columns.drop(day_col), day_col) 
 
     return dfR
