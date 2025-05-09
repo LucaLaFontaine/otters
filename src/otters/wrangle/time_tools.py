@@ -135,6 +135,6 @@ def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_
     dfR = dfR.ffill()
 
     dfR[day_col] = 1
-    dfR = selectiveResample(dfR, 'MS', dfR.columns.drop(day_col), day_col) 
+    dfR = selectiveResample(dfR, 'MS', [], dfR.columns) 
 
     return dfR
