@@ -455,7 +455,7 @@ def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time
         df_bill = df_bill.sort_values(time_cols[0])
    
         with pd.ExcelWriter(file, mode='a', engine='openpyxl', if_sheet_exists='replace') as writer:
-            df_bill.to_excel(writer, sheet_name=bill_type)
+            df_bill.to_excel(writer, sheet_name=str(bill_type))
         
         formatData(file, bill_type)
 

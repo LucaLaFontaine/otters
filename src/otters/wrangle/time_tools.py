@@ -94,7 +94,7 @@ def selectiveResample(df, freq, meanCols, sumCols, colOrder=None):
         
     return df
 
-def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_col = 'Days'):
+def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_col = 'Days', event_dates_inclusive=True):
     """
     **UNTESTED** Resample a set of periods (usually bills) that have have a start and end date.  
 
@@ -110,12 +110,20 @@ def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_
     :type end_col: str, default "À"
 
     :param day_col: Name of the day column that counts date occurences
-    :type day_col: str, default "Days"
+    :type day_col: str, default "Days"    
+    
+    :param event_dates_inclusive: Whether the dates in the event are inclusive. This is normally the case for events and usually is for bills as well
+    :type event_dates_inclusive: bool, default True
     
     :return:  DataFrame
 
     """ 
     dfR = df.reset_index()
+
+    # normalize the event to the number of days in the cycle
+    # Need to add one to the date delta because bill dates are inclusive
+    for col in dfR.select_dtypes(include='number'):#.columns.drop([start_col, end_col]):
+        dfR[col] = dfR.apply(lambda x: x[col] / ((x[end_col] - x[start_col]).days + int(event_dates_inclusive), axis=1)
 
     dfR = pd.concat([dfR.set_index(start_col), dfR.set_index(end_col)]).drop([start_col, end_col], axis=1)
     dfR = dfR[~dfR.index.duplicated(keep="first")]
