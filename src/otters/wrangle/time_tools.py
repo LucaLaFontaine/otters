@@ -6,22 +6,30 @@ from dateutil.relativedelta import relativedelta, MO
 
 def str2dt(df, timeCol='', drop=True, index_name="Timestamp", **datetime_args):
     """
-Finds the timestamp in a dataframe, translates it to_datetime, renames it "Timestamp", and sets it as the index
-Bumps the index to the first column if it isn't a timestamp
+    Finds the timestamp in a dataframe, translates it to_datetime, renames it "Timestamp", and sets it as the index
+    Bumps the index to the first column if it isn't a timestamp
 
-Parameters:
-df: DataFrame, required
-timeCol: string, Default: empty
+    df: DataFrame, required
+    timeCol: string, Default: empty
+    
+    :param df: DataFrame with the time column to be put as the index.
+    :type df: DataFrame, required 
 
-Returns: DataFrame
+    :param timeCol: Column with the start date for the period,
+    :type timeCol: str, default None
+    
+    :return:  DataFrame
     """
     df = df.copy()
     gc.collect()
 
-    commonNames = ['timestamp', 'Date/Time', 'Date', 'Time']
+    commonNames = ['timestamp', 'Date/Time', 'Date', 'Time', "Date and time", "Date & time"]
     names = [timeCol] if timeCol else commonNames
     df.reset_index(inplace=True, drop=drop)
     
+    # Cast columns to str
+    df.columns = [str(col) for col in df.columns]
+
     # Get matches with names in the df
     matches = [col for col in set(df.columns) if col.lower() in (name.lower() for name in names)]
 
