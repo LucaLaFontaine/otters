@@ -442,6 +442,8 @@ def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time
     Method to sort the bills that come out of JOOL (Tested on Kelvin, not Pub), set them to timestamps, and split the bills by fournisseur.
 
     Puts this all back into the same file under new sheets for each fournisseur 
+    
+    returns a list of all the unique energy types found in the facture type column
     """
     if verbose:
         print(f"fixing time columns and splitting out bills by fournisseur then sorting for file:  \n{file}")
@@ -462,4 +464,4 @@ def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time
     if verbose:
         print('Done')
     
-    return
+    return df[facture_type_col].unique()

@@ -126,7 +126,7 @@ def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_
     :return:  DataFrame
 
     """ 
-    dfR = df.reset_index()
+    dfR = df.reset_index(drop=True)
 
     # normalize the event to the number of days in the cycle
     # Need to add one to the date delta because bill dates are inclusive

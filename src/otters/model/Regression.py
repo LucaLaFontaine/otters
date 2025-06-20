@@ -8,6 +8,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from scipy import stats
 from math import sqrt
+import openpyxl
 
 from ..vis.graph import Graph
 
@@ -257,12 +258,16 @@ class Regression(Model):
 
         equationXs = " + ".join(equationXs)
         equationStr = """Modèle = {:,.6g} + {}""".format(self.reg.intercept_[0], equationXs)
+        self.equation = equationStr
         
         return equationStr
 
-    
+    # def output_model_to_excel(self):
+    #    from openpyxl import Workbook
+    #     wb = 
+        
+    #     with pd.ExcelWriter(f"model_outputs/{self.name}.xlsx", engine="openpyxl", mode="w") as writer:
 
-
-    
-    
-    
+    #         self.to_frame()
+    #         self.df.to_excel(writer, sheetname="Données")
+    #         writer.save()
