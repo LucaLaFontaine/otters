@@ -133,26 +133,58 @@ class JoolConnector:
         bearer_auth = resp.json()['access_token']
         return bearer_auth
     
-    def data_call(self, data, bearer_auth, config):
+    def data_call(data, bearer_auth, config, raw=False):
+        """
+        Makes a call to the jool system with 1 tag and a date range. 
+
+        :param data: dict containing `from`, `to`, and  `tag`
+        :type data: dict, required
+
+        :param bearer_auth: string output of get_bearer_auth()
+        :type bearer_auth: str, required
+
+        :param config: The config for that site
+        :type config: dict, required
+
+        :param raw: Set to `True` to keep all the metada for database updates. If not it will rerturn a clean version for direct analysis
+        :type raw: bool, default: `False`
+
+        :return: DataFrame
+        """
+
         headers = {"Authorization": f"Bearer {bearer_auth}"}
         url = config['root_url']+config['api_url']+config['dataset']
         r = requests.post(url, json=data, headers=headers)
-        data = r.json()
-        rows = data['tables'][0]['rows']
-        columns = data['tables'][0]['columns']
-        columns
+        content = r.json()
+        rows = content['tables'][0]['rows']
+        columns = content['tables'][0]['columns']
         columns = [col['reference'] for col in columns]
-        columns
         df = pd.DataFrame().from_records(rows)
-        df.columns = columns
+        # return content
 
-        dfF = df.pivot(index="RAWDATA.LOCAL_TIME_STAMP", columns='CHANNEL.REFERENCE', values='RAWDATA.VALUE')
-        dfF = str2dt(dfF.reset_index(), timeCol="RAWDATA.LOCAL_TIME_STAMP")
+        # If the df is empty at this point name the columns and return an empty df
+        if df.empty:
+            return pd.DataFrame(columns=columns)
+        df.columns = columns
+        
+        # return df
+        df['METER.REFERENCE'] = data['selection'][0]
+
+        df = str2dt(df, timeCol="RAWDATA.LOCAL_TIME_STAMP")
         # Jool holds time data in the database as UTC and changes "local" time on affichage. So even though this column says its local the actual data is UTC
         # Bref: You need to adjust the timezone to the relevant timezone
-        dfF.index = dfF.index.tz_convert(config["timezone"])
-        dfF.index = dfF.index.tz_localize(None, ambiguous='infer')
-        return dfF
+        df.index = df.index.tz_convert(config["timezone"])
+        df.index = df.index.tz_localize(None, ambiguous='infer')
+
+        df = df.loc[:, ['RAWDATA.VALUE', 'CHANNEL.REFERENCE', 'CHANNEL.CNL_DAC_UNIT', 'METER.REFERENCE']]
+
+        if raw:
+            return df
+        
+        df = df.pivot(columns='CHANNEL.REFERENCE', values='RAWDATA.VALUE')
+
+
+        return df
     
     def get_all_children(self, ref, df, recursive=False, connections=None):
         ref_col = "METER.REFERENCE"
