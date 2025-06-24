@@ -8,6 +8,7 @@ from glob import glob
 import inspect
 import warnings
 import re
+from pathlib import Path
 
 from .wrangler import two_letter_month_to_number
 from .time_tools import selectiveResample
@@ -30,14 +31,14 @@ def replace_backslashes_in_dict(dictionary):
             dictionary.update({key: val.replace('\\', "/")})
     return dictionary
 
-def import_config(configFolder='', recursive=True):
+def import_config(config_folder='', recursive=True):
     """
     MUST USE SINGLE QUOTES IN YAML FILES FOR BACKSLASHES TO WORK
     Import all config files from the supplied folder. Defaults to the root folder  
     Any files ending in 'config.yaml' or 'config.xlsx' will be treated. So you could have a formatting config called 'format.config.yaml'  
     
     **Parameters:**
-    > **configFolder:** *string, default: empty*  
+    > **config_folder:** *string, default: empty*  
     >> The relative path to the config folder. 
 
     > **recursive:** *boolean, default: `True`* 
@@ -47,13 +48,16 @@ def import_config(configFolder='', recursive=True):
     > **dict*
     """
 
+    # Hnadle relative or abs path
+    config_folder = str(Path(config_folder).expanduser().resolve())
+
     # Load any config files
     if recursive == True:
-        yamlFiles = glob(os.getcwd()+configFolder+'/**/*config.yaml', recursive=True)
-        xlFiles = glob(os.getcwd()+configFolder+'/**/*config.xlsx', recursive=True)
+        yamlFiles = glob(config_folder+'/**/*config.yaml', recursive=True)
+        xlFiles = glob(config_folder+'/**/*config.xlsx', recursive=True)
     else:
-        yamlFiles = glob(os.getcwd()+configFolder+'/./*config.yaml', recursive=False)
-        xlFiles = glob(os.getcwd()+configFolder+'/./*config.xlsx', recursive=True)
+        yamlFiles = glob(config_folder+'/./*config.yaml', recursive=False)
+        xlFiles = glob(config_folder+'/./*config.xlsx', recursive=True)
 
     yamlFiles = [file.replace(os.getcwd(), '').lstrip('/\\') for file in yamlFiles]
     xlFiles = [file.replace(os.getcwd(), '').lstrip('/\\') for file in xlFiles]
