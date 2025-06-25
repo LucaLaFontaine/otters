@@ -133,7 +133,7 @@ class JoolConnector:
         bearer_auth = resp.json()['access_token']
         return bearer_auth
     
-    def data_call(data, bearer_auth, config, raw=False):
+    def data_call(self, data, bearer_auth, config, raw=False):
         """
         Makes a call to the jool system with 1 tag and a date range. 
 
