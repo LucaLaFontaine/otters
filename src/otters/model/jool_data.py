@@ -156,27 +156,31 @@ def get_stream_max_date(conn, reference):
     else:
         return datetime(2000, 1, 1)
 
-def update_equipment_data(conn, reference, jool, config):
+def update_equipment_data(conn, reference, jool, config, start_date=None, end_date=None):
     """
     I need this to be a class so that I can pass the jool object and the config to the class, but one thing at a time.
     """
+    if not start_date:
+        start_date = get_stream_max_date(conn, reference)
+    if not end_date: 
+        end_date = datetime.now()
         
     data = {
-        "from": get_stream_max_date(conn, reference).strftime(format="%Y-%m-%dT%H:%M:00.000Z"), 
-        "to": datetime.now().strftime(format="%Y-%m-%dT%H:%M:00.000Z"),
+        "from": start_date.strftime(format="%Y-%m-%dT%H:%M:00.000Z"), 
+        "to": end_date.strftime(format="%Y-%m-%dT%H:%M:00.000Z"),
         "selection" : [reference],
     }
     logging.info(f"updating reference {reference} from {data['from']} to {data['to']}")
     bearer_auth = jool.get_bearer_auth(**config)
     df = jool.data_call(data, bearer_auth, config, True)
     # return df
-
+    # cur = conn.cursor()
     cur = conn.cursor()
-    cur.execute("BEGIN;")
-
     for channel in df['CHANNEL.REFERENCE'].unique():
+        channel_df = df.loc[df['CHANNEL.REFERENCE'] == channel, :]
         try: 
-            ds_values = [(col['CHANNEL.REFERENCE'], col['METER.REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in df.drop_duplicates().to_dict('records')]
+            cur.execute("BEGIN;")
+            ds_values = [(col['CHANNEL.REFERENCE'], col['METER.REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', 'METER.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
             data_stream_sql = """
             INSERT INTO DataStreams (name, equipment, unit)
             SELECT DISTINCT f.v1, e.EquipmentID, f.v3
@@ -186,7 +190,7 @@ def update_equipment_data(conn, reference, jool, config):
             DO UPDATE SET unit = EXCLUDED.unit;
             """
 
-            td_values = [(col['Timestamp'], col['RAWDATA.VALUE'], col['CHANNEL.REFERENCE']) for col in df.reset_index().drop_duplicates().to_dict('records')]
+            td_values = [(col['Timestamp'], col['RAWDATA.VALUE'], col['CHANNEL.REFERENCE']) for col in channel_df.reset_index().loc[:, ['Timestamp','RAWDATA.VALUE', 'CHANNEL.REFERENCE']].drop_duplicates().to_dict('records')]
             time_data_sql = """
             INSERT INTO TimeDataValues (timestamp, value, data_stream)
             SELECT DISTINCT f.v1, f.v2, ds.datastreamid
@@ -197,6 +201,9 @@ def update_equipment_data(conn, reference, jool, config):
             """
             execute_values(cur, data_stream_sql, ds_values)
             execute_values(cur, time_data_sql, td_values)
+            # logging.info(ds_values)
+            cur.execute("END;")
+            conn.commit()
         except Exception as e:
             conn.rollback()
             print(f"Transaction on {channel} failed:", e)
@@ -204,3 +211,61 @@ def update_equipment_data(conn, reference, jool, config):
     cur.close()
     logging.info(f"update of {reference} complete")
     return 
+
+def get_all_children(conn, ref,recursive=False, connections=None):
+    cur = conn.cursor()
+    ref_col = "reference"
+    child_col = "child"
+    
+    if not connections:
+        connections = {}
+
+    children_sql = """
+    select e1.reference, e2.reference as child from Equipment e1
+    left join Equipment e2 on e1.equipmentid = e2.parent
+    where e1.reference = %s
+    """
+    cur.execute(children_sql, (ref, ))
+    df = pd.DataFrame(cur.fetchall(), columns=[desc.name for desc in cur.description])
+
+    children = df.loc[df[ref_col] == ref, child_col].unique().tolist()
+    children = filter(lambda x: x==x, children)
+    
+    connections.setdefault("children", []).extend(children)
+    
+    if recursive:
+        for child in children:
+            connections = get_all_children(child, df, recursive=recursive, connections=connections)
+    
+    return connections
+
+def get_all_connections(conn, ref, recursive=False, get_attachments=True, connections=None):
+    cur = conn.cursor()
+    ref_col = "reference"
+    attached_col = "connection"
+
+    connections = get_all_children(conn, ref, recursive=False, connections=None)
+    
+    # Get the attachments at just this level
+    attached_sql = """
+    SELECT e.reference as reference, e1.reference as connection from EquipmentConnections ec
+    left join Equipment e on ec.equipment = e.equipmentid
+    left join Equipment e1 on ec.equipment_connection = e1.equipmentid
+    where e.reference = %s
+    """
+    cur.execute(attached_sql, (ref, ))
+    df = pd.DataFrame(cur.fetchall(), columns=[desc.name for desc in cur.description])
+
+    if get_attachments:
+        attachments = df.loc[df[ref_col] == ref, attached_col].unique().tolist()
+        attachments = filter(lambda x: x==x, attachments)
+    else:
+        attachments = []
+    connections.setdefault("attached", []).extend(attachments)
+
+
+    if recursive:
+        for child in connections["children"]:
+            connections = get_all_children(conn, child, recursive=recursive, connections=connections)
+
+    return {name: list(set(values)) for name, values in connections.items()}
