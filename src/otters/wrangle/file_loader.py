@@ -59,8 +59,8 @@ def import_config(config_folder='', recursive=True):
         yamlFiles = glob(config_folder+'/./*config.yaml', recursive=False)
         xlFiles = glob(config_folder+'/./*config.xlsx', recursive=True)
 
-    yamlFiles = [file.replace(os.getcwd(), '').lstrip('/\\') for file in yamlFiles]
-    xlFiles = [file.replace(os.getcwd(), '').lstrip('/\\') for file in xlFiles]
+    yamlFiles = [file.replace(os.getcwd(), '') for file in yamlFiles]
+    xlFiles = [file.replace(os.getcwd(), '') for file in xlFiles]
     xlFiles = [file for file in xlFiles if '~' not in file]
 
     if yamlFiles or xlFiles:

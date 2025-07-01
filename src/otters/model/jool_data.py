@@ -6,12 +6,16 @@ from psycopg2.extras import execute_values
 from datetime import datetime
 import logging
 
-def jool_db_conn():
-    return psycopg2.connect(database="jool_data",
+def jool_db_conn(database="jool_data",
                         host="localhost",
                         user="postgres",
                         password="luca",
-                        port="5432")
+                        port="5432"):
+    return psycopg2.connect(database=database,
+                        host=host,
+                        user=user,
+                        password=password,
+                        port=port)
 
 def open_equipment_csv(equipment_csv='all_conns_in_pub.csv', delimiter=';', decimal=','):
     return pd.read_csv(equipment_csv, delimiter=delimiter, decimal=decimal)
