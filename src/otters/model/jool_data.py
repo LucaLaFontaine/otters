@@ -24,20 +24,23 @@ def change_children_to_parents(df):
 
     df = df.copy()
 
-    if df['METER.REFERENCE'].apply(lambda x: len(df.loc[df['METER.PARENT_CHILD'] == x, "METER.REFERENCE"].unique())).max() > 1:
+    if df['REFERENCE'].apply(lambda x: len(df.loc[df['PARENT_CHILD'] == x, "REFERENCE"].unique())).max() > 1:
+        double_parent = df['REFERENCE'].apply(lambda x: len(df.loc[df['PARENT_CHILD'] == x, "REFERENCE"])).sort_values(ascending=False)
+        print(double_parent.head(10))
         raise ValueError("There are multiple parents for one of the rows in the supplied equipment list")
 
     def check_parent_exists(df, x):
-       check = df.loc[df['METER.PARENT_CHILD'] == x, "METER.REFERENCE"].unique()
+       check = df.loc[df['PARENT_CHILD'] == x, "REFERENCE"].unique()
        if len(check) > 0:
-           return check[0]
+           return check[0] 
        else:
-           return None
+           return None 
 
-    df['parent'] = df['METER.REFERENCE'].apply(lambda x: check_parent_exists(df, x)) 
+    df['PARENT'] = df['REFERENCE'].apply(lambda x: check_parent_exists(df, x)) 
 
-    df.drop(columns=['METER.ID', 'METER.PARENT_CHILD', 'METER.ATTACHED_SYSTEM'], inplace=True)
+    df.drop(columns=['PARENT_CHILD', 'ATTACHED_SYSTEM'], inplace=True)
     df.reset_index(drop=True, inplace=True)
+
     df.drop_duplicates(inplace=True)
 
     return df 
@@ -187,7 +190,7 @@ def update_equipment_data(conn, reference, jool, config, start_date=None, end_da
             ds_values = [(col['CHANNEL.REFERENCE'], col['METER.REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', 'METER.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
             data_stream_sql = """
             INSERT INTO DataStreams (name, equipment, unit)
-            SELECT DISTINCT f.v1, e.EquipmentID, f.v3
+            SELECT DISTINCT f.v1, e.EquipmentID
             FROM (values %s) as f(v1, v2, v3)
             JOIN Equipment as e on e.reference = f.v2
             ON CONFLICT (name, equipment) 
@@ -197,7 +200,7 @@ def update_equipment_data(conn, reference, jool, config, start_date=None, end_da
             td_values = [(col['Timestamp'], col['RAWDATA.VALUE'], col['CHANNEL.REFERENCE']) for col in channel_df.reset_index().loc[:, ['Timestamp','RAWDATA.VALUE', 'CHANNEL.REFERENCE']].drop_duplicates().to_dict('records')]
             time_data_sql = """
             INSERT INTO TimeDataValues (timestamp, value, data_stream)
-            SELECT DISTINCT f.v1, f.v2, ds.datastreamid
+            SELECT DISTINCT f.v1, ds.datastreamid
             FROM (values %s) f(v1, v2, v3)
             JOIN DataStreams as ds on ds.name = f.v3
             ON CONFLICT (timestamp, data_stream) 
