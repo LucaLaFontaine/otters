@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 from .wrangler import two_letter_month_to_number
-from .time_tools import selectiveResample
+from .time_tools import selectiveResample, resample_irregular_monthly_events
 
 import pymupdf
 import tabula
@@ -469,3 +469,33 @@ def clean_tableau_des_factures_file(file, facture_type_col = 'Fournisseur', time
         print('Done')
     
     return df[facture_type_col].unique()
+
+def create_sheets_for_each_energy_type(file, facture_type_col="Fournisseur", resample=True, format=None):
+    """
+    Clean up JOOL exported facture sheets and then make a sheet for each energy type and then resample them all
+
+    file: name of the excel file
+    facture_type_col: Name of the column containing the energy types. "Fournisseur" for JOOL and something else for Kelvin that I forget
+    resample: Make additional resampled sheets
+
+    reutrns nothing
+    """
+
+    bill_types = clean_tableau_des_factures_file(file, facture_type_col=facture_type_col, format=format)
+
+    for bill_type in bill_types:
+        df = pd.read_excel(file, sheet_name=bill_type)
+        df = df.pivot_table(columns="# Compteur", index=['De', "À"], values=["Consommation", "Coût Hors Taxe", "Puissance Facturée"])
+
+        df = df.reset_index()
+        df.columns = df.columns.to_flat_index()
+        df.columns = ["-".join(col).strip("-") for col in df.columns]
+
+        if resample:
+            dfR = resample_irregular_monthly_events(df)
+            
+            with pd.ExcelWriter(file, mode='a', engine='openpyxl', if_sheet_exists="replace") as writer:
+                df.to_excel(writer, sheet_name=bill_type,)
+                if resample: 
+                    dfR.to_excel(writer, sheet_name=bill_type+"- resampled", )
+        del df, dfR

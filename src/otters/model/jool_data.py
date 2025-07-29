@@ -276,3 +276,45 @@ def get_all_connections(conn, ref, recursive=False, get_attachments=True, connec
             connections = get_all_children(conn, child, recursive=recursive, connections=connections)
 
     return {name: list(set(values)) for name, values in connections.items()}
+
+
+def get_equipment_data(conn, reference, start_date="", end_date=""):
+    sql = """
+    SELECT
+        e.reference AS equipment,
+        ds.name AS datastream,
+        tdv.timestamp,
+        tdv.value
+    FROM
+        equipment e
+    JOIN
+        datastreams ds ON ds.equipment = e.equipmentid
+    JOIN
+        timedatavalues tdv ON tdv.data_stream = ds.datastreamid
+    WHERE
+        e.reference = %s
+        AND tdv.timestamp >= %s
+    ORDER BY
+        tdv.timestamp;
+    """
+    if not start_date:
+        start_date = datetime(2000, 1, 1)
+    if not end_date:
+        end_date = datetime.now()
+
+    df = pd.read_sql_query(sql, conn, params=(reference, start_date))
+
+    df_piv = df.pivot_table(index='timestamp', columns='datastream', values='value')
+
+    return df_piv
+
+def resample_jool_data(df, period="15min"):
+    max_cols = [col for col in df.columns if "ETAT" in col]
+    mean_cols = [col for col in df.columns if col not in max_cols]
+
+    df_max = df.loc[:, max_cols].resample(period).max()
+    df_mean = df.loc[:, mean_cols].resample(period).mean()
+
+    df = pd.concat([df_max, df_mean], axis=1)
+
+    return df

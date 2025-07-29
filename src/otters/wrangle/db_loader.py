@@ -254,6 +254,7 @@ def getNasaWeather(plant: str = '', dates: list = [datetime.today()-timedelta(da
         raise Exception("404 error, the passed url was prolly not valid")
     # return response
     content = json.loads(response.content.decode('utf-8'))
+    print(content)
 
     dfWeather = pd.DataFrame(content['properties']['parameter'])
     if type.lower() == 'daily':

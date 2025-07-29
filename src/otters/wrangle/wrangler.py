@@ -162,3 +162,12 @@ def two_letter_month_to_number(date):
     for month, number in month_mappings.items():
         date = date.replace(month, number)
     return date
+
+def replace_partial_strings(strings, mapping):
+    "Replace all partials in a list of strings with a mapping of new strings (dict)"
+    new_strings = []
+    for string in strings: 
+        for old, new in mapping.items():
+            string = string.replace(old, new)
+        new_strings.append(string)
+    return new_strings

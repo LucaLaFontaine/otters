@@ -104,10 +104,12 @@ class Model():
             self.__setattr__(arg, options[arg])
 
         self.x = pd.DataFrame(x)
+        self.X = self.x#
         # If you have no start and end this will fail
         # self.x = self.x.loc[(self.x.index >= self.start) & (self.x.index <= self.end), :]
 
         self.y = pd.DataFrame(y)
+        self.Y = self.y
         # self.y = self.y.loc[(self.y.index >= self.start) & (self.y.index <= self.end), :]
 
         return
@@ -126,19 +128,19 @@ class Regression(Model):
     def regress(self):
 
         if self.start and self.end:
-            self.X = self.x.loc[(self.x.index >= self.start) & (self.x.index <= self.end), :]
+            self.x = self.x.loc[(self.x.index >= self.start) & (self.x.index <= self.end), :]
         else:
-            self.X = self.x
+            self.x = self.x
 
         if self.start and self.end:
-            self.Y = self.y.loc[(self.y.index >= self.start) & (self.y.index <= self.end), :]
+            self.y = self.y.loc[(self.y.index >= self.start) & (self.y.index <= self.end), :]
         else:
-            self.Y = self.y
-        self.reg = LinearRegression(fit_intercept=self.fit_intercept).fit(self.X, self.Y)
+            self.y = self.y
+        self.reg = LinearRegression(fit_intercept=self.fit_intercept).fit(self.x, self.y)
         return
     
     def getR2(self):
-        self.score = self.reg.score(self.X, self.Y)
+        self.score = self.reg.score(self.x, self.y)
         return
     
     def getCVRMSE(self, just_baseline=True):
@@ -155,7 +157,8 @@ class Regression(Model):
         """
         
         # regenerate the df. not super efficient but needed to decide wheter to take morte than the baseline
-        self.just_baseline = just_baseline
+        ## This line was resettin the just_baseline
+            # self.just_baseline = just_baseline
         self.to_frame(just_baseline=just_baseline)
         df = self.df.copy()
         # if just_baseline==True:
@@ -185,15 +188,15 @@ class Regression(Model):
         self.cv = self.cv[0]
         return self.cv
     
-    def to_frame(self, just_baseline=False, mapping=None):
-        if self.just_baseline:
+    def to_frame(self, just_baseline=None, mapping=None):
+        if just_baseline != just_baseline:
             just_baseline = self.just_baseline
         if just_baseline:
-            X = self.X.copy()  
-            Y = self.Y.copy()  
-        else:
             X = self.x.copy()  
-            Y = self.y.copy()
+            Y = self.y.copy()  
+        else:
+            X = self.X.copy()  
+            Y = self.Y.copy()
 
         X.columns = pd.MultiIndex.from_product([['X'], X.columns, ])
         Y.columns = pd.MultiIndex.from_product([['Y'], Y.columns, ])
@@ -215,10 +218,6 @@ class Regression(Model):
 
         return self.df
     
-    # def remapColumnNames(self):
-    #     self.df.rename(columns=self.mapping, level=-1, inplace=True)
-    #     return 
-    
     def model_component_graph(self, mapping=None, title='Model Component Graph', just_baseline=False, **kwargs):
         if mapping:
             print("mapping exists")
@@ -235,16 +234,6 @@ class Regression(Model):
         lp.plot.addAreaLines(df.loc[:, (['intercept', 'X'], slice(None))].columns)
         lp.plot.addLines(df.loc[:, ('Y', slice(None))].columns, level=slice(0, 2), line=dict(width=5, color="rgba(196, 30, 58, 1)"))
         lp.plot.addLines(df.loc[:, ('Y_hat', slice(None))].columns, line=dict(width=5, color="rgba(68, 114, 96, 1)"))
-
-        # lp.plot.fig.update_legends(
-        #     y=1.08,
-        # )
-        # lp.plot.addAreaLines()
-
-        # df.join()
-        # return df.loc[:, (('X', 'intercept'), slice(None))]
-        # return df.loc[:, (slice("Y_hat", 'Y', 'X'), slice(None))].columns
-        # return df.loc[:, (slice("Y_hat", 'Y', 'X'), slice(None))].columns
         return lp
     
     def getRegEquation(self, mapping=None):
@@ -261,13 +250,3 @@ class Regression(Model):
         self.equation = equationStr
         
         return equationStr
-
-    # def output_model_to_excel(self):
-    #    from openpyxl import Workbook
-    #     wb = 
-        
-    #     with pd.ExcelWriter(f"model_outputs/{self.name}.xlsx", engine="openpyxl", mode="w") as writer:
-
-    #         self.to_frame()
-    #         self.df.to_excel(writer, sheetname="Données")
-    #         writer.save()
