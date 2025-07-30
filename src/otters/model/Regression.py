@@ -69,7 +69,7 @@ class Models():
                     'Intercept': model.reg.intercept_,
                     'Coef(s)': ['{:,.2f}'.format(coef) for coef in model.reg.coef_[0]],
                     'P-Values': model.reg.p,
-                    'N_Samples': model.Y.shape[0],
+                    'N_Samples': model.y.shape[0],
                     # 'Description': model.description
                 }
             }

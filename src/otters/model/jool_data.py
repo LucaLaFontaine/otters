@@ -150,13 +150,13 @@ def get_stream_max_date(conn, reference):
 
     sql = """
     SELECT MAX(timestamp) from TimeDataValues td
-    left join DataStreams ds on ds.DataStreamID = td.data_stream
-    left join equipment e on e.equipmentid = ds.equipment
+    inner join DataStreams ds on ds.DataStreamID = td.data_stream
+    inner join equipment e on e.equipmentid = ds.equipment
     WHERE e.reference = %s;
     """
     with conn.cursor() as cur:
         cur.execute(sql, (reference, ))
-        ref_to_id = cur.fetchall()[0][0] # {'EQ-001': 1, 'EQ-002': 2, ...}
+        ref_to_id = cur.fetchone()[0] # {'EQ-001': 1, 'EQ-002': 2, ...}
     
     if ref_to_id:
         return ref_to_id
