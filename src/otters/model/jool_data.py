@@ -219,6 +219,17 @@ def update_equipment_data(conn, reference, jool, config, start_date=None, end_da
     logging.info(f"update of {reference} complete")
     return 
 
+def get_all_equipment(conn):
+    cur = conn.cursor()
+
+    equipment_sql = """
+    SELECT e.reference as reference from equipment e
+    """
+    cur.execute(equipment_sql, ())
+    df = pd.DataFrame(cur.fetchall(), columns=[desc.name for desc in cur.description])
+
+    return df
+
 def get_all_children(conn, ref,recursive=False, connections=None):
     cur = conn.cursor()
     ref_col = "reference"
@@ -276,7 +287,6 @@ def get_all_connections(conn, ref, recursive=False, get_attachments=True, connec
             connections = get_all_children(conn, child, recursive=recursive, connections=connections)
 
     return {name: list(set(values)) for name, values in connections.items()}
-
 
 def get_equipment_data(conn, reference, start_date="", end_date=""):
     sql = """

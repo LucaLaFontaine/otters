@@ -10,10 +10,13 @@ src/otters.egg-info/requires.txt
 src/otters.egg-info/top_level.txt
 src/otters/drive/__init__.py
 src/otters/drive/connectors.py
+src/otters/drive/dash.py
+src/otters/drive/excel.py
 src/otters/drive/ppt_gen.py
 src/otters/model/Regression.py
 src/otters/model/VirtualMeter.py
 src/otters/model/__init__.py
+src/otters/model/jool_data.py
 src/otters/vis/__init__.py
 src/otters/vis/conf.yaml
 src/otters/vis/graph.py
@@ -23,3 +26,4 @@ src/otters/wrangle/file_loader.py
 src/otters/wrangle/psychrometrics.py
 src/otters/wrangle/time_tools.py
 src/otters/wrangle/wrangler.py
+tests/test_timetools.py
