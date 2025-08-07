@@ -243,7 +243,7 @@ class Regression(Model):
 
         equationXs = list(zip(self.df.loc[:, ("X", slice(None))].columns.get_level_values(-1), self.reg.coef_[0]))
 
-        equationXs = ["[{}]*{:,.6g}".format(termName, termCoef) for termName, termCoef in equationXs]
+        equationXs = ["[{}]*{:,.6g}".format(termName, termCoef).replace(",", " ").replace(".", ",") for termName, termCoef in equationXs]
 
         equationXs = " + ".join(equationXs)
         equationStr = """Modèle = {:,.6g} + {}""".format(self.reg.intercept_[0], equationXs)
