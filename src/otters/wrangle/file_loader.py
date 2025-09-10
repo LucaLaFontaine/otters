@@ -492,7 +492,13 @@ def create_sheets_for_each_energy_type(file, facture_type_col="Fournisseur", res
         df.columns = ["-".join(col).strip("-") for col in df.columns]
 
         if resample:
-            dfR = resample_irregular_monthly_events(df)
+            if bill_type == "Énergir":
+                event_dates_inclusive=False
+            else:
+                event_dates_inclusive=False
+
+            print(f'fournisseur:{bill_type}, event_dates_inclusive = {event_dates_inclusive}')
+            dfR = resample_irregular_monthly_events(df, event_dates_inclusive=event_dates_inclusive)
             
             with pd.ExcelWriter(file, mode='a', engine='openpyxl', if_sheet_exists="replace") as writer:
                 df.to_excel(writer, sheet_name=bill_type,)

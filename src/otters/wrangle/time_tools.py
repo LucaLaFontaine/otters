@@ -129,7 +129,8 @@ def resample_irregular_monthly_events(df, start_col = 'De', end_col = 'À', day_
     dfR = df.reset_index(drop=True)
 
     # normalize the event to the number of days in the cycle
-    # Need to add one to the date delta because bill dates are inclusive
+    # Need to add one to the date delta because bill dates are inclusive. But they aren`t always inclusive...
+    
     for col in dfR.select_dtypes(include='number'):#.columns.drop([start_col, end_col]):
         dfR[col] = dfR.apply(lambda x: x[col] / ((x[end_col] - x[start_col]).days + int(event_dates_inclusive)), axis=1)
 

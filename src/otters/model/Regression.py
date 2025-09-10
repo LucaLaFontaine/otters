@@ -9,6 +9,7 @@ from sklearn.linear_model import LinearRegression
 from scipy import stats
 from math import sqrt
 import openpyxl
+import locale
 
 from ..vis.graph import Graph
 
@@ -236,17 +237,23 @@ class Regression(Model):
         lp.plot.addLines(df.loc[:, ('Y_hat', slice(None))].columns, line=dict(width=5, color="rgba(68, 114, 96, 1)"))
         return lp
     
-    def getRegEquation(self, mapping=None):
+    def getRegEquation(self, mapping=None, language="fr_FR", grouping=True):
+        locale.setlocale(locale.LC_ALL, language)  # or de_DE, etc.
         if mapping:
             self.mapping = mapping
         # self.remapColumnNames()
 
         equationXs = list(zip(self.df.loc[:, ("X", slice(None))].columns.get_level_values(-1), self.reg.coef_[0]))
 
-        equationXs = ["[{}]*{:,.6g}".format(termName, termCoef).replace(",", " ").replace(".", ",") for termName, termCoef in equationXs]
+        # equationXs = ["[{}]*{:,.6g}".format(termName, termCoef).replace(",", " ").replace(".", ",") for termName, termCoef in equationXs]
+
+        # "\u202f" is a french "narrow space" which is not an actual fucking space. Fuck you french people. Must be replaced with a regular space
+        equationXs = [f"[{termName}]*{locale.format_string('%.6g', termCoef, grouping=grouping)}".replace("\u202f", " ") for termName, termCoef in equationXs]
 
         equationXs = " + ".join(equationXs)
-        equationStr = """Modèle = {:,.6g} + {}""".format(self.reg.intercept_[0], equationXs)
+
+        # "\u202f" is a french "narrow space" which is not an actual fucking space. Fuck you french people. Must be replaced with a regular space
+        equationStr = """Modèle = {} + {}""".format(locale.format_string('%.6g', self.reg.intercept_[0], grouping=grouping), equationXs).replace("\u202f", " ") 
         self.equation = equationStr
         
         return equationStr

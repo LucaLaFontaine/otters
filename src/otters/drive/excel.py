@@ -7,6 +7,7 @@ from openpyxl.chart.layout import Layout, ManualLayout
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import column_index_from_string
 
+
 def regression_to_excel(reg, name):
 
     # === Create workbook ===
@@ -44,8 +45,8 @@ def regression_to_excel(reg, name):
         cell = ws_data[f"A{row}"]
         cell.number_format = 'yyyy-mm-dd'  # or another Excel-compatible format
 
-    # --- Create Chart Sheet ---
-    # Create line chart
+    # # --- Create Chart Sheet ---
+    # # Create line chart
     chart = LineChart()
     chart.title = name
     chart.style = 2
@@ -53,6 +54,11 @@ def regression_to_excel(reg, name):
     chart.x_axis.title = ''
     chart.width = 30
     chart.height = 13.5
+
+    chart.x_axis = chart.x_axis  
+    chart.y_axis = chart.y_axis
+    chart.x_axis.delete = False
+    chart.y_axis.delete = False
 
     # Reference data
     data = Reference(ws_data, min_col=2, max_col=3, min_row=2, max_row=reg.df.shape[0])  # Y column

@@ -304,6 +304,7 @@ def get_equipment_data(conn, reference, start_date="", end_date=""):
     WHERE
         e.reference = %s
         AND tdv.timestamp >= %s
+        AND tdv.timestamp <= %s
     ORDER BY
         tdv.timestamp;
     """
@@ -312,13 +313,17 @@ def get_equipment_data(conn, reference, start_date="", end_date=""):
     if not end_date:
         end_date = datetime.now()
 
-    df = pd.read_sql_query(sql, conn, params=(reference, start_date))
+    df = pd.read_sql_query(sql, conn, params=(reference, start_date, end_date))
 
     df_piv = df.pivot_table(index='timestamp', columns='datastream', values='value')
 
     return df_piv
 
 def resample_jool_data(df, period="15min"):
+
+    if df.empty:
+        return df    
+    
     max_cols = [col for col in df.columns if "ETAT" in col]
     mean_cols = [col for col in df.columns if col not in max_cols]
 
