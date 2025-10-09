@@ -9,6 +9,7 @@ import requests
 import re
 import urllib
 import sys
+from datetime import datetime, timedelta
 
 import pandas as pd
 import numpy as np
@@ -17,8 +18,9 @@ from bs4 import BeautifulSoup
 from otters.wrangle.time_tools import str2dt
 
 class JoolConnector:
-    def __init__(self, USER=None, PASSWORD=None, root_url="", tenant_url="", token_url="", auth_url=""):
+    def __init__(self, USER=None, PASSWORD=None, root_url="", tenant_url="", token_url="", auth_url="", config=None):
         # self.get_bearer_auth(USER=None, PASSWORD=None, root_url="", tenant_url="", token_url="", auth_url="")
+        self.config = config
         return
 
 
@@ -233,5 +235,28 @@ class JoolConnector:
         df_mean = df.loc[:, mean_cols].resample(period).mean()
 
         df = pd.concat([df_max, df_mean], axis=1)
+
+        return df
+    
+    def get_reference_data(self, reference, start_date=None, end_date=None, config=None):
+
+        if not start_date:
+            start_date = datetime.now() - timedelta(years=1)
+        if not end_date: 
+            end_date = datetime.now()
+        
+        if not config:
+            if self.config:
+                config = self.config
+            else: 
+                raise Exception("No config has been set")
+
+        data = {
+            "from": start_date.strftime(format="%Y-%m-%dT%H:%M:00.000Z"), 
+            "to": end_date.strftime(format="%Y-%m-%dT%H:%M:00.000Z"),
+            "selection" : [reference],
+        }
+        bearer_auth = self.get_bearer_auth(**config)
+        df = self.data_call(data, bearer_auth, config, True)
 
         return df
