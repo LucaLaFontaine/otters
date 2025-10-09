@@ -40,7 +40,7 @@
 
   ##### TIME STUFF #####
     # Default timestamp tick
-    tickFormat: '%a %d/%b/%y %H'
+    tickFormat: '%a %d/%b/%y %H:%M'
 
     # Frequency of ticks. D1 is daily, M2 is bi-monthly. can also use logs and stuff, look up 'plotly dtick'
     # There may be some value in checking the length of the timestamp and auto assinging daily, weekly, monthly, etc but only do it if it becomes a problem
