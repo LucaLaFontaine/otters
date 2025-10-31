@@ -333,3 +333,10 @@ def resample_jool_data(df, period="15min"):
     df = pd.concat([df_max, df_mean], axis=1)
 
     return df
+
+def get_list_connections(conn, reference, children=True, attachments=True):
+    connections = get_all_connections(conn, reference, get_attachments=attachments)
+    connections = [ref for ref_type in connections.values() for ref in ref_type]
+    connections = list(set(connections))
+    connections = [connection for connection in connections if connection]
+    return connections

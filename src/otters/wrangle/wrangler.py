@@ -171,3 +171,55 @@ def replace_partial_strings(strings, mapping):
             string = string.replace(old, new)
         new_strings.append(string)
     return new_strings
+
+def multiply_by_suffix(df, suffix1="_MODULATION", suffix2="_ETAT", suffix_new="_EMOD"):
+    """
+    Multiply pairs of columns in a DataFrame that share the same base name but have different suffixes.
+
+    The thing currently doesn't ffill stuff like the _ETAT, so you have to remember to do that yourself
+
+    :param df: Input DataFrame
+    :type df: pandas.DataFrame
+    :param suffix1: Suffix of the first column in the pair (e.g. ``'_MODULATION'``).
+    :type suffix1: str
+    :param suffix2: Suffix of the second column in the pair (e.g. ``'_ETAT'``).
+    :type suffix2: str
+    :param new_suffix: Suffix for the new multiplied column (e.g. ``'_EMOD'``).
+    :type new_suffix: str
+    :param inplace: If ``True``, modifies the DataFrame in place. Otherwise returns a copy.
+    :type inplace: bool
+
+    :returns: DataFrame with the new multiplied columns added.
+    :rtype: pandas.DataFrame
+
+    **Example**
+
+    .. code-block:: python
+
+        df = pd.DataFrame({
+            'pump_mod': [0.5, 1.0, 0.8],
+            'pump_etat': [1, 0, 1],
+            'fan_mod': [0.7, 0.6, 0.9],
+            'fan_etat': [1, 1, 0]
+        })
+
+        df2 = multiply_suffix_pairs(df, '_mod', '_etat', '_emod')
+
+        # Result:
+        #    pump_mod  pump_etat  fan_mod  fan_etat  pump_emod  fan_emod
+        # 0       0.5          1      0.7         1        0.5       0.7
+        # 1       1.0          0      0.6         1        0.0       0.6
+        # 2       0.8          1      0.9         0        0.8       0.0
+    """
+    df = df.copy()
+
+    cols = df.columns
+    for col in cols:
+        if col.endswith(suffix1):
+            base = col[:-len(suffix1)]
+            match = f"{base}{suffix2}"
+            if match in cols:
+                new_col = f"{base}{suffix_new}"
+                df[new_col] = df[col] * df[match]
+
+    return df 
