@@ -6,13 +6,14 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 class RegressionViewer(Dash):
-    def __init__(self, models, mapping=None, external_stylesheets=[dbc.themes.BOOTSTRAP]):
+    def __init__(self, models, mapping=None, external_stylesheets=[dbc.themes.BOOTSTRAP], port=8050):
         super().__init__(external_stylesheets=external_stylesheets)
 
         self.models = models
         self.mapping = mapping
 
         self.create_dashboard()
+        self.port = port
 
     def create_dashboard(self):
 
@@ -100,4 +101,4 @@ class RegressionViewer(Dash):
             ])
 
     def show(self):
-        self.run(debug=True)
+        self.run(debug=True, port=self.port)

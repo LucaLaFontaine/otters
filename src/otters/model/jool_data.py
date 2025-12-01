@@ -18,7 +18,9 @@ def jool_db_conn(database="jool_data",
                         port=port)
 
 def open_equipment_csv(equipment_csv='all_conns_in_pub.csv', delimiter=';', decimal=','):
-    return pd.read_csv(equipment_csv, delimiter=delimiter, decimal=decimal)
+    df = pd.read_csv(equipment_csv, delimiter=delimiter, decimal=decimal)
+    df.columns = [col.replace("METER.", "") for col in df.columns]
+    return df
     
 def change_children_to_parents(df):
 
@@ -50,18 +52,18 @@ def update_equipment_from_csv(conn):
     Updates or inserts equipment data from a csv from JOOL directly. You have to manually downl9oad the csv from a database in jool called luca_connections or something
     """
     df = open_equipment_csv()
-    df = df.loc[:, ['METER.REFERENCE', 'METER.NAME']]
+    df = df.loc[:, ['REFERENCE', 'NAME']]
     df = df.dropna(axis=1)
     df.drop_duplicates(inplace=True) 
 
-    records = df.drop_duplicates(subset=['METER.REFERENCE']).to_dict("records")
+    records = df.drop_duplicates(subset=['REFERENCE']).to_dict("records")
 
     sql = """
         INSERT INTO Equipment (reference, name)
         VALUES %s
         ON CONFLICT (reference) DO NOTHING
     """
-    values = [(col['METER.REFERENCE'], col['METER.NAME']) for col in records]
+    values = [(col['REFERENCE'], col['NAME']) for col in records]
     with conn.cursor() as cur:
         execute_values(cur, sql, values)
         conn.commit()
@@ -72,9 +74,10 @@ def update_equipment_parents(conn):
     df = open_equipment_csv()
 
     # Add the reference as the name if it's empty:
-    df['METER.NAME'] = df.apply(lambda x: x['METER.NAME'] if x['METER.NAME'] else x['METER.REFERENCE'], axis=1)
+    df['NAME'] = df.apply(lambda x: x['NAME'] if x['NAME'] else x['REFERENCE'], axis=1)
     # return df
     df = change_children_to_parents(df)
+    df = df.fillna('')
     # return df
     records = df.to_dict("records")
 
@@ -85,7 +88,7 @@ def update_equipment_parents(conn):
         LEFT JOIN Equipment as t2 on t2.reference = f.v1 
         WHERE t1.reference = f.v2;
     """
-    values = [(col['parent'], col['METER.REFERENCE']) for col in records]
+    values = [(col['PARENT'], col['REFERENCE']) for col in records]
     # return values
     with conn.cursor() as cur:
         # cur.execute(sql, values)
@@ -102,11 +105,11 @@ def update_equipment_connections(conn):
     """
     df = open_equipment_csv()
 
-    df = df.loc[:, ['METER.REFERENCE', 'METER.ATTACHED_SYSTEM']]
+    df = df.loc[:, ['REFERENCE', 'ATTACHED_SYSTEM']]
     df.replace(np.nan, None, inplace=True)
     
     records = df.to_dict("records")
-    records = [(col['METER.REFERENCE'], col['METER.ATTACHED_SYSTEM']) for col in records]
+    records = [(col['REFERENCE'], col['ATTACHED_SYSTEM']) for col in records]
 
     fetch_sql = """
         SELECT reference, equipmentID FROM equipment
@@ -187,7 +190,7 @@ def update_equipment_data(conn, reference, jool, config, start_date=None, end_da
         channel_df = df.loc[df['CHANNEL.REFERENCE'] == channel, :]
         try: 
             cur.execute("BEGIN;")
-            ds_values = [(col['CHANNEL.REFERENCE'], col['METER.REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', 'METER.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
+            ds_values = [(col['CHANNEL.REFERENCE'], col['REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', '.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
             data_stream_sql = """
             INSERT INTO DataStreams (name, equipment, unit)
             SELECT DISTINCT ON (f.v1, e.EquipmentID) f.v1, e.EquipmentID, f.v3 
