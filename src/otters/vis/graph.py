@@ -28,6 +28,12 @@ class Graph():
         # correct a series to a df
         if isinstance(df, pd.Series):
             df = df.to_frame()
+        
+        # Enforce numeric
+        try:
+            df = df.apply(pd.to_numeric, errors='raise')
+        except: 
+            raise TypeError("Can't cast df to numeric")
 
         # Default kwarg values, later updated with the passed kwargs
         options = {
