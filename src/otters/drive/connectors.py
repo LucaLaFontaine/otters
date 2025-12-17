@@ -155,8 +155,9 @@ class JoolConnector:
         """
 
         headers = {"Authorization": f"Bearer {bearer_auth}"}
-        url = config['root_url']+config['api_url']+config['dataset']
+        url = config['api_url']+config['dataset']
         r = requests.post(url, json=data, headers=headers)
+        print (r.content)
         content = r.json()
         rows = content['tables'][0]['rows']
         columns = content['tables'][0]['columns']
