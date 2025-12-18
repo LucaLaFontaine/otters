@@ -28,7 +28,6 @@ def change_children_to_parents(df):
 
     if df['REFERENCE'].apply(lambda x: len(df.loc[df['PARENT_CHILD'] == x, "REFERENCE"].unique())).max() > 1:
         double_parent = df['REFERENCE'].apply(lambda x: len(df.loc[df['PARENT_CHILD'] == x, "REFERENCE"])).sort_values(ascending=False)
-        print(double_parent.head(10))
         raise ValueError("There are multiple parents for one of the rows in the supplied equipment list")
 
     def check_parent_exists(df, x):
@@ -190,7 +189,7 @@ def update_equipment_data(conn, reference, jool, config, start_date=None, end_da
         channel_df = df.loc[df['CHANNEL.REFERENCE'] == channel, :]
         try: 
             cur.execute("BEGIN;")
-            ds_values = [(col['CHANNEL.REFERENCE'], col['REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', '.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
+            ds_values = [(col['CHANNEL.REFERENCE'], col['REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', 'METER.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
             data_stream_sql = """
             INSERT INTO DataStreams (name, equipment, unit)
             SELECT DISTINCT ON (f.v1, e.EquipmentID) f.v1, e.EquipmentID, f.v3 
