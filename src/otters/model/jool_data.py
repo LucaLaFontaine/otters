@@ -189,7 +189,7 @@ def update_equipment_data(conn, reference, jool, config, start_date=None, end_da
         channel_df = df.loc[df['CHANNEL.REFERENCE'] == channel, :]
         try: 
             cur.execute("BEGIN;")
-            ds_values = [(col['CHANNEL.REFERENCE'], col['REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', 'METER.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
+            ds_values = [(col['CHANNEL.REFERENCE'], col['METER.REFERENCE'], col['CHANNEL.CNL_DAC_UNIT']) for col in channel_df.loc[:, ['CHANNEL.REFERENCE', 'METER.REFERENCE','CHANNEL.CNL_DAC_UNIT']].drop_duplicates().to_dict('records')]
             data_stream_sql = """
             INSERT INTO DataStreams (name, equipment, unit)
             SELECT DISTINCT ON (f.v1, e.EquipmentID) f.v1, e.EquipmentID, f.v3 
