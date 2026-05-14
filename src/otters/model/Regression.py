@@ -141,7 +141,12 @@ class Regression(Model):
         return
     
     def getR2(self):
-        self.score = self.reg.score(self.x, self.y)
+        r2 = self.reg.score(self.x, self.y)
+        n_samples = len(self.y)
+        n_predictors = self.x.shape[1]
+
+        # Calculate adjusted R2
+        self.score = 1 - (1 - r2) * (n_samples - 1) / (n_samples - n_predictors - 1)
         return
     
     def getCVRMSE(self, just_baseline=True):
