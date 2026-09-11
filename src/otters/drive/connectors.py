@@ -453,24 +453,40 @@ class JoolConnectorV2(JoolConnector):
             return None, f"GET {root_url + auth_url} failed: {e}"
 
         # Parse the final login form (Keycloak or IdentityServer, depending on redirect chain).
-        # Extract ALL hidden inputs dynamically — don't hardcode field names.
         soup = BeautifulSoup(r_auth.content, features="html.parser")
-        form = soup.find("form")
-        if not form:
+
+        # Keycloak pages often have multiple <form> elements (language selector, SSO, etc.).
+        # Find the one that has username/password inputs — that's the login form.
+        forms = soup.find_all("form")
+        if not forms:
             return None, f"No <form> found at {r_auth.url} (status {r_auth.status_code}, content-type {r_auth.headers.get('content-type','?')}, len {len(r_auth.content)})"
+
+        form = None
+        for f in forms:
+            if f.find("input", {"name": "username"}) or f.find("input", {"type": "password"}):
+                form = f
+                break
+        if not form:
+            # Fallback: last form on the page (login form is usually last in Keycloak)
+            form = forms[-1]
 
         action = form.get("action")
         if not action:
-            return None, f"<form> at {r_auth.url} has no action attribute"
+            return None, f"Login <form> at {r_auth.url} has no action attribute. Forms found: {len(forms)}"
         # Resolve relative action URLs against the page we landed on
         login_post_url = urllib.parse.urljoin(r_auth.url, action)
 
-        # Collect every hidden input so the login POST mirrors the browser exactly
+        # Collect ALL named inputs (hidden, text, password, submit) so the login POST
+        # mirrors the browser exactly. Keycloak requires the submit button's name/value.
         form_data = {}
         for inp in form.find_all("input"):
             name = inp.get("name")
-            if name and inp.get("type", "").lower() in ("hidden", "text"):
+            if not name:
+                continue
+            inp_type = inp.get("type", "").lower()
+            if inp_type in ("hidden", "text", "password", "submit"):
                 form_data[name] = inp.get("value", "")
+        # Override with actual credentials (don't let form defaults leak through)
         form_data["username"] = username
         form_data["password"] = password
 
