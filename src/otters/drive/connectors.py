@@ -490,17 +490,16 @@ class JoolConnectorV2(JoolConnector):
         form_data["username"] = username
         form_data["password"] = password
 
-        # Submit credentials — follow redirects through Keycloak → IdentityServer → tenant callback.
-        # The final URL will contain ?code=... (the authorization code).
+        # Submit credentials to Keycloak's login form
         try:
             resp = session.post(login_post_url, data=form_data, allow_redirects=True)
         except requests.RequestException as e:
             return None, f"POST {login_post_url} failed: {e}"
 
-        # Extract the authorization code from the final URL or redirect history.
-        code = self._extract_auth_code(resp)
+        # Follow the response chain: HTTP redirects + auto-submitting forms (form_post mode)
+        code, err = self._follow_response_chain(session, resp)
         if not code:
-            return None, f"No 'code' in redirect chain. Final URL: {resp.url}, history: {[r.url for r in resp.history]}"
+            return None, err
 
         # Exchange the authorization code for tokens at the token endpoint.
         try:
@@ -522,6 +521,57 @@ class JoolConnectorV2(JoolConnector):
             self._store_tokens(token_resp.json())
             return self._access_token, None
         return None, f"Token exchange returned HTTP {token_resp.status_code}: {token_resp.text[:500]}"
+
+    def _follow_response_chain(self, session, resp, max_hops=10):
+        """
+        Follow HTTP redirects AND auto-submitting HTML forms (Keycloak form_post
+        response mode) until we find an authorization code or exhaust all hops.
+
+        Keycloak returns a 200 HTML page with an auto-submitting <form> that POSTs
+        ``code``/``state``/``iss``/``session_state`` to IdentityServer's signin endpoint.
+        ``requests`` doesn't execute JavaScript, so we detect and submit these forms
+        manually to continue the redirect chain.
+
+        Returns (code, error_str).
+        """
+        for hop in range(max_hops):
+            # 1. Check if code is in the current URL or any redirect Location headers
+            code = self._extract_auth_code(resp)
+            if code:
+                return code, None
+
+            # 2. Check if the response body contains an auto-submitting form
+            #    (form_post response mode: Keycloak → IdentityServer signin endpoint)
+            if resp.status_code == 200 and 'text/html' in resp.headers.get('content-type', ''):
+                soup = BeautifulSoup(resp.content, features="html.parser")
+                form = soup.find("form")
+                if form and form.get("action"):
+                    action = urllib.parse.urljoin(resp.url, form.get("action"))
+                    form_data = {}
+                    for inp in form.find_all("input"):
+                        name = inp.get("name")
+                        if name:
+                            form_data[name] = inp.get("value", "")
+
+                    # Only auto-submit forms that look like OIDC form_post responses
+                    # (contain a 'code' field), NOT login forms (contain 'username')
+                    if form_data and ('code' in form_data or 'username' not in form_data):
+                        try:
+                            resp = session.post(action, data=form_data, allow_redirects=True)
+                            continue
+                        except requests.RequestException as e:
+                            return None, f"Auto-submit POST to {action} failed: {e}"
+
+            # 3. No code found and no auto-submit form — capture diagnostics
+            body_snippet = resp.text[:800] if hasattr(resp, 'text') else "<no body>"
+            return None, (
+                f"No 'code' found after {hop+1} hops. "
+                f"Last URL: {resp.url}, status: {resp.status_code}, "
+                f"history: {[r.url for r in resp.history]}. "
+                f"Body: {body_snippet}"
+            )
+
+        return None, f"Exceeded {max_hops} hops following redirect/form chain"
 
     def _extract_auth_code(self, resp):
         """
