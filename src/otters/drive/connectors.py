@@ -260,3 +260,313 @@ class JoolConnector:
         df = self.data_call(data, bearer_auth, config, True)
 
         return df
+
+
+class JoolConnectorV2(JoolConnector):
+    """
+    Version 2 of the JoolConnector designed for the new federated OIDC login flow.
+
+    The JOOL platform moved from a server-rendered ASP.NET login form to a federated
+    architecture: IdentityServer (api-auth host) delegates authentication to Keycloak
+    (external IdP). The old ``get_bearer_auth`` scraped ``__RequestVerificationToken``
+    and ``ReturnUrl`` from the IdentityServer HTML form, which no longer exists.
+
+    This class preserves the same public interface (``get_bearer_auth``, ``data_call``,
+    ``get_reference_data``) so that callers in ``otters.model.jool_data`` and elsewhere
+    can switch from ``JoolConnector`` to ``JoolConnectorV2`` with no other changes.
+
+    Auth strategy (in order of preference):
+        1. Cached access token that has not yet expired.
+        2. Refresh-token exchange (avoids a full re-login).
+        3. Resource Owner Password Credentials (ROPC) grant — a single token-endpoint
+           POST, no browser-form scraping required.
+        4. Full Authorization Code + PKCE flow following the IdentityServer → Keycloak
+           redirect chain with ``requests.Session`` (browser-equivalent, resilient to
+           Keycloak form field name changes).
+    """
+
+    def __init__(self, USER=None, PASSWORD=None, root_url="", tenant_url="", token_url="", auth_url="", config=None):
+        super().__init__(USER=USER, PASSWORD=PASSWORD, root_url=root_url, tenant_url=tenant_url, token_url=token_url, auth_url=auth_url, config=config)
+        self._access_token = None
+        self._token_expiry = None
+        self.refresh_token = None
+
+    def _resolve_credentials(self, USER=None, PASSWORD=None):
+        """Return (username, password), preferring explicit args over env vars."""
+        username = USER if USER is not None else os.getenv('user')
+        password = PASSWORD if PASSWORD is not None else os.getenv('password')
+        if not username or not password:
+            raise ValueError("JoolConnectorV2 requires credentials: pass USER/PASSWORD or set 'user'/'password' env vars.")
+        return username, password
+
+    def _store_tokens(self, token_response):
+        """Cache access token, refresh token, and expiry from a token-endpoint JSON response."""
+        self._access_token = token_response.get('access_token')
+        expires_in = token_response.get('expires_in', 3600)
+        self._token_expiry = datetime.now() + timedelta(seconds=expires_in)
+        if 'refresh_token' in token_response:
+            self.refresh_token = token_response['refresh_token']
+
+    def _token_is_valid(self):
+        """True if a cached access token exists and has more than 60s of life left."""
+        return (
+            self._access_token is not None
+            and self._token_expiry is not None
+            and datetime.now() < self._token_expiry - timedelta(seconds=60)
+        )
+
+    def refresh_bearer_auth(self, root_url="", token_url="/connect/token", refresh_token=None):
+        """
+        Exchange a refresh token for a new access token.
+
+        :param root_url: Base URL of the IdentityServer (e.g. ``https://...api-auth...``).
+        :param token_url: Token endpoint path (default ``/connect/token``).
+        :param refresh_token: A refresh token string. If omitted, uses ``self.refresh_token``.
+        :return: New access token string.
+        :raises RuntimeError: If no refresh token is available or the exchange fails.
+        """
+        rt = refresh_token if refresh_token is not None else self.refresh_token
+        if not rt:
+            raise RuntimeError("No refresh token available — call get_bearer_auth() first.")
+
+        resp = requests.post(
+            url=root_url + token_url,
+            data={
+                "grant_type": "refresh_token",
+                "client_id": "Frontend",
+                "refresh_token": rt,
+            },
+        )
+        if resp.status_code != 200 or 'access_token' not in resp.json():
+            self.refresh_token = None
+            raise RuntimeError(f"Refresh token exchange failed: HTTP {resp.status_code} — {resp.text}")
+
+        self._store_tokens(resp.json())
+        return self._access_token
+
+    def get_bearer_auth(self, USER=None, PASSWORD=None, root_url="", tenant_url="", token_url="", auth_url="", *args, **kwargs):
+        """
+        Get a bearer access token from the new federated JOOL login flow.
+
+        Tries (in order): cached token → ROPC → Authorization Code + PKCE fallback.
+
+        Parameters
+        ----------
+        USER : str, optional
+            Username. Falls back to ``os.getenv('user')``.
+        PASSWORD : str, optional
+            Password. Falls back to ``os.getenv('password')``.
+        root_url : str
+            IdentityServer base URL (e.g. ``https://publinergie-ca-api-auth.prod.emm.metronlab.tech``).
+        tenant_url : str
+            Tenant / redirect URI (e.g. ``https://publinergie-ca.jool.energy``).
+        token_url : str
+            Token endpoint path (e.g. ``/connect/token``).
+        auth_url : str
+            Authorize endpoint path (e.g. ``/connect/authorize``).
+
+        Returns
+        -------
+        str
+            The bearer access token.
+        """
+        if self._token_is_valid():
+            return self._access_token
+
+        username, password = self._resolve_credentials(USER, PASSWORD)
+
+        if not token_url:
+            token_url = "/connect/token"
+        if not auth_url:
+            auth_url = "/connect/authorize"
+
+        # Strategy 1: Resource Owner Password Credentials (single request, no scraping)
+        token = self._get_bearer_ropec(username, password, root_url, tenant_url, token_url)
+        if token:
+            return token
+
+        # Strategy 2: Full Authorization Code + PKCE (browser-equivalent redirect chain)
+        token = self._get_bearer_auth_code(username, password, root_url, tenant_url, token_url, auth_url)
+        if token:
+            return token
+
+        raise RuntimeError("All authentication strategies failed. Check credentials, config URLs, and network access.")
+
+    def _get_bearer_ropec(self, username, password, root_url, tenant_url, token_url):
+        """Attempt Resource Owner Password Credentials grant. Returns token or None."""
+        try:
+            resp = requests.post(
+                url=root_url + token_url,
+                data={
+                    "grant_type": "password",
+                    "client_id": "Frontend",
+                    "username": username,
+                    "password": password,
+                    "scope": "Web.Api.Display Web.Api.User offline_access openid",
+                    "acr_values": f"tenant:{tenant_url}",
+                },
+            )
+            if resp.status_code == 200 and 'access_token' in resp.json():
+                self._store_tokens(resp.json())
+                return self._access_token
+        except requests.RequestException:
+            pass
+        return None
+
+    def _get_bearer_auth_code(self, username, password, root_url, tenant_url, token_url, auth_url):
+        """
+        Full Authorization Code + PKCE flow through the IdentityServer → Keycloak
+        redirect chain. Uses ``requests.Session`` to maintain cookies across hosts.
+
+        Returns access token string, or None on failure.
+        """
+        session = requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+        })
+
+        code_challenge = self.create_code_challenge()
+
+        auth_params = {
+            "client_id": "Frontend",
+            "redirect_uri": tenant_url,
+            "response_type": "code",
+            "scope": "Web.Api.Display Web.Api.User offline_access openid",
+            "code_challenge": code_challenge["challenge"],
+            "code_challenge_method": "S256",
+            "acr_values": f"tenant:{tenant_url}",
+        }
+
+        # Follow the redirect chain: IdentityServer → Keycloak login page (HTML form)
+        try:
+            r_auth = session.get(root_url + auth_url, params=auth_params, allow_redirects=True)
+        except requests.RequestException:
+            return None
+
+        # Parse the final login form (Keycloak or IdentityServer, depending on redirect chain).
+        # Extract ALL hidden inputs dynamically — don't hardcode field names.
+        soup = BeautifulSoup(r_auth.content, features="html.parser")
+        form = soup.find("form")
+        if not form:
+            return None
+
+        action = form.get("action")
+        if not action:
+            return None
+        # Resolve relative action URLs against the page we landed on
+        login_post_url = urllib.parse.urljoin(r_auth.url, action)
+
+        # Collect every hidden input so the login POST mirrors the browser exactly
+        form_data = {}
+        for inp in form.find_all("input"):
+            name = inp.get("name")
+            if name and inp.get("type", "").lower() in ("hidden", "text"):
+                form_data[name] = inp.get("value", "")
+        form_data["username"] = username
+        form_data["password"] = password
+
+        # Submit credentials — follow redirects through Keycloak → IdentityServer → tenant callback.
+        # The final URL will contain ?code=... (the authorization code).
+        try:
+            resp = session.post(login_post_url, data=form_data, allow_redirects=True)
+        except requests.RequestException:
+            return None
+
+        # Extract the authorization code from the final URL or redirect history.
+        code = self._extract_auth_code(resp)
+        if not code:
+            return None
+
+        # Exchange the authorization code for tokens at the token endpoint.
+        try:
+            token_resp = requests.post(
+                url=root_url + token_url,
+                data={
+                    "grant_type": "authorization_code",
+                    "client_id": "Frontend",
+                    "redirect_uri": tenant_url,
+                    "code": code,
+                    "code_verifier": code_challenge["verifier"],
+                },
+                allow_redirects=False,
+            )
+        except requests.RequestException:
+            return None
+
+        if token_resp.status_code == 200 and 'access_token' in token_resp.json():
+            self._store_tokens(token_resp.json())
+            return self._access_token
+        return None
+
+    def _extract_auth_code(self, resp):
+        """
+        Extract the ``code`` query parameter from a redirect response.
+
+        Checks the final response URL and every ``Location`` header in the redirect
+        history, since the code may appear in any hop.
+        """
+        candidates = []
+        if resp.url:
+            candidates.append(resp.url)
+        for r in resp.history:
+            loc = r.headers.get('Location')
+            if loc:
+                candidates.append(loc)
+
+        for url in candidates:
+            parsed = urllib.parse.urlparse(url)
+            params = urllib.parse.parse_qs(parsed.query)
+            if 'code' in params:
+                return params['code'][0]
+        return None
+
+    def get_reference_data(self, reference, start_date=None, end_date=None, config=None):
+        """
+        Fetch raw data for a single reference over a date range.
+
+        Overrides the v1 method to use a cached or refreshed token when available,
+        avoiding a full re-login on every call.
+
+        :param reference: The meter/equipment reference string.
+        :param start_date: Start datetime (defaults to 1 year ago).
+        :param end_date: End datetime (defaults to now).
+        :param config: Config dict with ``root_url``, ``token_url``, ``tenant_url``,
+                       ``auth_url``, ``api_url``, ``dataset``, ``timezone``.
+                       Falls back to ``self.config`` if omitted.
+        :return: DataFrame of raw data.
+        """
+        if not start_date:
+            start_date = datetime.now() - timedelta(days=365)
+        if not end_date:
+            end_date = datetime.now()
+
+        if not config:
+            if self.config:
+                config = self.config
+            else:
+                raise Exception("No config has been set")
+
+        data = {
+            "from": start_date.strftime(format="%Y-%m-%dT%H:%M:00.000Z"),
+            "to": end_date.strftime(format="%Y-%m-%dT%H:%M:00.000Z"),
+            "selection": [reference],
+        }
+
+        # Try cached token, then refresh token, then full auth
+        if self._token_is_valid():
+            bearer_auth = self._access_token
+        else:
+            bearer_auth = None
+            if self.refresh_token:
+                try:
+                    bearer_auth = self.refresh_bearer_auth(
+                        root_url=config.get("root_url", ""),
+                        token_url=config.get("token_url", "/connect/token"),
+                    )
+                except RuntimeError:
+                    bearer_auth = None
+            if not bearer_auth:
+                bearer_auth = self.get_bearer_auth(**config)
+
+        df = self.data_call(data, bearer_auth, config, True)
+        return df

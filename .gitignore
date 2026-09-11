@@ -7,3 +7,6 @@ __pycache__/
 
 # Ignore jupyter checkpoints
 .ipynb_checkpoints/
+
+.kilo
+.kilo/
