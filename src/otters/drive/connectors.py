@@ -380,20 +380,29 @@ class JoolConnectorV2(JoolConnector):
         if not auth_url:
             auth_url = "/connect/authorize"
 
+        errors = []
+
         # Strategy 1: Resource Owner Password Credentials (single request, no scraping)
-        token = self._get_bearer_ropec(username, password, root_url, tenant_url, token_url)
+        token, ropc_err = self._get_bearer_ropec(username, password, root_url, tenant_url, token_url)
         if token:
             return token
+        if ropc_err:
+            errors.append(f"ROPC: {ropc_err}")
 
         # Strategy 2: Full Authorization Code + PKCE (browser-equivalent redirect chain)
-        token = self._get_bearer_auth_code(username, password, root_url, tenant_url, token_url, auth_url)
+        token, authcode_err = self._get_bearer_auth_code(username, password, root_url, tenant_url, token_url, auth_url)
         if token:
             return token
+        if authcode_err:
+            errors.append(f"AuthCode: {authcode_err}")
 
-        raise RuntimeError("All authentication strategies failed. Check credentials, config URLs, and network access.")
+        raise RuntimeError(
+            "All authentication strategies failed. Check credentials, config URLs, and network access.\n"
+            + "\n".join(f"  - {e}" for e in errors)
+        )
 
     def _get_bearer_ropec(self, username, password, root_url, tenant_url, token_url):
-        """Attempt Resource Owner Password Credentials grant. Returns token or None."""
+        """Attempt Resource Owner Password Credentials grant. Returns (token, error_str)."""
         try:
             resp = requests.post(
                 url=root_url + token_url,
@@ -408,17 +417,17 @@ class JoolConnectorV2(JoolConnector):
             )
             if resp.status_code == 200 and 'access_token' in resp.json():
                 self._store_tokens(resp.json())
-                return self._access_token
-        except requests.RequestException:
-            pass
-        return None
+                return self._access_token, None
+            return None, f"HTTP {resp.status_code} from {root_url + token_url}: {resp.text[:500]}"
+        except requests.RequestException as e:
+            return None, f"RequestException: {e}"
 
     def _get_bearer_auth_code(self, username, password, root_url, tenant_url, token_url, auth_url):
         """
         Full Authorization Code + PKCE flow through the IdentityServer → Keycloak
         redirect chain. Uses ``requests.Session`` to maintain cookies across hosts.
 
-        Returns access token string, or None on failure.
+        Returns (access_token, error_str).
         """
         session = requests.Session()
         session.headers.update({
@@ -440,19 +449,19 @@ class JoolConnectorV2(JoolConnector):
         # Follow the redirect chain: IdentityServer → Keycloak login page (HTML form)
         try:
             r_auth = session.get(root_url + auth_url, params=auth_params, allow_redirects=True)
-        except requests.RequestException:
-            return None
+        except requests.RequestException as e:
+            return None, f"GET {root_url + auth_url} failed: {e}"
 
         # Parse the final login form (Keycloak or IdentityServer, depending on redirect chain).
         # Extract ALL hidden inputs dynamically — don't hardcode field names.
         soup = BeautifulSoup(r_auth.content, features="html.parser")
         form = soup.find("form")
         if not form:
-            return None
+            return None, f"No <form> found at {r_auth.url} (status {r_auth.status_code}, content-type {r_auth.headers.get('content-type','?')}, len {len(r_auth.content)})"
 
         action = form.get("action")
         if not action:
-            return None
+            return None, f"<form> at {r_auth.url} has no action attribute"
         # Resolve relative action URLs against the page we landed on
         login_post_url = urllib.parse.urljoin(r_auth.url, action)
 
@@ -469,13 +478,13 @@ class JoolConnectorV2(JoolConnector):
         # The final URL will contain ?code=... (the authorization code).
         try:
             resp = session.post(login_post_url, data=form_data, allow_redirects=True)
-        except requests.RequestException:
-            return None
+        except requests.RequestException as e:
+            return None, f"POST {login_post_url} failed: {e}"
 
         # Extract the authorization code from the final URL or redirect history.
         code = self._extract_auth_code(resp)
         if not code:
-            return None
+            return None, f"No 'code' in redirect chain. Final URL: {resp.url}, history: {[r.url for r in resp.history]}"
 
         # Exchange the authorization code for tokens at the token endpoint.
         try:
@@ -490,13 +499,13 @@ class JoolConnectorV2(JoolConnector):
                 },
                 allow_redirects=False,
             )
-        except requests.RequestException:
-            return None
+        except requests.RequestException as e:
+            return None, f"Token exchange POST {root_url + token_url} failed: {e}"
 
         if token_resp.status_code == 200 and 'access_token' in token_resp.json():
             self._store_tokens(token_resp.json())
-            return self._access_token
-        return None
+            return self._access_token, None
+        return None, f"Token exchange returned HTTP {token_resp.status_code}: {token_resp.text[:500]}"
 
     def _extract_auth_code(self, resp):
         """
