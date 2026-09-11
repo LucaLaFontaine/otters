@@ -534,6 +534,9 @@ class JoolConnectorV2(JoolConnector):
 
         Returns (code, error_str).
         """
+        visited = set()
+        hop_log = []
+
         for hop in range(max_hops):
             # 1. Check if code is in the current URL or any redirect Location headers
             code = self._extract_auth_code(resp)
@@ -542,6 +545,7 @@ class JoolConnectorV2(JoolConnector):
 
             # 2. Check if the response body contains an auto-submitting form
             #    (form_post response mode: Keycloak → IdentityServer signin endpoint)
+            form_found = False
             if resp.status_code == 200 and 'text/html' in resp.headers.get('content-type', ''):
                 soup = BeautifulSoup(resp.content, features="html.parser")
                 form = soup.find("form")
@@ -553,25 +557,35 @@ class JoolConnectorV2(JoolConnector):
                         if name:
                             form_data[name] = inp.get("value", "")
 
-                    # Only auto-submit forms that look like OIDC form_post responses
-                    # (contain a 'code' field), NOT login forms (contain 'username')
-                    if form_data and ('code' in form_data or 'username' not in form_data):
+                    # Only auto-submit OIDC form_post responses:
+                    # must contain 'code' field and at least one other OIDC field
+                    oidc_fields = {'code', 'state', 'iss', 'session_state'}
+                    if form_data and 'code' in form_data and (oidc_fields & set(form_data.keys())):
+                        if action in visited:
+                            hop_log.append(f"hop {hop}: LOOP DETECTED — already submitted to {action}")
+                            return None, "Loop detected in redirect/form chain:\n" + "\n".join(hop_log)
+                        visited.add(action)
+                        hop_log.append(f"hop {hop}: auto-submitting form to {action} (fields: {sorted(form_data.keys())})")
                         try:
                             resp = session.post(action, data=form_data, allow_redirects=True)
                             continue
                         except requests.RequestException as e:
-                            return None, f"Auto-submit POST to {action} failed: {e}"
+                            return None, f"Auto-submit POST to {action} failed: {e}\n" + "\n".join(hop_log)
+                    else:
+                        hop_log.append(f"hop {hop}: form at {resp.url} skipped (not OIDC form_post: fields={sorted(form_data.keys())})")
+                        form_found = True
 
-            # 3. No code found and no auto-submit form — capture diagnostics
+            # 3. No code found and no qualifying auto-submit form — capture diagnostics
             body_snippet = resp.text[:800] if hasattr(resp, 'text') else "<no body>"
+            hop_log.append(f"hop {hop}: url={resp.url}, status={resp.status_code}, form_found={form_found}")
             return None, (
-                f"No 'code' found after {hop+1} hops. "
-                f"Last URL: {resp.url}, status: {resp.status_code}, "
-                f"history: {[r.url for r in resp.history]}. "
+                f"No 'code' found after {hop+1} hops.\n"
+                + "\n".join(hop_log)
+                + f"\nLast URL: {resp.url}, status: {resp.status_code}. "
                 f"Body: {body_snippet}"
             )
 
-        return None, f"Exceeded {max_hops} hops following redirect/form chain"
+        return None, f"Exceeded {max_hops} hops following redirect/form chain:\n" + "\n".join(hop_log)
 
     def _extract_auth_code(self, resp):
         """
