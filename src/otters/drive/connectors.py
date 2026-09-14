@@ -476,19 +476,32 @@ class JoolConnectorV2(JoolConnector):
         # Resolve relative action URLs against the page we landed on
         login_post_url = urllib.parse.urljoin(r_auth.url, action)
 
-        # Collect ALL named inputs (hidden, text, password, submit) so the login POST
-        # mirrors the browser exactly. Keycloak requires the submit button's name/value.
+        # Collect ALL named inputs (no type filter — hidden inputs may lack type attr)
         form_data = {}
+        for inp in form.find_all("input"):
+            name = inp.get("name")
+            if name:
+                form_data[name] = inp.get("value", "")
+
+        # Detect the username field — Keycloak themes may use "username", "email", etc.
+        username_field = None
         for inp in form.find_all("input"):
             name = inp.get("name")
             if not name:
                 continue
             inp_type = inp.get("type", "").lower()
-            if inp_type in ("hidden", "text", "password", "submit"):
-                form_data[name] = inp.get("value", "")
-        # Override with actual credentials (don't let form defaults leak through)
-        form_data["username"] = username
+            if name in ("username", "email") or (inp_type == "text" and "password" not in name):
+                username_field = name
+                break
+        if not username_field:
+            username_field = "username"
+
+        form_data[username_field] = username
         form_data["password"] = password
+
+        # Debug info for diagnostics (mask password)
+        debug_fields = {k: (v if k != "password" else "***") for k, v in form_data.items()}
+        debug_info = f"POST to {login_post_url} with fields: {sorted(debug_fields.keys())}, values: {debug_fields}"
 
         # Submit credentials to Keycloak's login form
         try:
@@ -499,7 +512,7 @@ class JoolConnectorV2(JoolConnector):
         # Follow the response chain: HTTP redirects + auto-submitting forms (form_post mode)
         code, err = self._follow_response_chain(session, resp)
         if not code:
-            return None, err
+            return None, f"{debug_info}\n{err}"
 
         # Exchange the authorization code for tokens at the token endpoint.
         try:
@@ -576,7 +589,7 @@ class JoolConnectorV2(JoolConnector):
                         form_found = True
 
             # 3. No code found and no qualifying auto-submit form — capture diagnostics
-            body_snippet = resp.text[:800] if hasattr(resp, 'text') else "<no body>"
+            body_snippet = resp.text[:3000] if hasattr(resp, 'text') else "<no body>"
             hop_log.append(f"hop {hop}: url={resp.url}, status={resp.status_code}, form_found={form_found}")
             return None, (
                 f"No 'code' found after {hop+1} hops.\n"
