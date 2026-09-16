@@ -538,8 +538,12 @@ class JoolConnectorV2(JoolConnector):
         if not username_field:
             username_field = "username"
 
+        # Check if this form has a password input (single-step) or not (two-step: username first)
+        has_password_input = form.find("input", {"type": "password"}) is not None or "password" in form_data
+
         form_data[username_field] = username
-        form_data["password"] = password
+        if has_password_input:
+            form_data["password"] = password
         # Keycloak requires the submit button field to be present in the POST body
         if "login" not in form_data:
             form_data["login"] = ""
@@ -557,6 +561,50 @@ class JoolConnectorV2(JoolConnector):
             resp = session.post(login_post_url, data=form_data, allow_redirects=True)
         except requests.RequestException as e:
             return None, f"POST {login_post_url} failed: {e}"
+
+        # Two-step login: if the first form had no password input, the response should
+        # contain a second form with a password field. Parse and submit it.
+        if not has_password_input:
+            resp_soup = BeautifulSoup(resp.content, features="html.parser")
+            resp_forms = resp_soup.find_all("form")
+            pw_form = None
+            for f in resp_forms:
+                if f.find("input", {"type": "password"}) or f.find("input", {"name": "password"}):
+                    pw_form = f
+                    break
+            if not pw_form:
+                # No password form found — could be a login error or unexpected response
+                pw_debug = f"Step 2: No password form found. Forms: {len(resp_forms)}, status: {resp.status_code}, URL: {resp.url}"
+                if resp_forms:
+                    pw_debug += f"\nFirst form HTML: {str(resp_forms[0])[:3000]}"
+                return None, f"{debug_info}\n{pw_debug}"
+
+            pw_action = pw_form.get("action")
+            if not pw_action:
+                return None, f"{debug_info}\nStep 2: Password form has no action attribute"
+            pw_post_url = urllib.parse.urljoin(resp.url, pw_action)
+
+            # Collect all inputs from the password form
+            pw_data = {}
+            for inp in pw_form.find_all("input"):
+                name = inp.get("name")
+                if name:
+                    pw_data[name] = inp.get("value", "")
+            for btn in pw_form.find_all("button"):
+                name = btn.get("name")
+                if name:
+                    pw_data[name] = btn.get("value", "")
+            pw_data["password"] = password
+            if "login" not in pw_data:
+                pw_data["login"] = ""
+
+            pw_debug_fields = {k: (v if k != "password" else "***") for k, v in pw_data.items()}
+            debug_info += f"\nStep 2 POST to {pw_post_url} with fields: {sorted(pw_debug_fields.keys())}, values: {pw_debug_fields}"
+
+            try:
+                resp = session.post(pw_post_url, data=pw_data, allow_redirects=True)
+            except requests.RequestException as e:
+                return None, f"{debug_info}\nStep 2 POST {pw_post_url} failed: {e}"
 
         # Follow the response chain: HTTP redirects + auto-submitting forms (form_post mode)
         code, err = self._follow_response_chain(session, resp)
