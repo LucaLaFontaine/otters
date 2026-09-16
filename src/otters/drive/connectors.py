@@ -382,14 +382,21 @@ class JoolConnectorV2(JoolConnector):
 
         errors = []
 
-        # Strategy 1: Resource Owner Password Credentials (single request, no scraping)
+        # Strategy 1: Resource Owner Password Credentials via IdentityServer
         token, ropc_err = self._get_bearer_ropec(username, password, root_url, tenant_url, token_url)
         if token:
             return token
         if ropc_err:
             errors.append(f"ROPC: {ropc_err}")
 
-        # Strategy 2: Full Authorization Code + PKCE (browser-equivalent redirect chain)
+        # Strategy 2: Keycloak Direct Access Grant (ROPC against Keycloak's own token endpoint)
+        token, kc_err = self._get_bearer_keycloak_ropec(username, password, tenant_url)
+        if token:
+            return token
+        if kc_err:
+            errors.append(f"KeycloakROPC: {kc_err}")
+
+        # Strategy 3: Full Authorization Code + PKCE (browser-equivalent redirect chain)
         token, authcode_err = self._get_bearer_auth_code(username, password, root_url, tenant_url, token_url, auth_url)
         if token:
             return token
@@ -419,6 +426,34 @@ class JoolConnectorV2(JoolConnector):
                 self._store_tokens(resp.json())
                 return self._access_token, None
             return None, f"HTTP {resp.status_code} from {root_url + token_url}: {resp.text[:500]}"
+        except requests.RequestException as e:
+            return None, f"RequestException: {e}"
+
+    def _get_bearer_keycloak_ropec(self, username, password, tenant_url):
+        """
+        Attempt Keycloak Direct Access Grant (ROPC) against Keycloak's own token endpoint.
+
+        The Keycloak realm is derived from the tenant URL's OIDC flow. Keycloak may
+        allow password grant even when IdentityServer doesn't.
+
+        Returns (token, error_str).
+        """
+        keycloak_token_url = "https://auth.prod.emm.metronlab.tech/auth/realms/PublinergieCanada/protocol/openid-connect/token"
+        try:
+            resp = requests.post(
+                url=keycloak_token_url,
+                data={
+                    "grant_type": "password",
+                    "client_id": "frontend",
+                    "username": username,
+                    "password": password,
+                    "scope": "openid offline_access",
+                },
+            )
+            if resp.status_code == 200 and 'access_token' in resp.json():
+                self._store_tokens(resp.json())
+                return self._access_token, None
+            return None, f"HTTP {resp.status_code} from {keycloak_token_url}: {resp.text[:500]}"
         except requests.RequestException as e:
             return None, f"RequestException: {e}"
 
@@ -476,12 +511,17 @@ class JoolConnectorV2(JoolConnector):
         # Resolve relative action URLs against the page we landed on
         login_post_url = urllib.parse.urljoin(r_auth.url, action)
 
-        # Collect ALL named inputs (no type filter — hidden inputs may lack type attr)
+        # Collect ALL named inputs and buttons (no type filter — hidden inputs may lack type attr)
         form_data = {}
         for inp in form.find_all("input"):
             name = inp.get("name")
             if name:
                 form_data[name] = inp.get("value", "")
+        # Also collect <button> elements with name attributes (Keycloak submit button)
+        for btn in form.find_all("button"):
+            name = btn.get("name")
+            if name:
+                form_data[name] = btn.get("value", "")
 
         # Detect the username field — Keycloak themes may use "username", "email", etc.
         username_field = None
@@ -498,6 +538,9 @@ class JoolConnectorV2(JoolConnector):
 
         form_data[username_field] = username
         form_data["password"] = password
+        # Keycloak requires the submit button field to be present in the POST body
+        if "login" not in form_data:
+            form_data["login"] = ""
 
         # Debug info for diagnostics (mask password)
         debug_fields = {k: (v if k != "password" else "***") for k, v in form_data.items()}
