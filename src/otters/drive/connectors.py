@@ -595,16 +595,30 @@ class JoolConnectorV2(JoolConnector):
                 if name:
                     pw_data[name] = btn.get("value", "")
             pw_data["password"] = password
+            # Also send username in step 2 — some Keycloak flows expect it even if not in the form
+            if username_field and username_field not in pw_data:
+                pw_data[username_field] = username
             if "login" not in pw_data:
                 pw_data["login"] = ""
 
             pw_debug_fields = {k: (v if k != "password" else "***") for k, v in pw_data.items()}
-            debug_info += f"\nStep 2 POST to {pw_post_url} with fields: {sorted(pw_debug_fields.keys())}, values: {pw_debug_fields}"
+            pw_form_html = str(pw_form)[:5000]
+            debug_info += (
+                f"\nStep 2 POST to {pw_post_url} with fields: {sorted(pw_debug_fields.keys())}, values: {pw_debug_fields}"
+                f"\nStep 2 Form HTML:\n{pw_form_html}"
+            )
 
             try:
                 resp = session.post(pw_post_url, data=pw_data, allow_redirects=True)
             except requests.RequestException as e:
                 return None, f"{debug_info}\nStep 2 POST {pw_post_url} failed: {e}"
+
+            # Check for Keycloak error messages in the response (e.g. "Invalid username or password")
+            err_soup = BeautifulSoup(resp.content, features="html.parser")
+            error_divs = err_soup.find_all("div", class_=lambda c: c and "red" in c.lower())
+            error_msgs = [d.get_text(strip=True) for d in error_divs if d.get_text(strip=True)]
+            if error_msgs:
+                debug_info += f"\nKeycloak error messages: {error_msgs}"
 
         # Follow the response chain: HTTP redirects + auto-submitting forms (form_post mode)
         code, err = self._follow_response_chain(session, resp)
