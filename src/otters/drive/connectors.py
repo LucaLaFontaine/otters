@@ -494,7 +494,9 @@ class JoolConnectorV2(JoolConnector):
         # Find the one that has username/password inputs — that's the login form.
         forms = soup.find_all("form")
         if not forms:
-            return None, f"No <form> found at {r_auth.url} (status {r_auth.status_code}, content-type {r_auth.headers.get('content-type','?')}, len {len(r_auth.content)})"
+            # Dump full page HTML for diagnostics — the form might be in a <template> or JS-rendered
+            page_html = r_auth.text[:8000]
+            return None, f"No <form> found at {r_auth.url} (status {r_auth.status_code}, content-type {r_auth.headers.get('content-type','?')}, len {len(r_auth.content)}). Page HTML:\n{page_html}"
 
         form = None
         for f in forms:
@@ -544,7 +546,11 @@ class JoolConnectorV2(JoolConnector):
 
         # Debug info for diagnostics (mask password)
         debug_fields = {k: (v if k != "password" else "***") for k, v in form_data.items()}
-        debug_info = f"POST to {login_post_url} with fields: {sorted(debug_fields.keys())}, values: {debug_fields}"
+        form_html = str(form)[:5000]
+        debug_info = (
+            f"POST to {login_post_url} with fields: {sorted(debug_fields.keys())}, values: {debug_fields}\n"
+            f"Form HTML:\n{form_html}"
+        )
 
         # Submit credentials to Keycloak's login form
         try:
