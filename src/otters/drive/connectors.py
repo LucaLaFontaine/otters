@@ -157,7 +157,12 @@ class JoolConnector:
         headers = {"Authorization": f"Bearer {bearer_auth}"}
         url = config['api_url']+config['dataset']
         r = requests.post(url, json=data, headers=headers)
-        content = r.json()
+        if r.status_code != 200:
+            raise RuntimeError(f"data_call: HTTP {r.status_code} from {url}. Response: {r.text[:1000]}")
+        try:
+            content = r.json()
+        except Exception:
+            raise RuntimeError(f"data_call: JSON decode failed from {url}. Status: {r.status_code}. Response: {r.text[:1000]}")
         rows = content['tables'][0]['rows']
         columns = content['tables'][0]['columns']
         columns = [col['reference'] for col in columns]
