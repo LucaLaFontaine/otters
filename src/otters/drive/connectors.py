@@ -351,9 +351,9 @@ class JoolConnectorV2(JoolConnector):
 
     def get_bearer_auth(self, USER=None, PASSWORD=None, root_url="", tenant_url="", token_url="", auth_url="", *args, **kwargs):
         """
-        Get a bearer access token from the new federated JOOL login flow.
+        Get a bearer access token from the JOOL/Keycloak OIDC login flow.
 
-        Tries (in order): cached token → ROPC → Authorization Code + PKCE fallback.
+        Tries (in order): cached token → Keycloak ROPC → Authorization Code + PKCE fallback.
 
         Parameters
         ----------
@@ -362,13 +362,18 @@ class JoolConnectorV2(JoolConnector):
         PASSWORD : str, optional
             Password. Falls back to ``os.getenv('password')``.
         root_url : str
-            IdentityServer base URL (e.g. ``https://publinergie-ca-api-auth.prod.emm.metronlab.tech``).
+            OIDC provider base URL (e.g. Keycloak openid-connect base
+            ``https://auth.prod.emm.metronlab.tech/auth/realms/PublinergieCanada/protocol/openid-connect``).
         tenant_url : str
             Tenant / redirect URI (e.g. ``https://publinergie-ca.jool.energy``).
         token_url : str
-            Token endpoint path (e.g. ``/connect/token``).
+            Token endpoint path (e.g. ``/token``).
         auth_url : str
-            Authorize endpoint path (e.g. ``/connect/authorize``).
+            Authorize endpoint path (e.g. ``/auth``).
+        client_id : str, optional
+            OIDC client_id (default ``frontend``).
+        scope : str, optional
+            OIDC scope (default ``openid offline_access``).
 
         Returns
         -------
@@ -381,28 +386,24 @@ class JoolConnectorV2(JoolConnector):
         username, password = self._resolve_credentials(USER, PASSWORD)
 
         if not token_url:
-            token_url = "/connect/token"
+            token_url = "/token"
         if not auth_url:
-            auth_url = "/connect/authorize"
+            auth_url = "/auth"
+
+        client_id = kwargs.get("client_id", "frontend")
+        scope = kwargs.get("scope", "openid offline_access")
 
         errors = []
 
-        # Strategy 1: Resource Owner Password Credentials via IdentityServer
-        token, ropc_err = self._get_bearer_ropec(username, password, root_url, tenant_url, token_url)
-        if token:
-            return token
-        if ropc_err:
-            errors.append(f"ROPC: {ropc_err}")
-
-        # Strategy 2: Keycloak Direct Access Grant (ROPC against Keycloak's own token endpoint)
-        token, kc_err = self._get_bearer_keycloak_ropec(username, password, tenant_url)
+        # Strategy 1: Keycloak Direct Access Grant (ROPC against Keycloak's token endpoint)
+        token, kc_err = self._get_bearer_keycloak_ropec(username, password, tenant_url, client_id, scope)
         if token:
             return token
         if kc_err:
             errors.append(f"KeycloakROPC: {kc_err}")
 
-        # Strategy 3: Full Authorization Code + PKCE (browser-equivalent redirect chain)
-        token, authcode_err = self._get_bearer_auth_code(username, password, root_url, tenant_url, token_url, auth_url)
+        # Strategy 2: Full Authorization Code + PKCE (browser-equivalent redirect chain)
+        token, authcode_err = self._get_bearer_auth_code(username, password, root_url, tenant_url, token_url, auth_url, client_id, scope)
         if token:
             return token
         if authcode_err:
@@ -434,12 +435,9 @@ class JoolConnectorV2(JoolConnector):
         except requests.RequestException as e:
             return None, f"RequestException: {e}"
 
-    def _get_bearer_keycloak_ropec(self, username, password, tenant_url):
+    def _get_bearer_keycloak_ropec(self, username, password, tenant_url, client_id="frontend", scope="openid offline_access"):
         """
-        Attempt Keycloak Direct Access Grant (ROPC) against Keycloak's own token endpoint.
-
-        The Keycloak realm is derived from the tenant URL's OIDC flow. Keycloak may
-        allow password grant even when IdentityServer doesn't.
+        Attempt Keycloak Direct Access Grant (ROPC) against Keycloak's token endpoint.
 
         Returns (token, error_str).
         """
@@ -449,10 +447,10 @@ class JoolConnectorV2(JoolConnector):
                 url=keycloak_token_url,
                 data={
                     "grant_type": "password",
-                    "client_id": "frontend",
+                    "client_id": client_id,
                     "username": username,
                     "password": password,
-                    "scope": "openid offline_access",
+                    "scope": scope,
                 },
             )
             if resp.status_code == 200 and 'access_token' in resp.json():
@@ -462,10 +460,10 @@ class JoolConnectorV2(JoolConnector):
         except requests.RequestException as e:
             return None, f"RequestException: {e}"
 
-    def _get_bearer_auth_code(self, username, password, root_url, tenant_url, token_url, auth_url):
+    def _get_bearer_auth_code(self, username, password, root_url, tenant_url, token_url, auth_url, client_id="frontend", scope="openid offline_access"):
         """
-        Full Authorization Code + PKCE flow through the IdentityServer → Keycloak
-        redirect chain. Uses ``requests.Session`` to maintain cookies across hosts.
+        Full Authorization Code + PKCE flow through Keycloak's login page.
+        Uses ``requests.Session`` to maintain cookies across the redirect chain.
 
         Returns (access_token, error_str).
         """
@@ -477,16 +475,15 @@ class JoolConnectorV2(JoolConnector):
         code_challenge = self.create_code_challenge()
 
         auth_params = {
-            "client_id": "Frontend",
+            "client_id": client_id,
             "redirect_uri": tenant_url,
             "response_type": "code",
-            "scope": "Web.Api.Display Web.Api.User offline_access openid",
+            "scope": scope,
             "code_challenge": code_challenge["challenge"],
             "code_challenge_method": "S256",
-            "acr_values": f"tenant:{tenant_url}",
         }
 
-        # Follow the redirect chain: IdentityServer → Keycloak login page (HTML form)
+        # Follow the redirect chain: Keycloak authorize → login page (HTML form)
         try:
             r_auth = session.get(root_url + auth_url, params=auth_params, allow_redirects=True)
         except requests.RequestException as e:
@@ -636,7 +633,7 @@ class JoolConnectorV2(JoolConnector):
                 url=root_url + token_url,
                 data={
                     "grant_type": "authorization_code",
-                    "client_id": "Frontend",
+                    "client_id": client_id,
                     "redirect_uri": tenant_url,
                     "code": code,
                     "code_verifier": code_challenge["verifier"],
